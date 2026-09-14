@@ -1,261 +1,253 @@
 <!doctype html>
 <html lang="vi">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Sản phẩm | TNC Store</title>
-    <link rel="stylesheet" href="css/style.css" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
-    />
-  </head>
-  <body>
-    <header class="site-header">
-      <div class="container">
-        <nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
-          <a class="navbar-brand logo" href="index.html"
-            ><img src="assets/img/branding/tnc.png" alt="TNC Store" /></a
-          ><button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#storeNavigation"
-            aria-label="Toggle navigation"
-          >
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="storeNavigation">
-            <form
-              class="search-form mx-lg-4 my-3 my-lg-0"
-              role="search"
-              action="products.html"
-            >
-              <input
-                class="form-control"
-                type="search"
-                name="q"
-                placeholder="Bạn đang tìm gì?"
-                aria-label="Search products"
-              /><button class="search-button" type="submit" aria-label="Search">
-                <i class="bi bi-search"></i>
-              </button>
-            </form>
-            <div class="header-actions ms-lg-auto">
-              <button
-                class="header-action header-button"
-                type="button"
-                data-bs-toggle="modal"
-                data-bs-target="#accountModal"
-              >
-                <i class="bi bi-person-circle"></i
-                ><span>Đăng nhập</span></button
-              ><a class="header-action cart-action" href="cart.html"
-                ><span class="cart-icon"
-                  ><i class="bi bi-cart3"></i><b>0</b></span
-                ><span>Giỏ hàng</span></a
-              >
-            </div>
-          </div>
-        </nav>
-      </div>
-    </header>
-    <main>
-      <section class="page-intro">
-        <div class="container">
-          <p class="eyebrow">TNC Store / Sản phẩm</p>
-          <h1>Tìm món đồ tiếp theo<br /><span>cho góc của bạn.</span></h1>
-        </div>
-      </section>
-      <section class="section-space">
-        <div class="container">
-          <div class="row g-4">
-            <aside class="col-lg-3">
-              <div class="filter-panel">
-                <h2>Bộ lọc</h2>
-                <label class="filter-check"
-                  ><input type="checkbox" /> PC & Linh kiện
-                  <span>42</span></label
-                ><label class="filter-check"
-                  ><input type="checkbox" /> Bàn phím <span>28</span></label
-                ><label class="filter-check"
-                  ><input type="checkbox" /> Màn hình <span>16</span></label
-                ><label class="filter-check"
-                  ><input type="checkbox" /> Gaming gear <span>35</span></label
-                >
-                <hr />
-                <label for="sort-price" class="filter-label">Sắp xếp theo</label
-                ><select id="sort-price" class="form-select">
-                  <option>Nổi bật nhất</option>
-                  <option>Giá thấp đến cao</option>
-                  <option>Giá cao đến thấp</option>
-                </select>
-              </div>
-            </aside>
-            <div class="col-lg-9">
-              <div class="catalog-toolbar">
-                <span>121 sản phẩm</span
-                ><a class="text-link" href="contact.html"
-                  >Cần tư vấn? <i class="bi bi-arrow-right"></i
-                ></a>
-              </div>
-              <div class="row g-4">
-                <div class="col-sm-6 col-xl-4">
-                  <article class="product-card">
-                    <div class="product-image">
-                      <i class="bi bi-keyboard"></i
-                      ><span class="product-tag">Bán chạy</span>
-                    </div>
-                    <p class="product-brand">TNC SELECT</p>
-                    <h3>Bàn phím cơ Nova 75</h3>
-                    <strong class="product-price">1.890.000đ</strong
-                    ><button class="btn btn-outline-primary w-100 mt-3">
-                      Thêm vào giỏ
-                    </button>
-                  </article>
-                </div>
-                <div class="col-sm-6 col-xl-4">
-                  <article class="product-card">
-                    <div class="product-image product-image-alt">
-                      <i class="bi bi-display"></i>
-                    </div>
-                    <p class="product-brand">VIEWSONIC</p>
-                    <h3>Màn hình VX2718</h3>
-                    <strong class="product-price">4.290.000đ</strong
-                    ><button class="btn btn-outline-primary w-100 mt-3">
-                      Thêm vào giỏ
-                    </button>
-                  </article>
-                </div>
-                <div class="col-sm-6 col-xl-4">
-                  <article class="product-card">
-                    <div class="product-image product-image-dark">
-                      <i class="bi bi-headset"></i>
-                    </div>
-                    <p class="product-brand">HYPERX</p>
-                    <h3>Cloud III Wireless</h3>
-                    <strong class="product-price">2.390.000đ</strong
-                    ><button class="btn btn-outline-primary w-100 mt-3">
-                      Thêm vào giỏ
-                    </button>
-                  </article>
-                </div>
-                <div class="col-sm-6 col-xl-4">
-                  <article class="product-card">
-                    <div class="product-image product-image-green">
-                      <i class="bi bi-mouse3"></i>
-                    </div>
-                    <p class="product-brand">LOGITECH</p>
-                    <h3>Chuột G Pro X Superlight</h3>
-                    <strong class="product-price">2.790.000đ</strong
-                    ><button class="btn btn-outline-primary w-100 mt-3">
-                      Thêm vào giỏ
-                    </button>
-                  </article>
-                </div>
-                <div class="col-sm-6 col-xl-4">
-                  <article class="product-card">
-                    <div class="product-image">
-                      <i class="bi bi-pc-display-horizontal"></i>
-                    </div>
-                    <p class="product-brand">AMD / TNC BUILD</p>
-                    <h3>Creator PC Horizon</h3>
-                    <strong class="product-price">28.490.000đ</strong
-                    ><button class="btn btn-outline-primary w-100 mt-3">
-                      Thêm vào giỏ
-                    </button>
-                  </article>
-                </div>
-                <div class="col-sm-6 col-xl-4">
-                  <article class="product-card">
-                    <div class="product-image product-image-alt">
-                      <i class="bi bi-mic"></i>
-                    </div>
-                    <p class="product-brand">ELGATO</p>
-                    <h3>Wave:3 USB Microphone</h3>
-                    <strong class="product-price">3.190.000đ</strong
-                    ><button class="btn btn-outline-primary w-100 mt-3">
-                      Thêm vào giỏ
-                    </button>
-                  </article>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-    <div class="modal fade" id="accountModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content account-modal">
-          <div class="modal-header border-0">
-            <h2 class="modal-title">Chào mừng trở lại</h2>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body pt-0">
-            <ul class="nav nav-pills nav-fill account-tabs">
-              <li class="nav-item">
-                <button
-                  class="nav-link active"
-                  data-bs-toggle="pill"
-                  data-bs-target="#login-pane"
-                  type="button"
-                >
-                  Đăng nhập
-                </button>
-              </li>
-              <li class="nav-item">
-                <button
-                  class="nav-link"
-                  data-bs-toggle="pill"
-                  data-bs-target="#register-pane"
-                  type="button"
-                >
-                  Đăng ký
-                </button>
-              </li>
-            </ul>
-            <div class="tab-content pt-4">
-              <div class="tab-pane fade show active" id="login-pane">
-                <form>
-                  <label>Email</label
-                  ><input class="form-control mb-3" type="email" /><label
-                    >Mật khẩu</label
-                  ><input class="form-control mb-3" type="password" /><button
-                    class="btn btn-primary w-100"
-                  >
-                    Đăng nhập
-                  </button>
-                </form>
-              </div>
-              <div class="tab-pane fade" id="register-pane">
-                <form>
-                  <label>Họ và tên</label
-                  ><input class="form-control mb-3" type="text" /><label
-                    >Email</label
-                  ><input class="form-control mb-3" type="email" /><label
-                    >Mật khẩu</label
-                  ><input class="form-control mb-3" type="password" /><button
-                    class="btn btn-primary w-100"
-                  >
-                    Tạo tài khoản
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Sản phẩm | TNC Store</title>
+		<link rel="stylesheet" href="css/style.css" />
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+			rel="stylesheet" />
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+	</head>
+	<body>
+		<header class="site-header">
+			<div class="container">
+				<nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
+					<a class="navbar-brand logo" href="index.html"
+						><img src="assets/img/branding/tnc.png" alt="TNC Store" /></a
+					><button
+						class="navbar-toggler"
+						type="button"
+						data-bs-toggle="collapse"
+						data-bs-target="#storeNavigation"
+						aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="collapse navbar-collapse" id="storeNavigation">
+						<form
+							class="search-form mx-lg-4 my-3 my-lg-0"
+							role="search"
+							action="products.html">
+							<input
+								class="form-control"
+								type="search"
+								name="q"
+								placeholder="Bạn đang tìm gì?"
+								aria-label="Search products" /><button
+								class="search-button"
+								type="submit"
+								aria-label="Search">
+								<i class="bi bi-search"></i>
+							</button>
+						</form>
+						<div class="header-actions ms-lg-auto">
+							<button
+								class="header-action header-button"
+								type="button"
+								data-bs-toggle="modal"
+								data-bs-target="#accountModal">
+								<i class="bi bi-person-circle"></i
+								><span>Đăng nhập</span></button
+							><a class="header-action cart-action" href="cart.html"
+								><span class="cart-icon"
+									><i class="bi bi-cart3"></i><b>0</b></span
+								><span>Giỏ hàng</span></a
+							>
+						</div>
+					</div>
+				</nav>
+			</div>
+		</header>
+		<main>
+			<section class="page-intro">
+				<div class="container">
+					<p class="eyebrow">TNC Store / Sản phẩm</p>
+					<h1>Tìm món đồ tiếp theo<br /><span>cho góc của bạn.</span></h1>
+				</div>
+			</section>
+			<section class="section-space">
+				<div class="container">
+					<div class="row g-4">
+						<aside class="col-lg-3">
+							<div class="filter-panel">
+								<h2>Bộ lọc</h2>
+								<label class="filter-check"
+									><input type="checkbox" /> PC & Linh kiện
+									<span>42</span></label
+								><label class="filter-check"
+									><input type="checkbox" /> Bàn phím <span>28</span></label
+								><label class="filter-check"
+									><input type="checkbox" /> Màn hình <span>16</span></label
+								><label class="filter-check"
+									><input type="checkbox" /> Gaming gear <span>35</span></label
+								>
+								<hr />
+								<label for="sort-price" class="filter-label">Sắp xếp theo</label
+								><select id="sort-price" class="form-select">
+									<option>Nổi bật nhất</option>
+									<option>Giá thấp đến cao</option>
+									<option>Giá cao đến thấp</option>
+								</select>
+							</div>
+						</aside>
+						<div class="col-lg-9">
+							<div class="catalog-toolbar">
+								<span>121 sản phẩm</span
+								><a class="text-link" href="contact.html"
+									>Cần tư vấn? <i class="bi bi-arrow-right"></i
+								></a>
+							</div>
+							<div class="row g-4">
+								<div class="col-sm-6 col-xl-4">
+									<article class="product-card">
+										<div class="product-image">
+											<i class="bi bi-keyboard"></i
+											><span class="product-tag">Bán chạy</span>
+										</div>
+										<p class="product-brand">TNC SELECT</p>
+										<h3>Bàn phím cơ Nova 75</h3>
+										<strong class="product-price">1.890.000đ</strong
+										><button class="btn btn-outline-primary w-100 mt-3">
+											Thêm vào giỏ
+										</button>
+									</article>
+								</div>
+								<div class="col-sm-6 col-xl-4">
+									<article class="product-card">
+										<div class="product-image product-image-alt">
+											<i class="bi bi-display"></i>
+										</div>
+										<p class="product-brand">VIEWSONIC</p>
+										<h3>Màn hình VX2718</h3>
+										<strong class="product-price">4.290.000đ</strong
+										><button class="btn btn-outline-primary w-100 mt-3">
+											Thêm vào giỏ
+										</button>
+									</article>
+								</div>
+								<div class="col-sm-6 col-xl-4">
+									<article class="product-card">
+										<div class="product-image product-image-dark">
+											<i class="bi bi-headset"></i>
+										</div>
+										<p class="product-brand">HYPERX</p>
+										<h3>Cloud III Wireless</h3>
+										<strong class="product-price">2.390.000đ</strong
+										><button class="btn btn-outline-primary w-100 mt-3">
+											Thêm vào giỏ
+										</button>
+									</article>
+								</div>
+								<div class="col-sm-6 col-xl-4">
+									<article class="product-card">
+										<div class="product-image product-image-green">
+											<i class="bi bi-mouse3"></i>
+										</div>
+										<p class="product-brand">LOGITECH</p>
+										<h3>Chuột G Pro X Superlight</h3>
+										<strong class="product-price">2.790.000đ</strong
+										><button class="btn btn-outline-primary w-100 mt-3">
+											Thêm vào giỏ
+										</button>
+									</article>
+								</div>
+								<div class="col-sm-6 col-xl-4">
+									<article class="product-card">
+										<div class="product-image">
+											<i class="bi bi-pc-display-horizontal"></i>
+										</div>
+										<p class="product-brand">AMD / TNC BUILD</p>
+										<h3>Creator PC Horizon</h3>
+										<strong class="product-price">28.490.000đ</strong
+										><button class="btn btn-outline-primary w-100 mt-3">
+											Thêm vào giỏ
+										</button>
+									</article>
+								</div>
+								<div class="col-sm-6 col-xl-4">
+									<article class="product-card">
+										<div class="product-image product-image-alt">
+											<i class="bi bi-mic"></i>
+										</div>
+										<p class="product-brand">ELGATO</p>
+										<h3>Wave:3 USB Microphone</h3>
+										<strong class="product-price">3.190.000đ</strong
+										><button class="btn btn-outline-primary w-100 mt-3">
+											Thêm vào giỏ
+										</button>
+									</article>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</main>
+		<div class="modal fade" id="accountModal" tabindex="-1" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered modal-sm">
+				<div class="modal-content account-modal">
+					<div class="modal-header border-0">
+						<h2 class="modal-title">Chào mừng trở lại</h2>
+						<button
+							type="button"
+							class="btn-close"
+							data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body pt-0">
+						<ul class="nav nav-pills nav-fill account-tabs">
+							<li class="nav-item">
+								<button
+									class="nav-link active"
+									data-bs-toggle="pill"
+									data-bs-target="#login-pane"
+									type="button">
+									Đăng nhập
+								</button>
+							</li>
+							<li class="nav-item">
+								<button
+									class="nav-link"
+									data-bs-toggle="pill"
+									data-bs-target="#register-pane"
+									type="button">
+									Đăng ký
+								</button>
+							</li>
+						</ul>
+						<div class="tab-content pt-4">
+							<div class="tab-pane fade show active" id="login-pane">
+								<form>
+									<label>Email</label
+									><input class="form-control mb-3" type="email" /><label
+										>Mật khẩu</label
+									><input class="form-control mb-3" type="password" /><button
+										class="btn btn-primary w-100">
+										Đăng nhập
+									</button>
+								</form>
+							</div>
+							<div class="tab-pane fade" id="register-pane">
+								<form>
+									<label>Họ và tên</label
+									><input class="form-control mb-3" type="text" /><label
+										>Email</label
+									><input class="form-control mb-3" type="email" /><label
+										>Mật khẩu</label
+									><input class="form-control mb-3" type="password" /><button
+										class="btn btn-primary w-100">
+										Tạo tài khoản
+									</button>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+	</body>
 </html>
