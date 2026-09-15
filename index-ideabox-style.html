@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="vi">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>TNC Store | Ideabox Style</title>
+		<link rel="stylesheet" href="css/style.css" />
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+		/>
+		<style>
+			:root {
+				--idea-ink: #17212b;
+				--idea-green: #d36b45;
+				--idea-muted: #f3f5f8;
+				--idea-line: #dfe4ec;
+			}
+
+			body {
+				background: #fff;
+				color: #5f6860;
+				font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+			}
+
+			.idea-header {
+				border-bottom: 1px solid var(--idea-line);
+				background: #fff;
+			}
+
+			.idea-header .navbar {
+				min-height: 82px;
+			}
+
+			.idea-logo {
+				display: inline-flex;
+				width: 104px;
+				height: 34px;
+				align-items: center;
+			}
+
+			.idea-logo img {
+				width: 104px;
+				height: 32px;
+				object-fit: contain;
+			}
+
+			.idea-nav-link {
+				margin: 0 0.7rem;
+				color: var(--idea-ink);
+				font-size: 0.82rem;
+				font-weight: 700;
+				text-decoration: none;
+			}
+
+			.idea-nav-link:hover,
+			.idea-action:hover {
+				color: var(--idea-green);
+			}
+
+			.idea-action {
+				color: var(--idea-ink);
+				font-size: 0.82rem;
+				font-weight: 700;
+				text-decoration: none;
+			}
+
+			.idea-button {
+				display: inline-block;
+				padding: 0.75rem 1.25rem;
+				border: 0;
+				border-radius: 2px;
+				background: var(--idea-green);
+				color: #fff;
+				font-size: 0.78rem;
+				font-weight: 700;
+				text-decoration: none;
+				transition:
+					background 0.2s,
+					transform 0.2s;
+			}
+
+			.idea-button:hover {
+				transform: translateY(-2px);
+				background: #5f9f32;
+				color: #fff;
+			}
+
+			.idea-hero {
+				min-height: 485px;
+				background:
+					linear-gradient(90deg, rgba(23, 33, 43, 0.9), rgba(23, 33, 43, 0.16)),
+					url("assets/img/banner/banner-back-to-school-pc-1.jpg") center / cover;
+			}
+
+			.idea-hero-content {
+				max-width: 570px;
+				padding: 7rem 0;
+				color: #fff;
+			}
+
+			.idea-hero-content h1 {
+				max-width: 520px;
+				margin-bottom: 1.25rem;
+				font-size: clamp(2.3rem, 5vw, 4.3rem);
+				letter-spacing: -0.04em;
+			}
+
+			.idea-hero-content p {
+				max-width: 490px;
+				margin-bottom: 1.75rem;
+				color: rgba(255, 255, 255, 0.86);
+				line-height: 1.7;
+			}
+
+			.idea-stat {
+				display: flex;
+				gap: 2rem;
+				margin-top: 2rem;
+			}
+
+			.idea-stat strong,
+			.idea-stat span {
+				display: block;
+			}
+
+			.idea-stat strong {
+				color: #fff;
+				font-size: 1.25rem;
+			}
+
+			.idea-stat span {
+				margin-top: 0.2rem;
+				color: rgba(255, 255, 255, 0.72);
+				font-size: 0.72rem;
+				text-transform: uppercase;
+			}
+
+			.idea-section {
+				padding: 5rem 0;
+			}
+
+			.idea-section-muted {
+				background: var(--idea-muted);
+			}
+
+			.idea-heading {
+				margin-bottom: 2rem;
+			}
+
+			.idea-heading h2 {
+				margin-bottom: 0.45rem;
+				color: var(--idea-ink);
+				font-size: 2rem;
+			}
+
+			.idea-heading p {
+				max-width: 570px;
+				margin: 0;
+				line-height: 1.7;
+			}
+
+			.idea-heading-row {
+				display: flex;
+				align-items: end;
+				justify-content: space-between;
+			}
+
+			.idea-category {
+				position: relative;
+				height: 220px;
+				overflow: hidden;
+				background: #e5e9f2;
+			}
+
+			.idea-category img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				transition: transform 0.35s;
+			}
+
+			.idea-category:hover img {
+				transform: scale(1.06);
+			}
+
+			.idea-category span {
+				position: absolute;
+				right: 0;
+				bottom: 0;
+				left: 0;
+				padding: 1rem;
+				background: linear-gradient(transparent, rgba(0, 0, 0, 0.76));
+				color: #fff;
+				font-size: 1rem;
+				font-weight: 700;
+			}
+
+			.idea-product {
+				height: 100%;
+				border: 1px solid var(--idea-line);
+				background: #fff;
+			}
+
+			.idea-product-image {
+				display: grid;
+				height: 205px;
+				place-items: center;
+				background: #e5e9f2;
+				color: #536487;
+				font-size: 5rem;
+			}
+
+			.idea-product-body {
+				padding: 1.1rem;
+			}
+
+			.idea-product-body small {
+				color: #8b958e;
+				font-size: 0.68rem;
+				font-weight: 800;
+				letter-spacing: 0.12em;
+			}
+
+			.idea-product-body h3 {
+				min-height: 48px;
+				margin: 0.45rem 0;
+				color: var(--idea-ink);
+				font-size: 1rem;
+			}
+
+			.idea-product-body strong {
+				color: var(--idea-green);
+			}
+
+			.idea-feature {
+				display: flex;
+				height: 100%;
+				min-height: 270px;
+				flex-direction: column;
+				justify-content: center;
+				padding: 2rem;
+				background: #fff;
+				border: 1px solid var(--idea-line);
+			}
+
+			.idea-feature i {
+				margin-bottom: 1rem;
+				color: var(--idea-green);
+				font-size: 2rem;
+			}
+
+			.idea-feature h3 {
+				color: var(--idea-ink);
+				font-size: 1.1rem;
+			}
+
+			.idea-footer {
+				padding: 3.5rem 0 1.5rem;
+				background: #17212b;
+				color: #b8c1c7;
+			}
+
+			.idea-footer h3 {
+				color: #fff;
+				font-size: 1rem;
+			}
+
+			.idea-footer a {
+				display: block;
+				margin-bottom: 0.55rem;
+				color: #b8c1c7;
+				font-size: 0.85rem;
+				text-decoration: none;
+			}
+
+			.idea-footer a:hover {
+				color: #fff;
+			}
+
+			.idea-footer-bottom {
+				margin-top: 2rem;
+				padding-top: 1rem;
+				border-top: 1px solid rgba(255, 255, 255, 0.12);
+				font-size: 0.78rem;
+			}
+
+			@media (max-width: 767.98px) {
+				.idea-header .navbar {
+					gap: 0.75rem;
+				}
+
+				.idea-nav-link {
+					display: none;
+				}
+
+				.idea-hero-content {
+					padding: 5rem 0;
+				}
+
+				.idea-heading-row {
+					align-items: start;
+					flex-direction: column;
+					gap: 0.8rem;
+				}
+
+				.idea-stat {
+					gap: 1.2rem;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<header class="idea-header">
+			<div class="container">
+				<nav class="navbar px-0" aria-label="Main navigation">
+					<a class="idea-logo" href="index-ideabox-style.html">
+						<img src="assets/img/branding/tnc.png" alt="TNC Store" />
+					</a>
+					<div class="d-none d-md-flex align-items-center ms-4">
+						<a class="idea-nav-link" href="index-ideabox-style.html">Trang chủ</a>
+						<a class="idea-nav-link" href="products.html">Sản phẩm</a>
+						<a class="idea-nav-link" href="buildpc.html">Build PC</a>
+						<a class="idea-nav-link" href="about.html">Về TNC</a>
+					</div>
+					<div class="d-flex align-items-center gap-3 ms-auto">
+						<a class="idea-action" href="index.html" title="Đăng nhập">
+							<i class="bi bi-person-circle me-1"></i>
+							<span class="d-none d-sm-inline">Tài khoản</span>
+						</a>
+						<a class="idea-action" href="cart.html" title="Giỏ hàng">
+							<i class="bi bi-cart3 me-1"></i>
+							<span class="d-none d-sm-inline">Giỏ hàng</span>
+							<b class="badge text-bg-success" data-idea-cart-count>0</b>
+						</a>
+					</div>
+				</nav>
+			</div>
+		</header>
+
+		<main>
+			<section class="idea-hero">
+				<div class="container">
+					<div class="idea-hero-content">
+						<p class="text-uppercase fw-bold small mb-3">TNC Store / Summer Drop</p>
+						<h1>Cấu hình tốt hơn cho những ý tưởng lớn.</h1>
+						<p>
+							Chọn thiết bị công nghệ phù hợp với cách bạn làm việc, sáng tạo và giải
+							trí mỗi ngày.
+						</p>
+						<a class="idea-button" href="products.html">
+							Khám phá sản phẩm
+							<i class="bi bi-arrow-right ms-2"></i>
+						</a>
+						<div class="idea-stat">
+							<div>
+								<strong>121+</strong>
+								<span>Sản phẩm</span>
+							</div>
+							<div>
+								<strong>24/7</strong>
+								<span>Tư vấn online</span>
+							</div>
+							<div>
+								<strong>1 đổi 1</strong>
+								<span>Đổi trả minh bạch</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="idea-section">
+				<div class="container">
+					<div class="idea-heading-row idea-heading">
+						<div>
+							<h2>Khám phá danh mục</h2>
+							<p>
+								Từ bộ PC đầu tiên đến góc máy hoàn chỉnh, bắt đầu từ thứ bạn cần
+								nhất.
+							</p>
+						</div>
+						<a class="idea-action" href="products.html">
+							Xem tất cả
+							<i class="bi bi-arrow-right"></i>
+						</a>
+					</div>
+					<div class="row g-3">
+						<div class="col-6 col-lg-3">
+							<a class="idea-category" href="products.html?category=pc">
+								<img
+									src="assets/img/banner/banner-back-to-school-pc-1.jpg"
+									alt="PC gaming"
+								/>
+								<span>PC Gaming</span>
+							</a>
+						</div>
+						<div class="col-6 col-lg-3">
+							<a class="idea-category" href="products.html?category=pc">
+								<img
+									src="assets/img/banner/banner-pc-ai-gigabyte-web-7.jpg"
+									alt="PC đồ họa AI"
+								/>
+								<span>PC Đồ họa AI</span>
+							</a>
+						</div>
+						<div class="col-6 col-lg-3">
+							<a class="idea-category" href="products.html?category=monitor">
+								<img
+									src="assets/img/banner/banner-build-pc-gigabyte-intel-pc.jpg"
+									alt="Màn hình"
+								/>
+								<span>Màn hình</span>
+							</a>
+						</div>
+						<div class="col-6 col-lg-3">
+							<a class="idea-category" href="products.html?category=gaming-gear">
+								<img
+									src="assets/img/banner/banner-razer-len-deal-gear-len-doi.png"
+									alt="Gaming gear"
+								/>
+								<span>Gaming Gear</span>
+							</a>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="idea-section idea-section-muted">
+				<div class="container">
+					<div class="idea-heading-row idea-heading">
+						<div>
+							<h2>Sản phẩm được yêu thích</h2>
+							<p>Những lựa chọn nổi bật cho góc máy của bạn trong tuần này.</p>
+						</div>
+						<a class="idea-action" href="products.html">
+							Xem cửa hàng
+							<i class="bi bi-arrow-right"></i>
+						</a>
+					</div>
+					<div class="row g-4">
+						<div class="col-sm-6 col-lg-3">
+							<article class="idea-product">
+								<div class="idea-product-image">
+									<i class="bi bi-keyboard"></i>
+								</div>
+								<div class="idea-product-body">
+									<small>TNC SELECT</small>
+									<h3>Bàn phím cơ Nova 75</h3>
+									<strong>1.890.000đ</strong>
+									<button class="idea-button w-100 mt-3" type="button">
+										Thêm vào giỏ
+									</button>
+								</div>
+							</article>
+						</div>
+						<div class="col-sm-6 col-lg-3">
+							<article class="idea-product">
+								<div class="idea-product-image">
+									<i class="bi bi-display"></i>
+								</div>
+								<div class="idea-product-body">
+									<small>VIEWSONIC</small>
+									<h3>Màn hình VX2718</h3>
+									<strong>4.290.000đ</strong>
+									<button class="idea-button w-100 mt-3" type="button">
+										Thêm vào giỏ
+									</button>
+								</div>
+							</article>
+						</div>
+						<div class="col-sm-6 col-lg-3">
+							<article class="idea-product">
+								<div class="idea-product-image">
+									<i class="bi bi-headset"></i>
+								</div>
+								<div class="idea-product-body">
+									<small>HYPERX</small>
+									<h3>Cloud III Wireless</h3>
+									<strong>2.390.000đ</strong>
+									<button class="idea-button w-100 mt-3" type="button">
+										Thêm vào giỏ
+									</button>
+								</div>
+							</article>
+						</div>
+						<div class="col-sm-6 col-lg-3">
+							<article class="idea-product">
+								<div class="idea-product-image">
+									<i class="bi bi-mouse3"></i>
+								</div>
+								<div class="idea-product-body">
+									<small>LOGITECH</small>
+									<h3>Chuột G Pro X Superlight</h3>
+									<strong>2.790.000đ</strong>
+									<button class="idea-button w-100 mt-3" type="button">
+										Thêm vào giỏ
+									</button>
+								</div>
+							</article>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="idea-section">
+				<div class="container">
+					<div class="idea-heading">
+						<h2>Mua sắm có lý do</h2>
+						<p>
+							Dịch vụ rõ ràng, tư vấn thật và trải nghiệm được thiết kế cho người dùng
+							công nghệ.
+						</p>
+					</div>
+					<div class="row g-3">
+						<div class="col-md-4">
+							<div class="idea-feature">
+								<i class="bi bi-shield-check"></i>
+								<h3>Hàng chính hãng</h3>
+								<p class="mb-0">Nguồn gốc minh bạch, chính sách đổi trả dễ hiểu.</p>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="idea-feature">
+								<i class="bi bi-truck"></i>
+								<h3>Giao hàng toàn quốc</h3>
+								<p class="mb-0">Đóng gói kỹ lưỡng và cập nhật đơn hàng rõ ràng.</p>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="idea-feature">
+								<i class="bi bi-headset"></i>
+								<h3>Tư vấn tận tâm</h3>
+								<p class="mb-0">
+									Có người đồng hành trước và sau khi bạn mua hàng.
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<footer class="idea-footer">
+			<div class="container">
+				<div class="row g-4">
+					<div class="col-lg-5">
+						<img
+							class="idea-logo mb-3"
+							src="assets/img/branding/tnc.png"
+							alt="TNC Store"
+						/>
+						<p>Thiết bị công nghệ chọn lọc cho những người luôn muốn làm tốt hơn.</p>
+					</div>
+					<div class="col-6 col-lg-2">
+						<h3>Khám phá</h3>
+						<a href="products.html">Sản phẩm</a>
+						<a href="buildpc.html">Build PC</a>
+						<a href="about.html">Về TNC</a>
+					</div>
+					<div class="col-6 col-lg-2">
+						<h3>Hỗ trợ</h3>
+						<a href="cart.html">Giỏ hàng</a>
+						<a href="checkout.html">Thanh toán</a>
+						<a href="contact.html">Liên hệ</a>
+					</div>
+					<div class="col-lg-3">
+						<h3>Nhận tin mới</h3>
+						<p>Ưu đãi mới và sản phẩm mới mỗi tuần.</p>
+						<form class="d-flex">
+							<input
+								class="form-control"
+								type="email"
+								placeholder="Email của bạn"
+								aria-label="Email của bạn"
+							/>
+							<button class="idea-button" type="submit">
+								<i class="bi bi-arrow-right"></i>
+							</button>
+						</form>
+					</div>
+				</div>
+				<div class="idea-footer-bottom">© 2026 TNC Store</div>
+			</div>
+		</footer>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+		<script src="js/cart.js"></script>
+		<script>
+			document.addEventListener("DOMContentLoaded", () => {
+				const counter = document.querySelector("[data-idea-cart-count]");
+				const updateCounter = () => {
+					const cart = JSON.parse(localStorage.getItem("tnc-cart") || "[]");
+					counter.textContent = cart.reduce((total, item) => total + item.quantity, 0);
+				};
+				updateCounter();
+			});
+		</script>
+	</body>
+</html>
