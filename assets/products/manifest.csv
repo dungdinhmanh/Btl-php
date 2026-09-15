@@ -1,0 +1,10 @@
+category,brand,model,file,source_url,verified_via
+vga,Gigabyte,RTX 4060 WINDFORCE OC,assets/products/vga/gigabyte-rtx-4060-windforce-oc.jpg,https://phucanhcdn.com/media/product/53378_gigabyte_rtx_4060_windforce_oc_8g_6.jpg,Google Images
+vga,ASUS,RTX 3060 Ti ROG STRIX OC,assets/products/vga/asus-rog-strix-rtx-3060-ti-oc.png,https://product.hstatic.net/1000333506/product/35601_1_11f7191fab694607bb7f8a2057304273__1__fa4a59f8effd438abd603d6829a3f91b_grande.png,Google Images -> Hotgear
+vga,Gigabyte,RTX 3060 Ti EAGLE OC,assets/products/vga/gigabyte-rtx-3060-ti-eagle-oc.jpg,https://phucanhcdn.com/media/product/50925_card_do_hoa_gigabyte_rtx_3060_ti_eagle_oc_d6x_8g_7.jpg,Google Images -> Phuc Anh
+vga,MSI,RTX 3070 VENTUS 3X OC,assets/products/vga/msi-rtx-3070-ventus-3x-oc.webp,https://storage-asset.msi.com/global/picture/product/product_7_20200929151934_5f72e006265fb.webp,Google Images -> MSI official
+vga,ASUS,RTX 3060 ROG STRIX OC (V2),assets/products/vga/asus-rtx-3060-rog-strix-oc.jpg,https://hanoicomputercdn.com/media/product/59847_card_man_hinh_asus_rog_strix_rtx_3060_o12g_v2_gaming_1.jpg,Google Images -> HACOM
+vga,ASUS,RTX 3090 TUF GAMING OC,assets/products/vga/asus-rtx-3090-tuf-gaming-oc.jpg,https://hanoicomputercdn.com/media/product/55637_card_man_hinh_asus_tuf_rtx3090_o24g_gaming_24gb_gdd6x_384_bit_hdmi_dp_2x8_pin_001.jpg,Google Images -> HACOM
+vga,MSI,RTX 3090 Ti GAMING X TRIO,assets/products/vga/msi-rtx-3090-ti-gaming-x-trio.webp,https://storage-asset.msi.com/global/picture/product/product_164854716082b355cd2352f13599779a0e83bf07f3.webp,MSI official
+vga,INNO3D,RTX 3080 TWIN X2 OC,assets/products/vga/inno3d-rtx-3080-twin-x2-oc.png,https://www.inno3d.com/sites/default/files/2024-01/Asset%201_5.png,INNO3D official product shot
+vga,INNO3D,RTX 4070 Ti X3 OC 12G,assets/products/vga/inno3d-rtx-4070-ti-x3.jpg,https://nguyencongpc.vn/media/product/24236-vg0000099vg0000099.jpg,Google Images -> NguyenCongPC
