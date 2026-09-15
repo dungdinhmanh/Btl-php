@@ -317,6 +317,7 @@ h3 {
 	display: -webkit-box;
 	overflow: hidden;
 	font-size: 0.95rem;
+	line-clamp: 2;
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: 2;
 }
