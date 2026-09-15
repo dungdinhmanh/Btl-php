@@ -108,6 +108,38 @@ function updateCartSummary(total) {
 	});
 }
 
+function renderCheckoutPage() {
+	const itemsContainer = document.querySelector("[data-checkout-items]");
+	if (!itemsContainer) return;
+
+	const cart = getCart();
+	const submitButton = document.querySelector("[data-checkout-submit]");
+	const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+	if (cart.length === 0) {
+		itemsContainer.innerHTML = '<p class="cart-meta">Giỏ hàng đang trống.</p>';
+		if (submitButton) submitButton.disabled = true;
+	} else {
+		itemsContainer.innerHTML = cart
+			.map(
+				(item) => `
+					<div class="mini-product">
+						<span>
+							<i class="${item.icon}"></i>
+							${item.name}
+							<b>× ${item.quantity}</b>
+						</span>
+						<strong>${formatPrice(item.price * item.quantity)}</strong>
+					</div>
+				`,
+			)
+			.join("");
+	}
+
+	if (submitButton && cart.length > 0) submitButton.disabled = false;
+	updateCartSummary(total);
+}
+
 document.addEventListener("click", (event) => {
 	const addButton = event.target.closest(".product-card button, .idea-product button");
 	if (addButton) {
@@ -143,4 +175,5 @@ document.addEventListener("click", (event) => {
 document.addEventListener("DOMContentLoaded", () => {
 	updateCartCount();
 	renderCartPage();
+	renderCheckoutPage();
 });
