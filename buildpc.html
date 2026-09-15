@@ -5,15 +5,18 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta
 			name="description"
-			content="Tự chọn linh kiện và xây dựng cấu hình PC phù hợp tại TNC Store." />
+			content="Tự chọn linh kiện và xây dựng cấu hình PC phù hợp tại TNC Store."
+		/>
 		<title>Build PC | TNC Store</title>
 		<link rel="stylesheet" href="css/style.css" />
 		<link
 			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-			rel="stylesheet" />
+			rel="stylesheet"
+		/>
 		<link
 			rel="stylesheet"
-			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+		/>
 	</head>
 	<body class="buildpc-body">
 		<header class="site-header">
@@ -29,43 +32,47 @@
 						data-bs-target="#storeNavigation"
 						aria-controls="storeNavigation"
 						aria-expanded="false"
-						aria-label="Toggle navigation">
+						aria-label="Toggle navigation"
+					>
 						<span class="navbar-toggler-icon"></span>
 					</button>
 					<div class="collapse navbar-collapse" id="storeNavigation">
-						<a
-							class="buildpc-nav-link mx-lg-4 my-3 my-lg-0"
-							href="products.html">
-							<i class="bi bi-box-seam me-2"></i>Sản phẩm
+						<a class="buildpc-nav-link mx-lg-4 my-3 my-lg-0" href="products.html">
+							<i class="bi bi-box-seam me-2"></i>
+							Sản phẩm
 						</a>
 						<form
 							class="search-form my-3 my-lg-0"
 							role="search"
 							action="products.html"
-							method="get">
-							<label class="visually-hidden" for="buildpc-search"
-								>Tìm kiếm sản phẩm</label
-							>
+							method="get"
+						>
+							<label class="visually-hidden" for="buildpc-search">
+								Tìm kiếm sản phẩm
+							</label>
 							<input
 								id="buildpc-search"
 								class="form-control"
 								type="search"
 								name="q"
 								placeholder="Bạn đang tìm gì?"
-								autocomplete="off" />
+								autocomplete="off"
+							/>
 							<button class="search-button" type="submit" aria-label="Tìm kiếm">
 								<i class="bi bi-search" aria-hidden="true"></i>
 							</button>
 						</form>
 						<div class="header-actions ms-lg-auto">
 							<a class="header-action" href="contact.html">
-								<i class="bi bi-headset" aria-hidden="true"></i
-								><span>Tư vấn</span>
+								<i class="bi bi-headset" aria-hidden="true"></i>
+								<span>Tư vấn</span>
 							</a>
 							<a class="header-action cart-action" href="cart.html">
-								<span class="cart-icon"
-									><i class="bi bi-cart3" aria-hidden="true"></i><b>0</b></span
-								><span>Giỏ hàng</span>
+								<span class="cart-icon">
+									<i class="bi bi-cart3" aria-hidden="true"></i>
+									<b>0</b>
+								</span>
+								<span>Giỏ hàng</span>
 							</a>
 						</div>
 					</div>
@@ -78,16 +85,23 @@
 				<div class="container">
 					<div class="buildpc-intro-copy">
 						<p class="eyebrow">TNC Build / Tự chọn linh kiện</p>
-						<h1>Xây cấu hình<br /><span>đúng nhu cầu.</span></h1>
+						<h1>
+							Xây cấu hình
+							<br />
+							<span>đúng nhu cầu.</span>
+						</h1>
 						<p>
-							Chọn từng linh kiện, theo dõi ngân sách và kiểm tra tương thích
-							ngay trong lúc build. Cấu hình của bạn sẽ được lưu trên trình
-							duyệt này.
+							Chọn từng linh kiện, theo dõi ngân sách và kiểm tra tương thích ngay
+							trong lúc build. Cấu hình của bạn sẽ được lưu trên trình duyệt này.
 						</p>
 					</div>
 					<div class="buildpc-intro-art" aria-hidden="true">
 						<i class="bi bi-cpu"></i>
-						<span>BUILD<br /><b>YOUR WAY</b></span>
+						<span>
+							BUILD
+							<br />
+							<b>YOUR WAY</b>
+						</span>
 					</div>
 				</div>
 			</section>
@@ -99,11 +113,9 @@
 							<p class="eyebrow">Bộ linh kiện</p>
 							<h2>Chọn phần cứng</h2>
 						</div>
-						<button
-							id="reset-build"
-							class="btn btn-outline-primary"
-							type="button">
-							<i class="bi bi-arrow-counterclockwise me-2"></i>Làm lại
+						<button id="reset-build" class="btn btn-outline-primary" type="button">
+							<i class="bi bi-arrow-counterclockwise me-2"></i>
+							Làm lại
 						</button>
 					</div>
 					<div class="row g-4 align-items-start">
@@ -125,19 +137,20 @@
 								</div>
 								<div id="summary-list" class="summary-list"></div>
 								<div class="summary-total">
-									<span>Tạm tính</span
-									><strong id="total-price">Chưa có dữ liệu</strong>
+									<span>Tạm tính</span>
+									<strong id="total-price">Chưa có dữ liệu</strong>
 								</div>
 								<button
 									id="consult-build"
 									class="btn btn-primary w-100"
-									type="button">
-									<i class="bi bi-chat-square-text me-2"></i>Nhận tư vấn cấu
-									hình
+									type="button"
+								>
+									<i class="bi bi-chat-square-text me-2"></i>
+									Nhận tư vấn cấu hình
 								</button>
 								<p class="build-summary-note">
-									TNC sẽ kiểm tra lại nguồn, socket và khả năng nâng cấp trước
-									khi chốt đơn.
+									TNC sẽ kiểm tra lại nguồn, socket và khả năng nâng cấp trước khi
+									chốt đơn.
 								</p>
 							</div>
 						</aside>
@@ -153,8 +166,8 @@
 								<i class="bi bi-shield-check"></i>
 								<h3>Tương thích rõ ràng</h3>
 								<p>
-									Socket CPU, loại RAM và công suất nguồn được kiểm tra trong
-									lúc chọn.
+									Socket CPU, loại RAM và công suất nguồn được kiểm tra trong lúc
+									chọn.
 								</p>
 							</div>
 						</div>
@@ -173,8 +186,7 @@
 								<i class="bi bi-person-check"></i>
 								<h3>Có người kiểm tra</h3>
 								<p>
-									Gửi cấu hình cho đội ngũ TNC để được rà soát trước khi đặt
-									hàng.
+									Gửi cấu hình cho đội ngũ TNC để được rà soát trước khi đặt hàng.
 								</p>
 							</div>
 						</div>
@@ -192,7 +204,8 @@
 							type="button"
 							class="btn-close"
 							data-bs-dismiss="modal"
-							aria-label="Đóng"></button>
+							aria-label="Đóng"
+						></button>
 					</div>
 					<div class="modal-body pt-0">
 						<p class="build-modal-copy">
@@ -204,16 +217,16 @@
 								id="consult-name"
 								class="form-control mb-3"
 								type="text"
-								required />
+								required
+							/>
 							<label for="consult-phone">Số điện thoại</label>
 							<input
 								id="consult-phone"
 								class="form-control mb-3"
 								type="tel"
-								required />
-							<button class="btn btn-primary w-100" type="submit">
-								Gửi yêu cầu
-							</button>
+								required
+							/>
+							<button class="btn btn-primary w-100" type="submit">Gửi yêu cầu</button>
 						</form>
 						<p id="consult-success" class="consult-success" hidden>
 							Đã ghi nhận cấu hình. TNC sẽ liên hệ sớm với bạn.
@@ -223,11 +236,7 @@
 			</div>
 		</div>
 
-		<div
-			class="modal fade"
-			id="partPickerModal"
-			tabindex="-1"
-			aria-hidden="true">
+		<div class="modal fade" id="partPickerModal" tabindex="-1" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered modal-lg">
 				<div class="modal-content part-picker-modal">
 					<div class="modal-header">
@@ -239,7 +248,8 @@
 							type="button"
 							class="btn-close"
 							data-bs-dismiss="modal"
-							aria-label="Đóng"></button>
+							aria-label="Đóng"
+						></button>
 					</div>
 					<div class="modal-body">
 						<div class="part-picker-toolbar">
@@ -249,12 +259,14 @@
 									id="part-search"
 									type="search"
 									placeholder="Tìm theo tên, thương hiệu..."
-									autocomplete="off" />
+									autocomplete="off"
+								/>
 							</label>
 							<select
 								id="part-brand-filter"
 								class="form-select"
-								aria-label="Lọc theo thương hiệu">
+								aria-label="Lọc theo thương hiệu"
+							>
 								<option value="">Tất cả thương hiệu</option>
 							</select>
 						</div>
@@ -263,8 +275,7 @@
 								<i class="bi bi-database-exclamation"></i>
 								<strong>Chưa có dữ liệu sản phẩm</strong>
 								<p>
-									Kết quả từ database sẽ xuất hiện ở đây khi backend được kết
-									nối.
+									Kết quả từ database sẽ xuất hiện ở đây khi backend được kết nối.
 								</p>
 							</div>
 						</div>
@@ -274,6 +285,7 @@
 		</div>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 		<script src="js/buildpc.js"></script>
+		<script src="js/cart.js"></script>
 		<footer class="site-footer">
 			<div class="container">
 				<div class="row g-4">
@@ -281,9 +293,7 @@
 						<a class="logo" href="index.html">
 							<img src="assets/img/branding/tnc.png" alt="TNC Store" />
 						</a>
-						<p>
-							Thiết bị công nghệ chọn lọc cho những người luôn muốn làm tốt hơn.
-						</p>
+						<p>Thiết bị công nghệ chọn lọc cho những người luôn muốn làm tốt hơn.</p>
 					</div>
 					<div class="col-6 col-lg-2">
 						<h3>Khám phá</h3>
@@ -304,7 +314,8 @@
 							<input
 								type="email"
 								placeholder="Email của bạn"
-								aria-label="Email của bạn" />
+								aria-label="Email của bạn"
+							/>
 							<button type="submit" aria-label="Subscribe">
 								<i class="bi bi-arrow-right"></i>
 							</button>
@@ -312,7 +323,8 @@
 					</div>
 				</div>
 				<div class="footer-bottom">
-					© 2026 TNC Store <a href="admin.html">Quản trị viên</a>
+					© 2026 TNC Store
+					<a href="admin.html">Quản trị viên</a>
 				</div>
 			</div>
 		</footer>

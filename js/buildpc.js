@@ -76,21 +76,15 @@ function renderComponents() {
 		.join("");
 
 	componentList.querySelectorAll("[data-component-key]").forEach((button) => {
-		button.addEventListener("click", () =>
-			openPartPicker(button.dataset.componentKey),
-		);
+		button.addEventListener("click", () => openPartPicker(button.dataset.componentKey));
 	});
 }
 
 function renderSummary() {
-	const selectedComponents = componentTypes.filter(
-		(component) => selections[component.key],
-	);
+	const selectedComponents = componentTypes.filter((component) => selections[component.key]);
 	selectedCount.textContent = `${selectedComponents.length}/8`;
 	summaryTitle.textContent =
-		selectedComponents.length === 8
-			? "Sẵn sàng để kiểm tra"
-			: "Chưa hoàn thiện";
+		selectedComponents.length === 8 ? "Sẵn sàng để kiểm tra" : "Chưa hoàn thiện";
 	summaryList.innerHTML = selectedComponents.length
 		? selectedComponents
 				.map(
@@ -131,9 +125,7 @@ document.querySelector("#reset-build").addEventListener("click", () => {
 	renderSummary();
 });
 document.querySelector("#consult-build").addEventListener("click", () => {
-	bootstrap.Modal.getOrCreateInstance(
-		document.querySelector("#consultModal"),
-	).show();
+	bootstrap.Modal.getOrCreateInstance(document.querySelector("#consultModal")).show();
 });
 document.querySelector("#consult-form").addEventListener("submit", (event) => {
 	event.preventDefault();
