@@ -11,15 +11,10 @@ body {
 	background: #fff;
 }
 
-h1,
-h2,
-h3,
-p {
+h1, h2, h3, p {
 	margin-top: 0;
 }
-h1,
-h2,
-h3 {
+h1, h2, h3 {
 	letter-spacing: -0.03em;
 }
 .btn-primary {
@@ -203,10 +198,6 @@ h3 {
 	color: var(--header-accent);
 }
 
-.promo-carousel-section {
-	overflow: hidden;
-	background: var(--header-accent);
-}
 .promo-slide {
 	min-height: 500px;
 	color: #fff;
@@ -217,155 +208,9 @@ h3 {
 	min-height: 500px;
 	align-items: center;
 }
-.promo-sale {
-	background: linear-gradient(110deg, #29334f 0%, #344263 58%, #43547c 100%);
-}
-.promo-build {
-	background: linear-gradient(110deg, #1e283f 0%, #29334f 58%, #596582 100%);
-}
-.promo-service {
-	background: linear-gradient(110deg, #344263 0%, #29334f 58%, #1e283f 100%);
-}
-.promo-content {
-	position: relative;
-	z-index: 2;
-	width: min(60%, 620px);
-	padding: 5rem 0;
-}
-.promo-content .eyebrow {
-	color: #b9c4dc;
-}
-.promo-content h1 {
-	margin-bottom: 1.25rem;
-	font-size: clamp(2.7rem, 5vw, 5.25rem);
-	line-height: 0.98;
-}
-.promo-content h1 span {
-	color: #b9c7e6;
-}
-.promo-content p:not(.eyebrow) {
-	max-width: 470px;
-	margin-bottom: 2rem;
-	color: #d8deec;
-	font-size: 1.05rem;
-	line-height: 1.7;
-}
-.promo-content .btn-light {
-	color: var(--header-accent);
-	font-weight: 700;
-}
-.promo-art {
-	position: absolute;
-	right: 5%;
-	display: grid;
-	width: 370px;
-	height: 370px;
-	place-items: center;
-	border: 1px solid rgba(255, 255, 255, 0.22);
-	border-radius: 50%;
-	background: radial-gradient(
-		circle,
-		rgba(180, 194, 229, 0.27),
-		transparent 62%
-	);
-	transform: rotate(-8deg);
-}
-.promo-art:before,
-.promo-art:after {
-	position: absolute;
-	border: 1px solid rgba(255, 255, 255, 0.2);
-	border-radius: 50%;
-	content: "";
-}
-.promo-art:before {
-	inset: 12%;
-}
-.promo-art:after {
-	inset: 25%;
-}
-.promo-art > i {
-	position: absolute;
-	z-index: 1;
-	display: grid;
-	width: 65px;
-	height: 65px;
-	place-items: center;
-	border: 1px solid rgba(255, 255, 255, 0.25);
-	border-radius: 50%;
-	background: #3e4d72;
-	color: #fff;
-	font-size: 1.8rem;
-}
-.promo-art > i:first-of-type {
-	top: 9%;
-	left: 12%;
-}
-.promo-art > i:nth-of-type(2) {
-	right: 9%;
-	bottom: 20%;
-}
-.promo-art > i:nth-of-type(3) {
-	bottom: 8%;
-	left: 20%;
-}
-.promo-discount {
-	z-index: 2;
-	color: #fff;
-	font-size: 5rem;
-	font-weight: 900;
-	letter-spacing: -0.08em;
-	transform: rotate(8deg);
-}
-.promo-discount small {
-	color: #b9c7e6;
-	font-size: 2.5rem;
-	letter-spacing: 0;
-}
-.promo-art-pc {
-	transform: rotate(5deg);
-}
-.promo-art-pc > i {
-	position: static;
-	width: auto;
-	height: auto;
-	border: 0;
-	background: transparent;
-	font-size: 8rem;
-}
-.promo-art-pc span,
-.promo-art-service span {
-	position: absolute;
-	z-index: 2;
-	color: #aebbd9;
-	font-size: 0.72rem;
-	font-weight: 700;
-	letter-spacing: 0.25em;
-	line-height: 1.7;
-	text-align: center;
-	transform: rotate(-5deg);
-}
-.promo-art-pc b,
-.promo-art-service b {
-	color: #fff;
-	font-size: 1.1rem;
-}
-.promo-art-service {
-	transform: rotate(-5deg);
-}
-.promo-art-service > i {
-	position: static;
-	margin: 0.3rem;
-	border: 0;
-	background: transparent;
-	font-size: 3.5rem;
-}
-.promo-art-service span {
-	bottom: 22%;
-	transform: rotate(5deg);
-}
 .promo-carousel-section .carousel-indicators {
 	z-index: 3;
-	justify-content: flex-start;
+	justify-content: center;
 	width: min(100% - 2rem, 1140px);
 	margin-right: auto;
 	margin-bottom: 1.5rem;
