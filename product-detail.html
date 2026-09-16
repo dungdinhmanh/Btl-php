@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết sản phẩm - TNC Store</title>
+    <!-- Nhúng Bootstrap 5 và Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+
+    <!-- Thanh điều hướng cơ bản -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">TNC STORE</a>
+            <a href="cart.html" class="text-white text-decoration-none"><i class="bi bi-cart-fill fs-5"></i> Giỏ hàng</a>
+        </div>
+    </nav>
+
+    <!-- Nội dung chi tiết sản phẩm -->
+    <div class="container my-5">
+        <div class="row bg-white p-4 shadow-sm rounded">
+            <!-- Cột ảnh sản phẩm -->
+            <div class="col-md-6 mb-4 mb-md-0">
+                <img src="https://via.placeholder.com/500x400" alt="Sản phẩm" class="img-fluid rounded border w-100" style="object-fit: cover;">
+            </div>
+
+            <!-- Cột thông tin sản phẩm -->
+            <div class="col-md-6">
+                <h2 class="fw-bold mb-3">Bàn phím cơ Nova 75 Wireless</h2>
+                <p class="text-muted">Mã sản phẩm: <span class="text-dark fw-semibold">SP0128</span></p>
+                
+                <h3 class="text-danger fw-bold mb-3">1.890.000 đ</h3>
+                
+                <p class="text-secondary mb-4">
+                    Bàn phím cơ không dây cao cấp, thiết kế ergonomic, switch phím êm ái, hỗ trợ đèn LED RGB rực rỡ và thời lượng pin cực trâu, phù hợp cho cả game thủ lẫn lập trình viên.
+                </p>
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Số lượng:</label>
+                    <div class="input-group" style="width: 140px;">
+                        <button class="btn btn-outline-secondary" type="button" onclick="giamSoLuong()">-</button>
+                        <input type="text" id="soluong" class="form-control text-center" value="1" readonly>
+                        <button class="btn btn-outline-secondary" type="button" onclick="tangSoLuong()">+</button>
+                    </div>
+                </div>
+                <div class="d-grid gap-2 d-md-flex">
+                    <a href="cart.html" class="btn btn-primary flex-fill py-2">
+                        <i class="bi bi-cart-plus me-2"></i> Thêm vào giỏ hàng
+                    </a>
+                    <a href="checkout.html" class="btn btn-danger flex-fill py-2">
+                        Mua ngay
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function tangSoLuong() {
+            var input = document.getElementById('soluong');
+            input.value = parseInt(input.value) + 1;
+        }
+        function giamSoLuong() {
+            var input = document.getElementById('soluong');
+            var val = parseInt(input.value);
+            if (val > 1) {
+                input.value = val - 1;
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
