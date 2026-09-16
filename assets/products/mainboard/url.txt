@@ -112,3 +112,27 @@ https://storage-asset.msi.com/global/picture/product/product_172845221194f4b8027
     out=msi-mpg-z890-carbon-wifi-2.webp
 https://storage-asset.msi.com/global/picture/product/product_172845220960631f5fd558bf6201e0010405a8bf5b.webp
     out=msi-mpg-z890-carbon-wifi-3.webp
+https://storage-asset.msi.com/global/picture/product/product_17284665960a37d8aa4dfbe5963cacda0c0f84dd4d.webp
+    out=msi-mag-z890-tomahawk-wifi-1.webp
+https://storage-asset.msi.com/global/picture/product/product_17284665990a6d7699a7742c91810911c66cc803e7.webp
+    out=msi-mag-z890-tomahawk-wifi-2.webp
+https://storage-asset.msi.com/global/picture/product/product_1728466599887e5893d463035af3a2d2fde81c9fb4.webp
+    out=msi-mag-z890-tomahawk-wifi-3.webp
+https://storage-asset.msi.com/global/picture/product/product_17283793207812587c4bd074214a3a8290a0cad9f1.webp
+    out=msi-pro-z890-p-wifi-1.webp
+https://storage-asset.msi.com/global/picture/product/product_17283793225274a35266992dc434143f034a5e73a9.webp
+    out=msi-pro-z890-p-wifi-2.webp
+https://storage-asset.msi.com/global/picture/product/product_17283793206e34fe8ee6f6920a7209938427697db8.webp
+    out=msi-pro-z890-p-wifi-3.webp
+https://storage-asset.msi.com/global/picture/product/product_17325902886dad282b84b19a9aed152ef9794764f9.webp
+    out=msi-meg-z890-godlike-1.webp
+https://storage-asset.msi.com/global/picture/product/product_17325902908715bd990908e0a6dfdc7b7d45e72a78.webp
+    out=msi-meg-z890-godlike-2.webp
+https://storage-asset.msi.com/global/picture/product/product_173259028760dadbf9fcd79ccc0dd70e9e4d511825.webp
+    out=msi-meg-z890-godlike-3.webp
+https://storage-asset.msi.com/global/picture/product/product_1731051450a3d7e06d2319f1c9fcd83d58160247e3.webp
+    out=msi-meg-z870e-godlike-1.webp
+https://storage-asset.msi.com/global/picture/product/product_1731051452424f63f782ed6ee14409671290110b4f.webp
+    out=msi-meg-z870e-godlike-2.webp
+https://storage-asset.msi.com/global/picture/product/product_1731051450ac5edc06ffed1827829d47a08abe8258.webp
+    out=msi-meg-z870e-godlike-3.webp
