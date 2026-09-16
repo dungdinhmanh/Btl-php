@@ -46,7 +46,7 @@
 								<h2>Thông tin giao hàng</h2>
 								<div class="row g-3">
 									<div class="col-md-6">
-										<label for="customer-name">Họ và tên</label>
+										<label for="customer-name">Họ và tên *</label>
 										<input
 											id="customer-name"
 											class="form-control"
@@ -57,7 +57,7 @@
 										/>
 									</div>
 									<div class="col-md-6">
-										<label for="customer-phone">Số điện thoại</label>
+										<label for="customer-phone">Số điện thoại *</label>
 										<input
 											id="customer-phone"
 											class="form-control"
@@ -77,7 +77,7 @@
 										/>
 									</div>
 									<div class="col-12">
-										<label for="customer-address">Địa chỉ nhận hàng</label>
+										<label for="customer-address">Địa chỉ nhận hàng *</label>
 										<input
 											id="customer-address"
 											class="form-control"
@@ -106,6 +106,7 @@
 									</div>
 								</div>
 								<h2 class="mt-5">Phương thức thanh toán</h2>
+							<div class="payment-options">
 								<label class="payment-option">
 									<input type="radio" name="payment" checked />
 									<span>
@@ -122,6 +123,15 @@
 									</span>
 									<i class="bi bi-bank"></i>
 								</label>
+								<label class="payment-option">
+									<input type="radio" name="payment" />
+									<span>
+										<strong>Ví điện tử MoMo</strong>
+										<small>Thanh toán nhanh qua QR code MoMo</small>
+									</span>
+									<i class="bi bi-wallet2"></i>
+								</label>
+							</div>
 							</form>
 						</div>
 						<div class="col-lg-5">
@@ -131,15 +141,15 @@
 								<hr />
 								<div>
 									<span>Tạm tính</span>
-									<strong>4.280.000đ</strong>
-								</div>
-								<div>
-									<span>Vận chuyển</span>
-									<span>Miễn phí</span>
-								</div>
-								<div class="summary-total">
-									<span>Tổng cộng</span>
-									<strong>4.280.000đ</strong>
+								<strong data-cart-subtotal>0đ</strong>
+							</div>
+							<div>
+								<span>Vận chuyển</span>
+								<span>Miễn phí</span>
+							</div>
+							<div class="summary-total">
+								<span>Tổng cộng</span>
+								<strong data-cart-total>0đ</strong>
 								</div>
 								<button
 									class="btn btn-primary w-100 mt-4"
@@ -158,6 +168,55 @@
 		</main>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 		<script src="js/cart.js"></script>
+		<script>
+			(function () {
+				var form = document.getElementById("checkoutForm");
+				var submitBtn = document.querySelector("[data-checkout-submit]");
+				if (!form || !submitBtn) return;
+
+				var requiredIds = ["customer-name", "customer-phone", "customer-address"];
+
+				function markInvalid(field) {
+					field.classList.add("is-invalid");
+					field.classList.remove("shake");
+					// force reflow so the animation can replay
+					void field.offsetWidth;
+					field.classList.add("shake");
+				}
+
+				function clearInvalid(field) {
+					field.classList.remove("is-invalid", "shake");
+				}
+
+				submitBtn.addEventListener("click", function (e) {
+					e.preventDefault();
+					var firstInvalid = null;
+					requiredIds.forEach(function (id) {
+						var field = document.getElementById(id);
+						if (!field) return;
+						if (!field.value.trim()) {
+							markInvalid(field);
+							if (!firstInvalid) firstInvalid = field;
+						} else {
+							clearInvalid(field);
+						}
+					});
+					if (firstInvalid) {
+						firstInvalid.focus();
+						return;
+					}
+					form.submit();
+				});
+
+				requiredIds.forEach(function (id) {
+					var field = document.getElementById(id);
+					if (!field) return;
+					field.addEventListener("input", function () {
+						if (field.value.trim()) clearInvalid(field);
+					});
+				});
+			})();
+		</script>
 		<footer class="site-footer">
 			<div class="container">
 				<div class="row g-4">

@@ -17,106 +17,149 @@
 	<body>
 		<header class="site-header">
 			<div class="container">
-				<nav class="navbar navbar-expand-lg py-3">
-					<a class="navbar-brand logo" href="index.html">
+				<nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
+					<a class="navbar-brand logo" href="index.html" aria-label="TNC Store home">
 						<img src="assets/img/branding/tnc.png" alt="TNC Store" />
 					</a>
-					<a class="header-action ms-auto" href="contact.html">
-						<i class="bi bi-chat-left-text"></i>
-						<span>Liên hệ với chúng tôi</span>
-					</a>
+					<button
+						class="navbar-toggler"
+						type="button"
+						data-bs-toggle="collapse"
+						data-bs-target="#storeNavigation"
+						aria-controls="storeNavigation"
+						aria-expanded="false"
+						aria-label="Toggle navigation"
+					>
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="collapse navbar-collapse" id="storeNavigation">
+						<div class="dropdown category-dropdown my-3 my-lg-0">
+							<button
+								class="category-toggle dropdown-toggle"
+								type="button"
+								data-bs-toggle="dropdown"
+								aria-expanded="false"
+							>
+								<i class="bi bi-grid-3x3-gap me-2"></i>
+								Danh mục
+							</button>
+							<ul class="dropdown-menu">
+								<li>
+									<a class="dropdown-item" href="buildpc.html">Build PC</a>
+								</li>
+								<li>
+									<a class="dropdown-item" href="products.html?category=pc">
+										PC & Linh kiện
+									</a>
+								</li>
+								<li>
+									<a class="dropdown-item" href="products.html?category=keyboard">
+										Bàn phím
+									</a>
+								</li>
+								<li>
+									<a class="dropdown-item" href="products.html?category=monitor">
+										Màn hình
+									</a>
+								</li>
+								<li>
+									<a
+										class="dropdown-item"
+										href="products.html?category=gaming-gear"
+									>
+										Gaming gear
+									</a>
+								</li>
+							</ul>
+						</div>
+						<form
+							class="search-form mx-lg-4 my-3 my-lg-0"
+							role="search"
+							action="products.html"
+							method="get"
+						>
+							<label class="visually-hidden" for="site-search">Search products</label>
+							<input
+								id="site-search"
+								class="form-control"
+								type="search"
+								name="q"
+								placeholder="Bạn đang tìm gì?"
+								autocomplete="off"
+							/>
+							<button class="search-button" type="submit" aria-label="Search">
+								<i class="bi bi-search" aria-hidden="true"></i>
+							</button>
+						</form>
+						<div class="header-actions ms-lg-auto">
+							<a class="header-action header-button" href="login.html">
+								<i class="bi bi-person-circle" aria-hidden="true"></i>
+								<span>Đăng nhập</span>
+							</a>
+							<a class="header-action cart-action" href="cart.html">
+								<span class="cart-icon">
+									<i class="bi bi-cart3" aria-hidden="true"></i>
+									<b>0</b>
+								</span>
+								<span>Giỏ hàng</span>
+							</a>
+						</div>
+					</div>
 				</nav>
 			</div>
 		</header>
 		<main>
-			<section class="about-hero">
+			<section class="page-intro">
 				<div class="container">
-					<p class="eyebrow">Câu chuyện TNC</p>
+					<p class="eyebrow">TNC Store / Về chúng tôi</p>
 					<h1>
-						Công nghệ tốt hơn,
+						Thương hiệu dành cho
 						<br />
-						<span>ngày thường tốt hơn.</span>
+						<span>những người yêu công nghệ.</span>
 					</h1>
-					<p>
-						Chúng tôi tin rằng một thiết bị đúng có thể làm thay đổi cách bạn học, làm
-						việc và chơi mỗi ngày.
-					</p>
 				</div>
 			</section>
 			<section class="section-space">
 				<div class="container">
-					<div class="row g-5 align-items-center">
-						<div class="col-lg-6">
-							<p class="eyebrow">Từ một góc nhỏ</p>
-							<h2>
-								Chọn kỹ hơn.
-								<br />
-								Dùng lâu hơn.
-							</h2>
-							<p class="lead-copy">
-								TNC Store bắt đầu từ niềm yêu thích những setup chỉn chu. Chúng tôi
-								tìm kiếm sản phẩm có trải nghiệm tốt, nguồn gốc rõ ràng và mức giá
-								hợp lý để bạn không cần lãng phí thời gian giữa hàng ngàn lựa chọn.
-							</p>
-							<p class="lead-copy">
-								Từ bàn phím đầu tiên tới một bộ máy hoàn chỉnh, đội ngũ TNC luôn ở
-								đây để cùng bạn xây dựng không gian phù hợp nhất.
-							</p>
-						</div>
-						<div class="col-lg-5 offset-lg-1">
-							<div class="about-stat-grid">
-								<div>
-									<strong>08</strong>
-									<span>Năm đồng hành</span>
-								</div>
-								<div>
-									<strong>50k+</strong>
-									<span>Khách hàng</span>
-								</div>
-								<div>
-									<strong>2k+</strong>
-									<span>Sản phẩm</span>
-								</div>
-								<div>
-									<strong>4.9/5</strong>
-									<span>Đánh giá</span>
-								</div>
-							</div>
-						</div>
-					</div>
+					<figure class="about-figure">
+						<img
+							src="assets/img/about.jpg"
+							alt="Mặt tiền cửa hàng TNC Store"
+							loading="lazy"
+						/>
+						<figcaption>Mặt tiền showroom TNC Store</figcaption>
+					</figure>
 				</div>
 			</section>
-			<section class="section-space section-muted">
-				<div class="container">
-					<div class="section-heading">
-						<div>
-							<p class="eyebrow">Điều chúng tôi theo đuổi</p>
-							<h2>Giá trị không nằm trên nhãn giá</h2>
-						</div>
-					</div>
-					<div class="row g-4">
-						<div class="col-md-4">
-							<div class="value-block">
-								<i class="bi bi-search"></i>
-								<h3>Tuyển chọn kỹ</h3>
-								<p>Thông số rõ ràng, trải nghiệm thật và nhà cung cấp đáng tin.</p>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="value-block">
-								<i class="bi bi-people"></i>
-								<h3>Tư vấn thật</h3>
-								<p>Không đẩy bạn tới món đắt nhất, chỉ tìm món hợp nhất.</p>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="value-block">
-								<i class="bi bi-recycle"></i>
-								<h3>Dùng bền lâu</h3>
-								<p>Hỗ trợ sau mua và chính sách minh bạch trong từng đơn hàng.</p>
-							</div>
-						</div>
-					</div>
+			<section class="section-space">
+				<div class="container about-story">
+					<p>
+						Công ty TNHH Thương mại & Tin học Tú Nguyệt (TNC) được thành lập vào ngày
+						09/04/2004, bắt đầu với quy mô chỉ 6 nhân viên chủ chốt. Sau hơn 19 năm hoạt
+						động, TNC đã phát triển thành đội ngũ gần 100 nhân viên và cộng tác viên đa
+						dạng, đồng hành cùng giới trẻ Việt Nam trên hành trình công nghệ.
+					</p>
+					<p>
+						TNC Store kinh doanh các sản phẩm chủ lực trong lĩnh vực bán lẻ máy tính,
+						thiết bị văn phòng, PC chơi game, linh kiện máy tính và gaming gear. Trải qua
+						chặng đường gần 20 năm, chúng tôi đã trở thành một trong những thương hiệu
+						hàng đầu trong lĩnh vực công nghệ thông tin tại Việt Nam, mang đến cho giới
+						trẻ nhiều giải pháp build PC chất lượng với mức giá tối ưu nhất.
+					</p>
+					<p>
+						Sứ mệnh của TNC là đem đến những sản phẩm máy tính văn phòng, PC Gaming,
+						Laptop Gaming, Gaming Gear chất lượng cao cùng dịch vụ chăm sóc khách hàng
+						chuyên nghiệp nhất. Chúng tôi tự hào là đối tác tin cậy của các doanh nghiệp
+						và hãng công nghệ hàng đầu như Acer, Asus, LG, Gigabyte, MSI, HP, Dell,
+						Nvidia..., đồng thời là điểm đến của sinh viên, giới trẻ và những người yêu
+						công nghệ trên khắp cả nước.
+					</p>
+					<p>
+						Mục tiêu của TNC Store là trở thành chuỗi cửa hàng bán lẻ thiết bị máy tính
+						cao cấp trải dài khắp Việt Nam, với tinh thần
+						<strong>TẬN TÂM - TRÁCH NHIỆM - SÁNG TẠO - KHÁC BIỆT</strong> trong từng
+						trải nghiệm mua sắm.
+					</p>
 				</div>
 			</section>
 		</main>
@@ -138,23 +181,17 @@
 					</div>
 					<div class="col-6 col-lg-2">
 						<h3>Hỗ trợ</h3>
+						<a href="buildpc.html">Build PC</a>
 						<a href="cart.html">Giỏ hàng</a>
-						<a href="payment.html">Thanh toán</a>
-						<a href="404.html">Tra cứu đơn</a>
+						<a href="login.html">Tài khoản</a>
 					</div>
 					<div class="col-lg-3">
-						<h3>Đăng ký nhận tin</h3>
-						<p>Ưu đãi mới, cập nhật sản phẩm mới mỗi tuần.</p>
-						<form class="newsletter">
-							<input
-								type="email"
-								placeholder="Email của bạn"
-								aria-label="Email của bạn"
-							/>
-							<button type="submit" aria-label="Subscribe">
-								<i class="bi bi-arrow-right"></i>
-							</button>
-						</form>
+						<h3>Kết nối</h3>
+						<div class="footer-social">
+							<a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+							<a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+							<a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+						</div>
 					</div>
 				</div>
 				<div class="footer-bottom">
