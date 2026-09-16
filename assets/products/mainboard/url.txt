@@ -1,0 +1,6 @@
+https://dlcdnwebimgs.asus.com/gain/dd0c089c-f1c5-45e6-9bcb-b64899e44aff//fwebp
+out=asus-tuf-gaming-b760m-plus-wifi-1.webp
+https://dlcdnwebimgs.asus.com/gain/ea83316c-56d9-4dd5-aebe-3d1b4ee67b92//fwebp
+out=asus-tuf-gaming-b760m-plus-wifi-2.webp
+https://dlcdnwebimgs.asus.com/gain/1404664a-c97e-469b-a6ea-822d3ecdf189//fwebp
+out=asus-tuf-gaming-b760m-plus-wifi-3.webp

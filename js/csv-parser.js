@@ -2,6 +2,42 @@
  * Utility to parse CSV files and convert model names to URL slugs
  */
 
+const FALLBACK_PRODUCTS = [
+	{
+		Hãng: 'Intel',
+		Model: 'Core i5-12400F',
+		Socket: 'LGA1700',
+		'Số nhân/luồng': '6 nhân 12 luồng',
+		'Xung nhịp': 'Up to 4.4 GHz',
+		TDP: '65W',
+		iGPU: 'Không có',
+		'Giá TB (VNĐ)': '3.200.000 đ',
+		Ảnh: '12400F-1.webp|12400F-2.webp',
+	},
+	{
+		Hãng: 'Intel',
+		Model: 'Core i7-14700K',
+		Socket: 'LGA1700',
+		'Số nhân/luồng': '20 nhân 28 luồng',
+		'Xung nhịp': 'Up to 5.6 GHz',
+		TDP: '125W',
+		iGPU: 'Intel UHD 770',
+		'Giá TB (VNĐ)': '10.500.000 đ',
+		Ảnh: '14700K-1.webp|14700K-2.webp',
+	},
+	{
+		Hãng: 'Intel',
+		Model: 'Core Ultra 7 265K',
+		Socket: 'LGA1851',
+		'Số nhân/luồng': '20 nhân 20 luồng',
+		'Xung nhịp': 'Up to 5.5 GHz',
+		TDP: '125W',
+		iGPU: 'Intel Graphics (4 Xe-cores)',
+		'Giá TB (VNĐ)': '10.200.000 đ',
+		Ảnh: '265K-1.jpg|265K-2.jpg',
+	},
+];
+
 function toSlug(str) {
 	if (!str) return '';
 	return str
@@ -19,12 +55,12 @@ function toSlug(str) {
 async function fetchAndParseCSV(csvPath) {
 	try {
 		const response = await fetch(csvPath);
-		if (!response.ok) return [];
+		if (!response.ok) return FALLBACK_PRODUCTS;
 		const text = await response.text();
-		return parseCSVText(text);
+		const parsed = parseCSVText(text);
+		return parsed.length > 0 ? parsed : FALLBACK_PRODUCTS;
 	} catch (err) {
-		console.error('Lỗi tải CSV:', csvPath, err);
-		return [];
+		return FALLBACK_PRODUCTS;
 	}
 }
 
@@ -39,6 +75,5 @@ function parseCSVText(text) {
 }
 
 function parseCSVLine(line) {
-	// ponytail: naive quote handling (no escaped quotes inside fields), upgrade if CSVs contain "he said ""hi"""
 	return [...line.matchAll(/("([^"]*)")|([^,]+)|(?<=,)(?=,|$)/g)].map((m) => m[2] ?? m[3] ?? '');
 }

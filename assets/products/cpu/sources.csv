@@ -1,0 +1,48 @@
+Hãng,Model,Socket,Số nhân/luồng,Xung nhịp,TDP,iGPU,Giá TB (VNĐ),Ảnh
+Intel,Core i3-12100F,LGA1700,4 nhân 8 luồng,Up to 4.3 GHz,58W,Không có,2.300.000 đ,12100F-1.jpg|12100F-2.webp
+Intel,Core i5-12400F,LGA1700,6 nhân 12 luồng,Up to 4.4 GHz,65W,Không có,3.200.000 đ,12400F-1.webp|12400F-2.webp
+Intel,Core i7-12700KF,LGA1700,12 nhân 20 luồng,Up to 5.0 GHz,125W,Không có,6.500.000 đ,12700KF-1.jpg|12700KF-2.webp
+Intel,Core i9-12900K,LGA1700,16 nhân 24 luồng,Up to 5.2 GHz,125W,Intel UHD 770,10.200.000 đ,12900K-1.webp|12900K-2.jpg
+Intel,Core i9-12900KF,LGA1700,16 nhân 24 luồng,Up to 5.2 GHz,125W,Không có,13.500.000 đ,12900KF-1.jpg
+Intel,Core i3-13100F,LGA1700,4 nhân 8 luồng,Up to 4.5 GHz,58W,Không có,2.800.000 đ,13100F-1.webp|13100F-2.webp
+Intel,Core i5-13400F,LGA1700,10 nhân 16 luồng,Up to 4.6 GHz,65W,Không có,4.800.000 đ,13400F-1.webp|13400F-2.webp
+Intel,Core i5-13500,LGA1700,14 nhân 20 luồng,Up to 4.8 GHz,65W,Intel UHD 770,6.100.000 đ,13500-1.webp|13500-2.jpg
+Intel,Core i5-13600K,LGA1700,14 nhân 20 luồng,Up to 5.1 GHz,125W,Intel UHD 770,7.500.000 đ,13600K-1.jpg|13600K-2.webp
+Intel,Core i7-13700F,LGA1700,16 nhân 24 luồng,Up to 5.2 GHz,65W,Không có,8.900.000 đ,13700F-1.webp|13700F-2.jpg
+Intel,Core i7-13700K,LGA1700,16 nhân 24 luồng,Up to 5.4 GHz,125W,Intel UHD 770,9.800.000 đ,13700K-1.jpg|13700K-2.webp
+Intel,Core i9-13900K,LGA1700,24 nhân 32 luồng,Up to 5.8 GHz,125W,Intel UHD 770,18.490.000 đ,13900K-1.webp|13900K-2.webp
+Intel,Core i5-14400F,LGA1700,10 nhân 16 luồng,Up to 4.7 GHz,65W,Không có,4.200.000 đ,14400F-1.webp
+Intel,Core i5-14600K,LGA1700,14 nhân 20 luồng,Up to 5.3 GHz,125W,Intel UHD 770,7.400.000 đ,14600K-1.webp|14600K-2.jpg
+Intel,Core i5-14600KF,LGA1700,14 nhân 20 luồng,Up to 5.3 GHz,125W,Không có,6.900.000 đ,14600KF-1.jpg|14600KF-2.jpg
+Intel,Core i7-14700F,LGA1700,20 nhân 28 luồng,Up to 5.4 GHz,65W,Không có,9.500.000 đ,14700F-1.webp|14700F-2.webp
+Intel,Core i7-14700K,LGA1700,20 nhân 28 luồng,Up to 5.6 GHz,125W,Intel UHD 770,10.500.000 đ,14700K-1.webp|14700K-2.webp
+Intel,Core i9-14900KS,LGA1700,24 nhân 32 luồng,Up to 6.2 GHz,150W,Intel UHD 770,18.490.000 đ,14900KS-1.jpg|14900KS-2.png
+Intel,Core Ultra 5 245K,LGA1851,14 nhân 14 luồng,Up to 5.2 GHz,125W,Intel Graphics (4 Xe-cores),7.200.000 đ,245K-1.webp|245K-2.webp
+Intel,Core Ultra 5 245KF,LGA1851,14 nhân 14 luồng,Up to 5.2 GHz,125W,Không có,10.900.000 đ,245KF-1.jpg|245KF-2.jpg
+Intel,Core Ultra 7 265K,LGA1851,20 nhân 20 luồng,Up to 5.5 GHz,125W,Intel Graphics (4 Xe-cores),10.200.000 đ,265K-1.jpg|265K-2.jpg
+Intel,Core Ultra 7 265KF,LGA1851,20 nhân 20 luồng,Up to 5.5 GHz,125W,Không có,15.500.000 đ,265KF-1.jpg|265KF-2.webp
+Intel,Core Ultra 9 285K,LGA1851,24 nhân 24 luồng,Up to 5.7 GHz,125W,Intel Graphics (4 Xe-cores),15.990.000 đ,285K-1.jpg|285K-2.jpg
+AMD,Ryzen 3 4100,AM4,4 nhân 8 luồng,Up to 4.0 GHz,65W,Không có,1.750.000 đ,
+AMD,Ryzen 5 4500,AM4,6 nhân 12 luồng,Up to 4.1 GHz,65W,Không có,2.100.000 đ,
+AMD,Ryzen 5 5500,AM4,6 nhân 12 luồng,Up to 4.2 GHz,65W,Không có,2.400.000 đ,
+AMD,Ryzen 5 5600,AM4,6 nhân 12 luồng,Up to 4.4 GHz,65W,Không có,3.100.000 đ,
+AMD,Ryzen 5 5600X,AM4,6 nhân 12 luồng,Up to 4.6 GHz,65W,Không có,3.500.000 đ,
+AMD,Ryzen 7 5700X,AM4,8 nhân 16 luồng,Up to 4.6 GHz,65W,Không có,4.500.000 đ,
+AMD,Ryzen 7 5700X3D,AM4,8 nhân 16 luồng,Up to 4.1 GHz,105W,Không có,5.900.000 đ,
+AMD,Ryzen 7 5800X3D,AM4,8 nhân 16 luồng,Up to 4.5 GHz,105W,Không có,7.200.000 đ,
+AMD,Ryzen 5 7600,AM5,6 nhân 12 luồng,Up to 5.1 GHz,65W,AMD Radeon Graphics,4.800.000 đ,
+AMD,Ryzen 5 7600X,AM5,6 nhân 12 luồng,Up to 5.3 GHz,105W,AMD Radeon Graphics,5.200.000 đ,
+AMD,Ryzen 5 8400F,AM5,6 nhân 12 luồng,Up to 4.7 GHz,65W,Không có,3.900.000 đ,
+AMD,Ryzen 5 8600G,AM5,6 nhân 12 luồng,Up to 5.0 GHz,65W,AMD Radeon 760M,5.400.000 đ,
+AMD,Ryzen 7 7700,AM5,8 nhân 16 luồng,Up to 5.3 GHz,65W,AMD Radeon Graphics,7.100.000 đ,
+AMD,Ryzen 7 7700X,AM5,8 nhân 16 luồng,Up to 5.4 GHz,105W,AMD Radeon Graphics,7.600.000 đ,
+AMD,Ryzen 7 8700G,AM5,8 nhân 16 luồng,Up to 5.1 GHz,65W,AMD Radeon 780M,7.900.000 đ,
+AMD,Ryzen 7 7800X3D,AM5,8 nhân 16 luồng,Up to 5.0 GHz,120W,AMD Radeon Graphics,10.500.000 đ,
+AMD,Ryzen 9 7900,AM5,12 nhân 24 luồng,Up to 5.4 GHz,65W,AMD Radeon Graphics,9.800.000 đ,
+AMD,Ryzen 9 7900X,AM5,12 nhân 24 luồng,Up to 5.6 GHz,170W,AMD Radeon Graphics,10.400.000 đ,
+AMD,Ryzen 9 7900X3D,AM5,12 nhân 24 luồng,Up to 5.6 GHz,120W,AMD Radeon Graphics,11.500.000 đ,
+AMD,Ryzen 9 7950X,AM5,16 nhân 32 luồng,Up to 5.7 GHz,170W,AMD Radeon Graphics,13.200.000 đ,
+AMD,Ryzen 5 9600X,AM5,6 nhân 12 luồng,Up to 5.4 GHz,65W,AMD Radeon Graphics,6.200.000 đ,
+AMD,Ryzen 7 9700X,AM5,8 nhân 16 luồng,Up to 5.5 GHz,65W,AMD Radeon Graphics,8.500.000 đ,
+AMD,Ryzen 9 9900X,AM5,12 nhân 24 luồng,Up to 5.6 GHz,120W,AMD Radeon Graphics,11.200.000 đ,
+AMD,Ryzen 9 9950X,AM5,16 nhân 32 luồng,Up to 5.7 GHz,170W,AMD Radeon Graphics,15.800.000 đ
