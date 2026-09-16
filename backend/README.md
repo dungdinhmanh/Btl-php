@@ -18,7 +18,7 @@ admin/
 
 ## Frontend handoff points
 
-- Login/register modal: `#accountModal` in `index.html` and `products.html`.
+- Login/register: standalone pages `login.html` and `register.html` (linked from the header "Đăng nhập" button in `index.html` and `products.html`).
 - Search form: `GET products.html?q=...`.
 - Checkout form: `checkout.html`.
 - Contact form: `contact.html`.

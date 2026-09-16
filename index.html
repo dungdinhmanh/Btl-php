@@ -101,15 +101,10 @@
 							</button>
 						</form>
 						<div class="header-actions ms-lg-auto">
-							<button
-								class="header-action header-button"
-								type="button"
-								data-bs-toggle="modal"
-								data-bs-target="#accountModal"
-							>
+							<a class="header-action header-button" href="login.html">
 								<i class="bi bi-person-circle" aria-hidden="true"></i>
 								<span>Đăng nhập</span>
-							</button>
+							</a>
 							<a class="header-action cart-action" href="cart.html">
 								<span class="cart-icon">
 									<i class="bi bi-cart3" aria-hidden="true"></i>
@@ -509,105 +504,6 @@
 				</div>
 			</div>
 		</footer>
-		<div
-			class="modal fade"
-			id="accountModal"
-			tabindex="-1"
-			aria-labelledby="accountModalLabel"
-			aria-hidden="true"
-		>
-			<div class="modal-dialog modal-dialog-centered modal-sm">
-				<div class="modal-content account-modal">
-					<div class="modal-header border-0">
-						<h2 class="modal-title" id="accountModalLabel">Chào mừng trở lại</h2>
-						<button
-							type="button"
-							class="btn-close"
-							data-bs-dismiss="modal"
-							aria-label="Close"
-						></button>
-					</div>
-					<div class="modal-body pt-0">
-						<ul class="nav nav-pills nav-fill account-tabs" role="tablist">
-							<li class="nav-item">
-								<button
-									class="nav-link active"
-									data-bs-toggle="pill"
-									data-bs-target="#login-pane"
-									type="button"
-								>
-									Đăng nhập
-								</button>
-							</li>
-							<li class="nav-item">
-								<button
-									class="nav-link"
-									data-bs-toggle="pill"
-									data-bs-target="#register-pane"
-									type="button"
-								>
-									Đăng ký
-								</button>
-							</li>
-						</ul>
-						<div class="tab-content pt-4">
-							<div class="tab-pane fade show active" id="login-pane">
-								<form>
-									<label for="login-email">Email</label>
-									<input
-										id="login-email"
-										class="form-control mb-3"
-										type="email"
-										placeholder="you@example.com"
-									/>
-									<label for="login-password">Mật khẩu</label>
-									<input
-										id="login-password"
-										class="form-control mb-3"
-										type="password"
-										placeholder="••••••••"
-									/>
-									<button class="btn btn-primary w-100" type="submit">
-										Đăng nhập
-									</button>
-								</form>
-								<a href="forgot-password.html" class="text-decoration-none">
-									Quên mật khẩu?
-								</a>
-							</div>
-							<div class="tab-pane fade" id="register-pane">
-								<form>
-									<label for="register-name">Họ và tên</label>
-									<input
-										id="register-name"
-										class="form-control mb-3"
-										type="text"
-										placeholder="Nguyễn Văn A"
-									/>
-									<label for="register-email">Email</label>
-									<input
-										id="register-email"
-										class="form-control mb-3"
-										type="email"
-										placeholder="you@example.com"
-									/>
-									<label for="register-password">Mật khẩu</label>
-									<input
-										id="register-password"
-										class="form-control mb-3"
-										type="password"
-										placeholder="Tối thiểu 8 ký tự"
-									/>
-									<button class="btn btn-primary w-100" type="submit">
-										Tạo tài khoản
-									</button>
-								</form>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
 		<script src="js/cart.js"></script>
 	</body>
 </html>

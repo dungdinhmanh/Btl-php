@@ -1016,6 +1016,34 @@ h3 {
 	border-radius: 3px;
 }
 
+/* Auth pages (login / register) */
+.auth-section {
+	padding: 4.5rem 0;
+	background: #f5f7fa;
+}
+.auth-card {
+	max-width: 420px;
+	margin: 0 auto;
+	background: #fff;
+	border: 1px solid var(--header-border);
+	border-radius: 10px;
+	padding: 2.25rem;
+	box-shadow: 0 12px 30px rgba(41, 51, 79, 0.08);
+}
+.auth-card .modal-title {
+	font-size: 1.5rem;
+}
+.auth-link {
+	display: inline-block;
+	margin-top: 0.75rem;
+	color: var(--header-accent);
+	font-size: 0.9rem;
+	text-decoration: none;
+}
+.auth-link:hover {
+	text-decoration: underline;
+}
+
 /* Catalog, cart, and checkout */
 .page-intro {
 	padding: 4.5rem 0 3.5rem;

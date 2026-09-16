@@ -48,15 +48,10 @@
 							</button>
 						</form>
 						<div class="header-actions ms-lg-auto">
-							<button
-								class="header-action header-button"
-								type="button"
-								data-bs-toggle="modal"
-								data-bs-target="#accountModal"
-							>
+							<a class="header-action header-button" href="login.html">
 								<i class="bi bi-person-circle"></i>
 								<span>Đăng nhập</span>
-							</button>
+							</a>
 							<a class="header-action cart-action" href="cart.html">
 								<span class="cart-icon">
 									<i class="bi bi-cart3"></i>
@@ -209,67 +204,6 @@
 				</div>
 			</section>
 		</main>
-		<div class="modal fade" id="accountModal" tabindex="-1" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-centered modal-sm">
-				<div class="modal-content account-modal">
-					<div class="modal-header border-0">
-						<h2 class="modal-title">Chào mừng trở lại</h2>
-						<button
-							type="button"
-							class="btn-close"
-							data-bs-dismiss="modal"
-							aria-label="Close"
-						></button>
-					</div>
-					<div class="modal-body pt-0">
-						<ul class="nav nav-pills nav-fill account-tabs">
-							<li class="nav-item">
-								<button
-									class="nav-link active"
-									data-bs-toggle="pill"
-									data-bs-target="#login-pane"
-									type="button"
-								>
-									Đăng nhập
-								</button>
-							</li>
-							<li class="nav-item">
-								<button
-									class="nav-link"
-									data-bs-toggle="pill"
-									data-bs-target="#register-pane"
-									type="button"
-								>
-									Đăng ký
-								</button>
-							</li>
-						</ul>
-						<div class="tab-content pt-4">
-							<div class="tab-pane fade show active" id="login-pane">
-								<form>
-									<label>Email</label>
-									<input class="form-control mb-3" type="email" />
-									<label>Mật khẩu</label>
-									<input class="form-control mb-3" type="password" />
-									<button class="btn btn-primary w-100">Đăng nhập</button>
-								</form>
-							</div>
-							<div class="tab-pane fade" id="register-pane">
-								<form>
-									<label>Họ và tên</label>
-									<input class="form-control mb-3" type="text" />
-									<label>Email</label>
-									<input class="form-control mb-3" type="email" />
-									<label>Mật khẩu</label>
-									<input class="form-control mb-3" type="password" />
-									<button class="btn btn-primary w-100">Tạo tài khoản</button>
-								</form>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 		<script src="js/cart.js"></script>
 		<footer class="site-footer">
