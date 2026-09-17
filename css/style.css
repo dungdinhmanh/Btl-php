@@ -5,10 +5,14 @@
 }
 
 body {
-	margin: 0;
 	color: var(--header-ink);
 	font-family: "Trebuchet MS", "Segoe UI", sans-serif;
 	background: #fff;
+	
+}
+
+main {
+	padding: 5% 0 5% 0;
 }
 
 h1,
@@ -64,6 +68,9 @@ body .btn-link:hover {
 	background: #fff;
 	border-bottom: 1px solid var(--header-border);
 	box-shadow: 0 2px 10px rgba(23, 33, 43, 0.05);
+	position:fixed;
+	z-index:100;
+	width: 100%;
 }
 
 .logo {
@@ -1039,7 +1046,6 @@ body .btn-link:hover {
 /* Auth pages (login / register) */
 .auth-section {
 	padding: 4.5rem 0;
-	background: #f5f7fa;
 }
 .auth-card {
 	max-width: 420px;
@@ -1907,6 +1913,25 @@ body .btn-link:hover {
 	border-radius: 8px;
 	border: 1px solid var(--header-border);
 	padding: 1rem;
+}
+.product-image-zoom {
+	position: relative;
+	overflow: hidden;
+	border-radius: 8px;
+	background: #fff;
+	cursor: zoom-in;
+}
+.product-image-zoom .product-gallery-main {
+	display: block;
+	transition: transform 180ms ease-out;
+}
+.product-image-zoom:hover .product-gallery-main {
+	cursor: zoom-out;
+}
+@media (hover: none) {
+	.product-image-zoom {
+		cursor: default;
+	}
 }
 .product-thumb {
 	width: 72px;
