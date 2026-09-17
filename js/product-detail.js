@@ -5,39 +5,45 @@
 document.addEventListener('DOMContentLoaded', async () => {
 	const params = new URLSearchParams(window.location.search);
 	const targetParam = (params.get('model') || params.get('id') || params.get('slug') || '').trim().toLowerCase();
+	const productType = params.get('type') === 'mainboard' ? 'mainboard' : 'cpu';
+	const sourcePath = `assets/products/${productType}/sources.csv`;
+	const modelField = productType === 'mainboard' ? 'Tên sản phẩm' : 'Model';
 
-	const cpuList = await fetchAndParseCSV('assets/products/cpu/sources.csv');
-	if (!cpuList || cpuList.length === 0) {
-		console.warn('Không tải được dữ liệu CPU từ sources.csv');
+	const productList = await fetchAndParseCSV(sourcePath, productType === 'cpu' ? undefined : []);
+	if (!productList || productList.length === 0) {
+		console.warn(`Không tải được dữ liệu ${productType} từ sources.csv`);
 		return;
 	}
 
 	// Tìm sản phẩm khớp hoặc mặc định lấy sản phẩm đầu tiên có ảnh
 	let product = null;
 	if (targetParam) {
-		product = cpuList.find((p) => {
-			const modelSlug = toSlug(p.Model);
-			const modelLower = (p.Model || '').toLowerCase();
+		product = productList.find((p) => {
+			const modelSlug = toSlug(p[modelField]);
+			const modelLower = (p[modelField] || '').toLowerCase();
 			return modelSlug === targetParam || modelLower === targetParam || modelSlug.includes(targetParam) || modelLower.includes(targetParam);
 		});
 	}
 
 	if (!product) {
-		// Mặc định chọn Core i5-12400F hoặc sản phẩm đầu tiên
-		product = cpuList.find((p) => (p.Model || '').includes('12400F')) || cpuList[0];
+		product =
+			productType === 'cpu'
+				? productList.find((p) => (p.Model || '').includes('12400F')) || productList[0]
+				: productList[0];
 	}
 
-	renderProductDetail(product);
+	renderProductDetail(product, productType);
 });
 
-function renderProductDetail(product) {
-	const fullName = `CPU ${product.Hãng} ${product.Model}`;
+function renderProductDetail(product, productType) {
+	const model = productType === 'mainboard' ? product['Tên sản phẩm'] : product.Model;
+	const fullName = `${productType === 'mainboard' ? 'Mainboard' : 'CPU'} ${product.Hãng} ${model}`;
 	const priceNum = Number((product['Giá TB (VNĐ)'] || '0').replace(/[^\d]/g, ''));
 	const images = (product['Ảnh'] || '')
 		.split('|')
 		.map((img) => img.trim())
 		.filter(Boolean)
-		.map((img) => `assets/products/cpu/${img}`);
+		.map((img) => `assets/products/${productType}/${img}`);
 
 	// 1. Tiêu đề trang & Breadcrumb
 	const pageTitle = document.querySelector('#page-title');
@@ -58,7 +64,10 @@ function renderProductDetail(product) {
 
 	const modelEl = document.querySelector('#product-model');
 	if (modelEl) {
-		modelEl.textContent = `Socket: ${product.Socket} · ${product['Số nhân/luồng'] || ''} · ${product['Xung nhịp'] || ''}`;
+		modelEl.textContent =
+			productType === 'mainboard'
+				? `Socket: ${product.Socket} · ${product['Chuẩn RAM (DDR4/DDR5)']} · ${product['Form factor (ATX/mATX/ITX)']}`
+				: `Socket: ${product.Socket} · ${product['Số nhân/luồng'] || ''} · ${product['Xung nhịp'] || ''}`;
 	}
 
 	const priceEl = document.querySelector('#product-price');
@@ -74,7 +83,10 @@ function renderProductDetail(product) {
 				? `Tích hợp nhân đồ họa ${product.iGPU}.`
 				: 'Sản phẩm không tích hợp sẵn nhân đồ họa, cần sử dụng kèm card màn hình rời (VGA).';
 
-		descEl.textContent = `Bộ vi xử lý ${product.Hãng} ${product.Model} chuẩn Socket ${product.Socket}, cấu hình ${product['Số nhân/luồng'] || 'đa nhân'}, tốc độ tối đa ${product['Xung nhịp'] || ''}, công suất tiêu thụ cơ bản ${product.TDP || '65W'}. ${igpuText}`;
+		descEl.textContent =
+			productType === 'mainboard'
+				? `Bo mạch chủ ${product.Hãng} ${model}, chuẩn Socket ${product.Socket}, hỗ trợ ${product['Chuẩn RAM (DDR4/DDR5)']} và kích thước ${product['Form factor (ATX/mATX/ITX)']}.`
+				: `Bộ vi xử lý ${product.Hãng} ${model} chuẩn Socket ${product.Socket}, cấu hình ${product['Số nhân/luồng'] || 'đa nhân'}, tốc độ tối đa ${product['Xung nhịp'] || ''}, công suất tiêu thụ cơ bản ${product.TDP || '65W'}. ${igpuText}`;
 	}
 
 	// 4. Gallery ảnh tương tác
@@ -119,9 +131,17 @@ function renderProductDetail(product) {
 	// 5. Bảng thông số kỹ thuật (Specs table)
 	const specTable = document.querySelector('#spec-table tbody');
 	if (specTable) {
-		const specs = [
+		const specs = productType === 'mainboard' ? [
 			{ label: 'Hãng sản xuất', value: product.Hãng },
-			{ label: 'Model', value: product.Model },
+			{ label: 'Model', value: model },
+			{ label: 'Chuẩn Socket', value: product.Socket },
+			{ label: 'Chuẩn RAM', value: product['Chuẩn RAM (DDR4/DDR5)'] },
+			{ label: 'Form factor', value: product['Form factor (ATX/mATX/ITX)'] },
+			{ label: 'Tình trạng', value: 'Mới 100% - Chính hãng' },
+			{ label: 'Bảo hành', value: '36 Tháng' },
+		] : [
+			{ label: 'Hãng sản xuất', value: product.Hãng },
+			{ label: 'Model', value: model },
 			{ label: 'Chuẩn Socket', value: product.Socket },
 			{ label: 'Số nhân / Số luồng', value: product['Số nhân/luồng'] || '---' },
 			{ label: 'Xung nhịp tối đa', value: product['Xung nhịp'] || '---' },
@@ -151,11 +171,11 @@ function renderProductDetail(product) {
 			const qty = Math.max(1, parseInt(qtyInput?.value, 10) || 1);
 
 			const cartItem = {
-				id: toSlug(product.Model) || Date.now().toString(),
+				id: toSlug(`${productType}-${model}`) || Date.now().toString(),
 				name: fullName,
 				brand: product.Hãng || 'TNC STORE',
 				price: priceNum,
-				icon: 'bi bi-cpu',
+				icon: productType === 'mainboard' ? 'bi bi-motherboard' : 'bi bi-cpu',
 				imageClass: 'product-image',
 				quantity: qty,
 			};

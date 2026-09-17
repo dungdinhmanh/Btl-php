@@ -52,15 +52,15 @@ function toSlug(str) {
 		.replace(/-+/g, '-');
 }
 
-async function fetchAndParseCSV(csvPath) {
+async function fetchAndParseCSV(csvPath, fallbackProducts = FALLBACK_PRODUCTS) {
 	try {
 		const response = await fetch(csvPath);
-		if (!response.ok) return FALLBACK_PRODUCTS;
+		if (!response.ok) return fallbackProducts;
 		const text = await response.text();
 		const parsed = parseCSVText(text);
-		return parsed.length > 0 ? parsed : FALLBACK_PRODUCTS;
+		return parsed.length > 0 ? parsed : fallbackProducts;
 	} catch (err) {
-		return FALLBACK_PRODUCTS;
+		return fallbackProducts;
 	}
 }
 

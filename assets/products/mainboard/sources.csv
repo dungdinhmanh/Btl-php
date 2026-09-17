@@ -1,35 +1,34 @@
 Hãng,Tên sản phẩm,Socket,Chuẩn RAM (DDR4/DDR5),Form factor (ATX/mATX/ITX),Giá TB (VNĐ),Ảnh
-ASUS,TUF Gaming B760M-PLUS WIFI,LGA1700,DDR5,mATX,4.500.000 đ,
-ASUS,B840M MAX Gaming AX-CSM WIFI 6,AM5,DDR5,mATX,3.490.000 đ
-ASUS,PRIME A620M-A,AM5,DDR5,mATX,3.290.000 đ
-ASUS,TUF Gaming Z890-Plus WIFI,LGA1851,DDR5,ATX,7.590.000 đ
-ASUS,TUF Gaming X870-Plus WIFI,AM5,DDR5,ATX,8.990.000 đ
-ASUS,PRIME B860M-K-CSM,LGA1851,DDR5,ATX,3.590.000 đ
-ASUS,PRIME A520M-K,AM4,DDR4,mATX,1.590.000 đ
-ASUS,ProArt B650-CREATOR,AM5,DDR5,ATX,8.520.000 đ
-ASUS,ROG MAXIMUS Z890 EXTREME WiFi 7,LGA1851,DDR5,ATX,28.990.000 đ
-ASUS,ROG MAXIMUS Z890 APEX WIFI 7,LGA1851,DDR5,ATX,19.990.000 đ
-ASUS,ProArt Z890-CREATOR WIFI,LGA1851,DDR5,ATX,14.390.000 đ
-ASUS,ROG STRIX B850-A GAMING WIFI,AM5,DDR5,ATX,6.890.000 đ
-ASUS,ROG STRIX Z890-E GAMING WIFI,LGA1851,DDR5,ATX,14.990.000 đ
-MSI,MAG B760M MORTAR WIFI,LGA1700,DDR5,mATX,4.200.000 đ
-MSI,PRO B760M-A WIFI,LGA1700,DDR5,mATX,3.600.000 đ
-MSI,MAG B650M MORTAR WIFI,AM5,DDR5,mATX,4.500.000 đ
-MSI,PRO A620M-E,AM5,DDR5,mATX,2.300.000 đ
-#MSI,MPG B850 CARBON WIFI,AM5,DDR5,ATX,7.500.000 đ
-MSI,MAG X870 TOMAHAWK WIFI,AM5,DDR5,ATX,8.200.000 đ
-MSI,PRO B860M-A WIFI,LGA1851,DDR5,mATX,3.700.000 đ
-MSI,PRO H610M-E,LGA1700,DDR4,mATX,1.890.000 đ
-MSI,MPG Z890 CARBON WIFI,LGA1851,DDR5,ATX,9.900.000 đ
-MSI,MAG Z890 TOMAHAWK WIFI,LGA1851,DDR5,ATX,7.900.000 đ
-MSI,PRO Z890-P WIFI,LGA1851,DDR5,ATX,5.800.000 đ
-MSI,MEG Z890 GODLIKE,LGA1851,DDR5,ATX,31.900.000 đ
-MSI,MEG X870E GODLIKE,AM5,DDR5,ATX,29.900.000 đ
-Gigabyte,B760M AORUS ELITE AX,LGA1700,DDR5,mATX,4.190.000 đ
-Gigabyte,B840M DS3H WIFI,AM5,DDR5,mATX,2.990.000 đ
-Gigabyte,B650M AORUS ELITE AX,AM5,DDR5,mATX,4.390.000 đ
-Gigabyte,X870 AORUS ELITE WIFI 7,AM5,DDR5,ATX,7.990.000 đ
-Gigabyte,B860M AORUS PRO AX,LGA1851,DDR5,mATX,4.890.000 đ
+ASUS,TUF Gaming B760M-PLUS WIFI,LGA1700,DDR5,mATX,4.500.000 đ,asus-tuf-gaming-b760m-plus-wifi-1.webp|asus-tuf-gaming-b760m-plus-wifi-2.webp|asus-tuf-gaming-b760m-plus-wifi-3.webp
+ASUS,B840M MAX Gaming AX-CSM WIFI 6,AM5,DDR5,mATX,3.490.000 đ,asus-max-gaming-b840m-ax-csm-1.webp|asus-max-gaming-b840m-ax-csm-2.webp|asus-max-gaming-b840m-ax-csm-3.webp
+ASUS,PRIME A620M-A,AM5,DDR5,mATX,3.290.000 đ,asus-prime-a620m-a-1.webp|asus-prime-a620m-a-2.webp|asus-prime-a620m-a-3.webp
+ASUS,TUF Gaming Z890-Plus WIFI,LGA1851,DDR5,ATX,7.590.000 đ,asus-tuf-gaming-z890-plus-wifi-1.webp|asus-tuf-gaming-z890-plus-wifi-2.webp|asus-tuf-gaming-z890-plus-wifi-3.webp
+ASUS,TUF Gaming X870-Plus WIFI,AM5,DDR5,ATX,8.990.000 đ,asus-tuf-gaming-x870-plus-wifi-1.webp|asus-tuf-gaming-x870-plus-wifi-2.webp|asus-tuf-gaming-x870-plus-wifi-3.webp
+ASUS,PRIME B860M-K-CSM,LGA1851,DDR5,ATX,3.590.000 đ,asus-csm-prime-b860m-k-1.webp|asus-csm-prime-b860m-k-2.webp|asus-csm-prime-b860m-k-3.webp
+ASUS,PRIME A520M-K,AM4,DDR4,mATX,1.590.000 đ,asus-prime-a520m-k-1.png|asus-prime-a520m-k-2.png|asus-prime-a520m-k-3.png
+ASUS,ProArt B650-CREATOR,AM5,DDR5,ATX,8.520.000 đ,asus-proart-b650-creator-1.webp|asus-proart-b650-creator-2.webp|asus-proart-b650-creator-3.webp
+ASUS,ROG MAXIMUS Z890 EXTREME WiFi 7,LGA1851,DDR5,ATX,28.990.000 đ,asus-rog-maximus-z890-extreme-wifi-7-1.png|asus-rog-maximus-z890-extreme-wifi-7-2.png|asus-rog-maximus-z890-extreme-wifi-7-3.png
+ASUS,ROG MAXIMUS Z890 APEX WIFI 7,LGA1851,DDR5,ATX,19.990.000 đ,asus-rog-maximus-z890-apex-wifi-7-1.png|asus-rog-maximus-z890-apex-wifi-7-2.png|asus-rog-maximus-z890-apex-wifi-7-3.png
+ASUS,ProArt Z890-CREATOR WIFI,LGA1851,DDR5,ATX,14.390.000 đ,asus-proart-z890-creator-wifi-1.webp|asus-proart-z890-creator-wifi-2.webp|asus-proart-z890-creator-wifi-3.webp
+ASUS,ROG STRIX B850-A GAMING WIFI,AM5,DDR5,ATX,6.890.000 đ,asus-rog-strix-b850-a-gaming-wifi-1.png|asus-rog-strix-b850-a-gaming-wifi-2.png|asus-rog-strix-b850-a-gaming-wifi-3.png
+ASUS,ROG STRIX Z890-E GAMING WIFI,LGA1851,DDR5,ATX,14.990.000 đ,asus-rog-strix-z890-e-gaming-wifi-1.png|asus-rog-strix-z890-e-gaming-wifi-2.png|asus-rog-strix-z890-e-gaming-wifi-3.png
+MSI,MAG B760M MORTAR WIFI,LGA1700,DDR5,mATX,4.200.000 đ,msi-mag-b760m-mortar-wifi-1.webp|msi-mag-b760m-mortar-wifi-2.webp|msi-mag-b760m-mortar-wifi-3.webp
+MSI,PRO B760M-A WIFI,LGA1700,DDR5,mATX,3.600.000 đ,msi-pro-b760m-a-wifi-1.webp|msi-pro-b760m-a-wifi-2.webp|msi-pro-b760m-a-wifi-3.webp
+MSI,MAG B650M MORTAR WIFI,AM5,DDR5,mATX,4.500.000 đ,msi-mag-b650m-mortar-wifi-1.webp|msi-mag-b650m-mortar-wifi-2.webp|msi-mag-b650m-mortar-wifi-3.webp
+MSI,PRO A620M-E,AM5,DDR5,mATX,2.300.000 đ,msi-pro-a620m-e-1.webp|msi-pro-a620m-e-2.webp|msi-pro-a620m-e-3.webp
+MSI,MAG X870 TOMAHAWK WIFI,AM5,DDR5,ATX,8.200.000 đ,msi-mag-x870-tomahawk-wifi-1.webp|msi-mag-x870-tomahawk-wifi-2.webp|msi-mag-x870-tomahawk-wifi-3.webp
+MSI,PRO B860M-A WIFI,LGA1851,DDR5,mATX,3.700.000 đ,msi-pro-b860m-a-wifi-1.webp|msi-pro-b860m-a-wifi-2.webp|msi-pro-b860m-a-wifi-3.webp
+MSI,PRO H610M-E,LGA1700,DDR4,mATX,1.890.000 đ,msi-pro-h610m-e-1.webp|msi-pro-h610m-e-2.webp|msi-pro-h610m-e-3.webp
+MSI,MPG Z890 CARBON WIFI,LGA1851,DDR5,ATX,9.900.000 đ,msi-mpg-z890-carbon-wifi-1.webp|msi-mpg-z890-carbon-wifi-2.webp|msi-mpg-z890-carbon-wifi-3.webp
+MSI,MAG Z890 TOMAHAWK WIFI,LGA1851,DDR5,ATX,7.900.000 đ,msi-mag-z890-tomahawk-wifi-1.webp|msi-mag-z890-tomahawk-wifi-2.webp|msi-mag-z890-tomahawk-wifi-3.webp
+MSI,PRO Z890-P WIFI,LGA1851,DDR5,ATX,5.800.000 đ,msi-pro-z890-p-wifi-1.webp|msi-pro-z890-p-wifi-2.webp|msi-pro-z890-p-wifi-3.webp
+MSI,MEG Z890 GODLIKE,LGA1851,DDR5,ATX,31.900.000 đ,msi-meg-z890-godlike-1.webp|msi-meg-z890-godlike-2.webp|msi-meg-z890-godlike-3.webp
+MSI,MEG X870E GODLIKE,AM5,DDR5,ATX,29.900.000 đ,msi-meg-z870e-godlike-1.webp|msi-meg-z870e-godlike-2.webp|msi-meg-z870e-godlike-3.webp
+Gigabyte,B760M AORUS ELITE AX,LGA1700,DDR5,mATX,4.190.000 đ,gigabyte-b760m-aorus-elite-ax-1.png|gigabyte-b760m-aorus-elite-ax-2.png|gigabyte-b760m-aorus-elite-ax-3.png
+Gigabyte,B840M DS3H WIFI,AM5,DDR5,mATX,2.990.000 đ,gigabyte-b840m-ds3h-wifi-1.png|gigabyte-b840m-ds3h-wifi-2.png|gigabyte-b840m-ds3h-wifi-3.png|gigabyte-b840m-ds3h-wifi-4.png
+Gigabyte,B650M AORUS ELITE AX,AM5,DDR5,mATX,4.390.000 đ,gigabyte-b650m-aorus-elite-ax-1.png|gigabyte-b650m-aorus-elite-ax-2.png|gigabyte-b650m-aorus-elite-ax-3.png
+Gigabyte,X870 AORUS ELITE WIFI 7,AM5,DDR5,ATX,7.990.000 đ,gigabyte-x870-aorus-elite-wifi-7-1.png|gigabyte-x870-aorus-elite-wifi-7-2.png|gigabyte-x870-aorus-elite-wifi-7-3.png
+Gigabyte,B860M AORUS PRO AX,LGA1851,DDR5,mATX,4.890.000 đ,gigabyte-b860m-aorus-pro-wifi-7-1.png|gigabyte-b860m-aorus-pro-wifi-7-2.png|gigabyte-b860m-aorus-pro-wifi-7-3.png
 Gigabyte,Z890 AORUS MASTER,LGA1851,DDR5,ATX,12.990.000 đ
 Gigabyte,A620M H ,AM5,DDR5,mATX,2.190.000 đ
 Gigabyte,Z890 AORUS ELITE WIFI 7,LGA1851,DDR5,ATX,7.490.000 đ

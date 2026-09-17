@@ -223,7 +223,7 @@ body .btn-link:hover {
 	position: relative;
 }
 .promo-carousel-section > .container {
-	padding: 0px 0px;
+	padding: 0 12px;
 }
 .promo-carousel-section .carousel-indicators {
 	z-index: 2;
@@ -249,7 +249,7 @@ body .btn-link:hover {
 }
 .promo-carousel-section .carousel-control-prev,
 .promo-carousel-section .carousel-control-next {
-	width: 7%;
+	width: 3rem;
 	opacity: 0.65;
 }
 .promo-carousel-section .carousel-control-prev-icon,
@@ -1183,6 +1183,24 @@ body .btn-link:hover {
 .summary-card hr {
 	border-color: #dfe3e8;
 }
+.checkout-voucher {
+	margin: 1.25rem 0 0;
+}
+.checkout-voucher .form-control:focus {
+	box-shadow: 0 0 0 2px rgba(13, 110, 253, .25)
+}
+.checkout-voucher label {
+	display: flex;
+	margin-bottom: 0.45rem;
+	color: #68737d;
+	font-size: 0.76rem;
+	font-weight: 700;
+}
+.checkout-voucher-message {
+	margin: 0.45rem 0 1.25rem;
+	color: #68737d;
+	font-size: 0.78rem;
+}
 .summary-card .summary-total {
 	color: var(--header-ink);
 	font-size: 1rem;
@@ -1215,18 +1233,6 @@ body .btn-link:hover {
 	font-weight: 700;
 	text-decoration: none;
 	white-space: nowrap;
-}
-.checkout-step {
-	display: flex;
-	align-items: center;
-	gap: 1rem;
-	margin-left: auto;
-	color: #a2aab5;
-	font-size: 0.8rem;
-}
-.checkout-step .active {
-	color: var(--header-accent);
-	font-weight: 700;
 }
 .checkout-form h2 {
 	margin-bottom: 1.5rem;

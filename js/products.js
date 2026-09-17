@@ -6,14 +6,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 	const gridContainer = document.querySelector('#product-grid');
 	const countEl = document.querySelector('#product-count');
 	const sortSelect = document.querySelector('#sort-price');
+	const categoryInputs = [...document.querySelectorAll('[data-category-filter]')];
 	const searchParams = new URLSearchParams(window.location.search);
 	const querySearch = (searchParams.get('q') || '').trim().toLowerCase();
 
 	if (!gridContainer) return;
 
-	// Nạp dữ liệu từ sources.csv
-	const cpuList = await fetchAndParseCSV('assets/products/cpu/sources.csv');
-	if (!cpuList || cpuList.length === 0) return;
+	const [cpuList, mainboardList] = await Promise.all([
+		fetchAndParseCSV('assets/products/cpu/sources.csv'),
+		fetchAndParseCSV('assets/products/mainboard/sources.csv', []),
+	]);
 
 	let products = cpuList.map((p) => {
 		const firstImg = (p.Ảnh || '').split('|')[0].trim();
@@ -24,13 +26,42 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 		return {
 			...p,
+			type: 'cpu',
+			category: 'components',
 			fullName,
 			imgSrc,
 			priceStr,
 			priceNum,
-			detailUrl: `product-detail.html?model=${encodeURIComponent(p.Model)}`,
+			detailUrl: `product-detail.html?type=cpu&model=${encodeURIComponent(p.Model)}`,
 		};
 	});
+
+	products = products.concat(
+		mainboardList.map((p) => {
+			const model = p['Tên sản phẩm'];
+			const firstImg = (p.Ảnh || '').split('|')[0].trim();
+			const imgSrc = firstImg
+				? `assets/products/mainboard/${firstImg}`
+				: 'assets/img/branding/tnc.png';
+			const fullName = `Mainboard ${p.Hãng} ${model}`;
+			const priceStr = p['Giá TB (VNĐ)'] || '0 đ';
+			const priceNum = Number(priceStr.replace(/[^\d]/g, '')) || 0;
+
+			return {
+				...p,
+				type: 'mainboard',
+				category: 'components',
+				model,
+				fullName,
+				imgSrc,
+				priceStr,
+				priceNum,
+				detailUrl: `product-detail.html?type=mainboard&model=${encodeURIComponent(model)}`,
+			};
+		}),
+	);
+
+	if (products.length === 0) return;
 
 	// Lọc theo từ khóa tìm kiếm nếu có
 	if (querySearch) {
@@ -83,18 +114,28 @@ document.addEventListener('DOMContentLoaded', async () => {
 			.join('');
 	}
 
-	// Sắp xếp
-	if (sortSelect) {
-		sortSelect.addEventListener('change', () => {
-			let sorted = [...products];
-			if (sortSelect.value.includes('thấp đến cao')) {
-				sorted.sort((a, b) => a.priceNum - b.priceNum);
-			} else if (sortSelect.value.includes('cao đến thấp')) {
-				sorted.sort((a, b) => b.priceNum - a.priceNum);
-			}
-			render(sorted);
-		});
+	function applyFiltersAndSort() {
+		const selectedCategories = categoryInputs.filter((input) => input.checked).map((input) => input.value);
+		let visibleProducts = selectedCategories.length
+			? products.filter((product) => selectedCategories.includes(product.category))
+			: [...products];
+
+		if (sortSelect?.value.includes('thấp đến cao')) {
+			visibleProducts.sort((a, b) => a.priceNum - b.priceNum);
+		} else if (sortSelect?.value.includes('cao đến thấp')) {
+			visibleProducts.sort((a, b) => b.priceNum - a.priceNum);
+		}
+
+		render(visibleProducts);
 	}
 
-	render(products);
+	categoryInputs.forEach((input) => {
+		const count = products.filter((product) => product.category === input.value).length;
+		const countEl = document.querySelector(`[data-category-count="${input.value}"]`);
+		if (countEl) countEl.textContent = count;
+		input.addEventListener('change', applyFiltersAndSort);
+	});
+
+	sortSelect?.addEventListener('change', applyFiltersAndSort);
+	applyFiltersAndSort();
 });
