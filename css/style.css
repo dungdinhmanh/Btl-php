@@ -369,6 +369,10 @@ body .btn-link:hover {
 	border: 1px solid #e4e8ee;
 	background: #fff;
 }
+.product-card:hover {
+	border-color: #193163;
+	box-shadow: 0 12px 26px rgba(41, 51, 79, 0.1);
+}
 .product-card .btn {
 	margin-top: auto !important;
 }
@@ -1980,11 +1984,11 @@ body .btn-link:hover {
 }
 .brand-track {
 	display: flex;
-	width: calc(250px * 20);
+	width: calc(3000px * 20);
 	animation: scroll 30s linear infinite;
 }
 .brand-item {
-	width: 250px;
+	width: 100%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
