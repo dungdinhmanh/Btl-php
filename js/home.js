@@ -2,11 +2,11 @@
  * Home page dynamic renderer
  */
 
-document.addEventListener('DOMContentLoaded', async () => {
-	const container = document.querySelector('#featured-products-list');
+document.addEventListener("DOMContentLoaded", async () => {
+	const container = document.querySelector("#featured-products-list");
 	if (!container) return;
 
-	const cpuList = await fetchAndParseCSV('assets/products/cpu/sources.csv');
+	const cpuList = await fetchAndParseCSV("assets/products/cpu/sources.csv");
 	if (!cpuList || cpuList.length === 0) return;
 
 	// Lấy 4 sản phẩm CPU tiêu biểu có ảnh
@@ -14,11 +14,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 	container.innerHTML = featured
 		.map((p) => {
-			const firstImg = p.Ảnh.split('|')[0].trim();
+			const firstImg = p.Ảnh.split("|")[0].trim();
 			const imgSrc = `assets/products/cpu/${firstImg}`;
 			const detailUrl = `product-detail.html?model=${encodeURIComponent(p.Model)}`;
 			const fullName = `CPU ${p.Hãng} ${p.Model}`;
-			const price = p['Giá TB (VNĐ)'] || 'Liên hệ';
+			const price = p["Giá TB (VNĐ)"] || "Liên hệ";
 
 			return `
 				<div class="col-sm-6 col-lg-3 d-flex">
@@ -40,5 +40,5 @@ document.addEventListener('DOMContentLoaded', async () => {
 				</div>
 			`;
 		})
-		.join('');
+		.join("");
 });

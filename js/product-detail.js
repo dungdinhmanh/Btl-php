@@ -2,14 +2,16 @@
  * Dynamic product detail page renderer
  */
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener("DOMContentLoaded", async () => {
 	const params = new URLSearchParams(window.location.search);
-	const targetParam = (params.get('model') || params.get('id') || params.get('slug') || '').trim().toLowerCase();
-	const productType = params.get('type') === 'mainboard' ? 'mainboard' : 'cpu';
+	const targetParam = (params.get("model") || params.get("id") || params.get("slug") || "")
+		.trim()
+		.toLowerCase();
+	const productType = params.get("type") === "mainboard" ? "mainboard" : "cpu";
 	const sourcePath = `assets/products/${productType}/sources.csv`;
-	const modelField = productType === 'mainboard' ? 'Tên sản phẩm' : 'Model';
+	const modelField = productType === "mainboard" ? "Tên sản phẩm" : "Model";
 
-	const productList = await fetchAndParseCSV(sourcePath, productType === 'cpu' ? undefined : []);
+	const productList = await fetchAndParseCSV(sourcePath, productType === "cpu" ? undefined : []);
 	if (!productList || productList.length === 0) {
 		console.warn(`Không tải được dữ liệu ${productType} từ sources.csv`);
 		return;
@@ -20,15 +22,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 	if (targetParam) {
 		product = productList.find((p) => {
 			const modelSlug = toSlug(p[modelField]);
-			const modelLower = (p[modelField] || '').toLowerCase();
-			return modelSlug === targetParam || modelLower === targetParam || modelSlug.includes(targetParam) || modelLower.includes(targetParam);
+			const modelLower = (p[modelField] || "").toLowerCase();
+			return (
+				modelSlug === targetParam ||
+				modelLower === targetParam ||
+				modelSlug.includes(targetParam) ||
+				modelLower.includes(targetParam)
+			);
 		});
 	}
 
 	if (!product) {
 		product =
-			productType === 'cpu'
-				? productList.find((p) => (p.Model || '').includes('12400F')) || productList[0]
+			productType === "cpu"
+				? productList.find((p) => (p.Model || "").includes("12400F")) || productList[0]
 				: productList[0];
 	}
 
@@ -36,77 +43,77 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function renderProductDetail(product, productType) {
-	const model = productType === 'mainboard' ? product['Tên sản phẩm'] : product.Model;
-	const fullName = `${productType === 'mainboard' ? 'Mainboard' : 'CPU'} ${product.Hãng} ${model}`;
-	const priceNum = Number((product['Giá TB (VNĐ)'] || '0').replace(/[^\d]/g, ''));
-	const images = (product['Ảnh'] || '')
-		.split('|')
+	const model = productType === "mainboard" ? product["Tên sản phẩm"] : product.Model;
+	const fullName = `${productType === "mainboard" ? "Mainboard" : "CPU"} ${product.Hãng} ${model}`;
+	const priceNum = Number((product["Giá TB (VNĐ)"] || "0").replace(/[^\d]/g, ""));
+	const images = (product["Ảnh"] || "")
+		.split("|")
 		.map((img) => img.trim())
 		.filter(Boolean)
 		.map((img) => `assets/products/${productType}/${img}`);
 
 	// 1. Tiêu đề trang & Breadcrumb
-	const pageTitle = document.querySelector('#page-title');
+	const pageTitle = document.querySelector("#page-title");
 	if (pageTitle) pageTitle.textContent = `${fullName} | TNC Store`;
 
-	const breadcrumbName = document.querySelector('#breadcrumb-product-name');
+	const breadcrumbName = document.querySelector("#breadcrumb-product-name");
 	if (breadcrumbName) breadcrumbName.textContent = fullName;
 
 	// 2. Thông tin chính
-	const brandEl = document.querySelector('#product-brand');
+	const brandEl = document.querySelector("#product-brand");
 	if (brandEl) {
 		brandEl.textContent = product.Hãng;
-		brandEl.className = 'badge bg-dark text-uppercase mb-2 align-self-start px-2 py-1';
+		brandEl.className = "badge bg-dark text-uppercase mb-2 align-self-start px-2 py-1";
 	}
 
-	const nameEl = document.querySelector('#product-name');
+	const nameEl = document.querySelector("#product-name");
 	if (nameEl) nameEl.textContent = fullName;
 
-	const modelEl = document.querySelector('#product-model');
+	const modelEl = document.querySelector("#product-model");
 	if (modelEl) {
 		modelEl.textContent =
-			productType === 'mainboard'
-				? `Socket: ${product.Socket} · ${product['Chuẩn RAM (DDR4/DDR5)']} · ${product['Form factor (ATX/mATX/ITX)']}`
-				: `Socket: ${product.Socket} · ${product['Số nhân/luồng'] || ''} · ${product['Xung nhịp'] || ''}`;
+			productType === "mainboard"
+				? `Socket: ${product.Socket} · ${product["Chuẩn RAM (DDR4/DDR5)"]} · ${product["Form factor (ATX/mATX/ITX)"]}`
+				: `Socket: ${product.Socket} · ${product["Số nhân/luồng"] || ""} · ${product["Xung nhịp"] || ""}`;
 	}
 
-	const priceEl = document.querySelector('#product-price');
+	const priceEl = document.querySelector("#product-price");
 	if (priceEl) {
-		priceEl.textContent = product['Giá TB (VNĐ)'] || 'Liên hệ';
+		priceEl.textContent = product["Giá TB (VNĐ)"] || "Liên hệ";
 	}
 
 	// 3. Mô tả ngắn
-	const descEl = document.querySelector('#product-desc');
+	const descEl = document.querySelector("#product-desc");
 	if (descEl) {
 		const igpuText =
-			product.iGPU && product.iGPU !== 'Không có'
+			product.iGPU && product.iGPU !== "Không có"
 				? `Tích hợp nhân đồ họa ${product.iGPU}.`
-				: 'Sản phẩm không tích hợp sẵn nhân đồ họa, cần sử dụng kèm card màn hình rời (VGA).';
+				: "Sản phẩm không tích hợp sẵn nhân đồ họa, cần sử dụng kèm card màn hình rời (VGA).";
 
 		descEl.textContent =
-			productType === 'mainboard'
-				? `Bo mạch chủ ${product.Hãng} ${model}, chuẩn Socket ${product.Socket}, hỗ trợ ${product['Chuẩn RAM (DDR4/DDR5)']} và kích thước ${product['Form factor (ATX/mATX/ITX)']}.`
-				: `Bộ vi xử lý ${product.Hãng} ${model} chuẩn Socket ${product.Socket}, cấu hình ${product['Số nhân/luồng'] || 'đa nhân'}, tốc độ tối đa ${product['Xung nhịp'] || ''}, công suất tiêu thụ cơ bản ${product.TDP || '65W'}. ${igpuText}`;
+			productType === "mainboard"
+				? `Bo mạch chủ ${product.Hãng} ${model}, chuẩn Socket ${product.Socket}, hỗ trợ ${product["Chuẩn RAM (DDR4/DDR5)"]} và kích thước ${product["Form factor (ATX/mATX/ITX)"]}.`
+				: `Bộ vi xử lý ${product.Hãng} ${model} chuẩn Socket ${product.Socket}, cấu hình ${product["Số nhân/luồng"] || "đa nhân"}, tốc độ tối đa ${product["Xung nhịp"] || ""}, công suất tiêu thụ cơ bản ${product.TDP || "65W"}. ${igpuText}`;
 	}
 
 	// 4. Gallery ảnh tương tác
-	const mainImg = document.querySelector('#main-product-img');
-	const thumbsContainer = document.querySelector('#gallery-thumbs');
-	const zoomContainer = mainImg?.closest('.product-image-zoom');
+	const mainImg = document.querySelector("#main-product-img");
+	const thumbsContainer = document.querySelector("#gallery-thumbs");
+	const zoomContainer = mainImg?.closest(".product-image-zoom");
 
 	if (mainImg && zoomContainer) {
-		zoomContainer.addEventListener('mouseenter', () => {
-			mainImg.style.transform = 'scale(2)';
+		zoomContainer.addEventListener("mouseenter", () => {
+			mainImg.style.transform = "scale(2)";
 		});
-		zoomContainer.addEventListener('mousemove', (event) => {
+		zoomContainer.addEventListener("mousemove", (event) => {
 			const bounds = zoomContainer.getBoundingClientRect();
 			const x = ((event.clientX - bounds.left) / bounds.width) * 100;
 			const y = ((event.clientY - bounds.top) / bounds.height) * 100;
 			mainImg.style.transformOrigin = `${x}% ${y}%`;
 		});
-		zoomContainer.addEventListener('mouseleave', () => {
-			mainImg.style.transform = '';
-			mainImg.style.transformOrigin = 'center center';
+		zoomContainer.addEventListener("mouseleave", () => {
+			mainImg.style.transform = "";
+			mainImg.style.transformOrigin = "center center";
 		});
 	}
 
@@ -123,50 +130,55 @@ function renderProductDetail(product, productType) {
 						<img
 							src="${imgSrc}"
 							alt="${fullName} ${index + 1}"
-							class="product-thumb ${index === 0 ? 'active' : ''}"
+							class="product-thumb ${index === 0 ? "active" : ""}"
 							data-img-src="${imgSrc}"
 						/>
 					`,
 				)
-				.join('');
+				.join("");
 
-			thumbsContainer.querySelectorAll('.product-thumb').forEach((thumb) => {
+			thumbsContainer.querySelectorAll(".product-thumb").forEach((thumb) => {
 				const switchImg = () => {
-					thumbsContainer.querySelectorAll('.product-thumb').forEach((t) => t.classList.remove('active'));
-					thumb.classList.add('active');
+					thumbsContainer
+						.querySelectorAll(".product-thumb")
+						.forEach((t) => t.classList.remove("active"));
+					thumb.classList.add("active");
 					if (mainImg) mainImg.src = thumb.dataset.imgSrc;
 				};
-				thumb.addEventListener('click', switchImg);
-				thumb.addEventListener('mouseenter', switchImg);
+				thumb.addEventListener("click", switchImg);
+				thumb.addEventListener("mouseenter", switchImg);
 			});
 		}
 	} else {
-		if (mainImg) mainImg.src = 'assets/img/branding/tnc.png';
-		if (thumbsContainer) thumbsContainer.innerHTML = '';
+		if (mainImg) mainImg.src = "assets/img/branding/tnc.png";
+		if (thumbsContainer) thumbsContainer.innerHTML = "";
 	}
 
 	// 5. Bảng thông số kỹ thuật (Specs table)
-	const specTable = document.querySelector('#spec-table tbody');
+	const specTable = document.querySelector("#spec-table tbody");
 	if (specTable) {
-		const specs = productType === 'mainboard' ? [
-			{ label: 'Hãng sản xuất', value: product.Hãng },
-			{ label: 'Model', value: model },
-			{ label: 'Chuẩn Socket', value: product.Socket },
-			{ label: 'Chuẩn RAM', value: product['Chuẩn RAM (DDR4/DDR5)'] },
-			{ label: 'Form factor', value: product['Form factor (ATX/mATX/ITX)'] },
-			{ label: 'Tình trạng', value: 'Mới 100% - Chính hãng' },
-			{ label: 'Bảo hành', value: '36 Tháng' },
-		] : [
-			{ label: 'Hãng sản xuất', value: product.Hãng },
-			{ label: 'Model', value: model },
-			{ label: 'Chuẩn Socket', value: product.Socket },
-			{ label: 'Số nhân / Số luồng', value: product['Số nhân/luồng'] || '---' },
-			{ label: 'Xung nhịp tối đa', value: product['Xung nhịp'] || '---' },
-			{ label: 'Điện năng tiêu thụ (TDP)', value: product.TDP || '---' },
-			{ label: 'Đồ họa tích hợp (iGPU)', value: product.iGPU || 'Không có' },
-			{ label: 'Tình trạng', value: 'Mới 100% - Chính hãng' },
-			{ label: 'Bảo hành', value: '36 Tháng' },
-		];
+		const specs =
+			productType === "mainboard"
+				? [
+						{ label: "Hãng sản xuất", value: product.Hãng },
+						{ label: "Model", value: model },
+						{ label: "Chuẩn Socket", value: product.Socket },
+						{ label: "Chuẩn RAM", value: product["Chuẩn RAM (DDR4/DDR5)"] },
+						{ label: "Form factor", value: product["Form factor (ATX/mATX/ITX)"] },
+						{ label: "Tình trạng", value: "Mới 100% - Chính hãng" },
+						{ label: "Bảo hành", value: "36 Tháng" },
+					]
+				: [
+						{ label: "Hãng sản xuất", value: product.Hãng },
+						{ label: "Model", value: model },
+						{ label: "Chuẩn Socket", value: product.Socket },
+						{ label: "Số nhân / Số luồng", value: product["Số nhân/luồng"] || "---" },
+						{ label: "Xung nhịp tối đa", value: product["Xung nhịp"] || "---" },
+						{ label: "Điện năng tiêu thụ (TDP)", value: product.TDP || "---" },
+						{ label: "Đồ họa tích hợp (iGPU)", value: product.iGPU || "Không có" },
+						{ label: "Tình trạng", value: "Mới 100% - Chính hãng" },
+						{ label: "Bảo hành", value: "36 Tháng" },
+					];
 
 		specTable.innerHTML = specs
 			.map(
@@ -177,28 +189,28 @@ function renderProductDetail(product, productType) {
 					</tr>
 				`,
 			)
-			.join('');
+			.join("");
 	}
 
 	// 6. Xử lý nút Thêm vào giỏ hàng
-	const addToCartBtn = document.querySelector('#btn-add-to-cart');
+	const addToCartBtn = document.querySelector("#btn-add-to-cart");
 	if (addToCartBtn) {
 		addToCartBtn.onclick = () => {
-			const qtyInput = document.querySelector('#product-qty');
+			const qtyInput = document.querySelector("#product-qty");
 			const qty = Math.max(1, parseInt(qtyInput?.value, 10) || 1);
 
 			const cartItem = {
 				id: toSlug(`${productType}-${model}`) || Date.now().toString(),
 				name: fullName,
-				brand: product.Hãng || 'TNC STORE',
+				brand: product.Hãng || "TNC STORE",
 				price: priceNum,
-				icon: productType === 'mainboard' ? 'bi bi-motherboard' : 'bi bi-cpu',
-				imageClass: 'product-image',
+				icon: productType === "mainboard" ? "bi bi-motherboard" : "bi bi-cpu",
+				imageClass: "product-image",
 				quantity: qty,
 			};
 
 			// Gọi addToCart hoặc tự lưu nếu đã có cart.js
-			if (typeof addToCart === 'function') {
+			if (typeof addToCart === "function") {
 				for (let i = 0; i < qty; i++) {
 					addToCart({ ...cartItem, quantity: 1 });
 				}
@@ -206,10 +218,10 @@ function renderProductDetail(product, productType) {
 
 			const originalHtml = addToCartBtn.innerHTML;
 			addToCartBtn.innerHTML = '<i class="bi bi-check2 me-2"></i>Đã thêm vào giỏ';
-			addToCartBtn.classList.replace('btn-primary', 'btn-success');
+			addToCartBtn.classList.replace("btn-primary", "btn-success");
 			setTimeout(() => {
 				addToCartBtn.innerHTML = originalHtml;
-				addToCartBtn.classList.replace('btn-success', 'btn-primary');
+				addToCartBtn.classList.replace("btn-success", "btn-primary");
 			}, 1500);
 		};
 	}
