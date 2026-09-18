@@ -1,7 +1,6 @@
 {
   "tabWidth": 4,
   "useTabs": true,
-  "bracketSameLine": false,
   "htmlWhitespaceSensitivity": "ignore",
   "printWidth": 100
 }
