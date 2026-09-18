@@ -92,6 +92,23 @@ function renderProductDetail(product, productType) {
 	// 4. Gallery ảnh tương tác
 	const mainImg = document.querySelector('#main-product-img');
 	const thumbsContainer = document.querySelector('#gallery-thumbs');
+	const zoomContainer = mainImg?.closest('.product-image-zoom');
+
+	if (mainImg && zoomContainer) {
+		zoomContainer.addEventListener('mouseenter', () => {
+			mainImg.style.transform = 'scale(2)';
+		});
+		zoomContainer.addEventListener('mousemove', (event) => {
+			const bounds = zoomContainer.getBoundingClientRect();
+			const x = ((event.clientX - bounds.left) / bounds.width) * 100;
+			const y = ((event.clientY - bounds.top) / bounds.height) * 100;
+			mainImg.style.transformOrigin = `${x}% ${y}%`;
+		});
+		zoomContainer.addEventListener('mouseleave', () => {
+			mainImg.style.transform = '';
+			mainImg.style.transformOrigin = 'center center';
+		});
+	}
 
 	if (images.length > 0) {
 		if (mainImg) {
