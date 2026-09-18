@@ -2026,16 +2026,6 @@ body .btn-link:hover {
 }
 
 /* News: shared cards, listing, and article page */
-.home-news-section,
-.news-page {
-	background: #f5f7fa;
-}
-.home-news-section {
-	margin: 0 2rem;
-}
-.home-news-section .container {
-	max-width: 1140px;
-}
 .news-feature-card,
 .news-list-card,
 .news-page-card {
