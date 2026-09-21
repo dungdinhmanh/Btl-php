@@ -70,3 +70,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 		})
 		.join("");
 });
+var page_height = 785
+$(window).scroll(function () {
+    if ($(window).scrollTop() > page_height) {
+        $(".header").addClass('header-fixed');
+    } else {
+        $(".header").removeClass('header-fixed');
+    }
+});
