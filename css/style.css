@@ -89,14 +89,15 @@ body .btn-link:hover {
 	width: 100%;
 	background: #29324e;
 }
+.header .header-fixed {
+	position: fixed;
+	z-index: 999;
+	top: 0;
+}
 .header .header-top {
 	background-color: #3278F6;
 	padding: 10px 0;
 	text-align: right;
-}
-.header .header-fixed {
-	position: fixed;
-	z-index: 999;
 }
 .header .header-top .item {
 	border-right: 2px solid #2860c5;
