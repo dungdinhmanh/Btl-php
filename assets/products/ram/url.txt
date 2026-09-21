@@ -1,0 +1,56 @@
+https://media.kingston.com/kingston/product/FURY_Beast_Black_DDR4_2-zm-lg.jpg
+	out=kingston-fury-beast-d4-1.jpg
+https://media.kingston.com/kingston/product/FURY_Beast_Black_DDR4_2_pkg-zm-lg.jpg
+	out=kingston-fury-beast-d4-2.jpg
+https://media.kingston.com/kingston/product/DDR4_Non-ECC_Unbuffered_DIMM_1R_X16_1-zm-lg.jpg
+	out=kingston-valueram-d4-2666.jpg
+https://assets.corsair.com/image/upload/c_pad,q_85,h_1100,w_1100,f_auto/products/Memory/CMK16GX4M2B3200C16/Gallery/Vengeance_LPX_DDR4_Black_x2.webp
+	out=corsair-vengeance-d4-1.webp
+https://assets.corsair.com/image/upload/c_pad,q_85,h_1100,w_1100,f_auto/products/Memory/CMK16GX4M2B3200C16/Gallery/VENG_LPX_BLK_01.webp
+	out=corsair-vengeance-d4-2.webp
+https://assets.corsair.com/image/upload/c_pad,q_85,h_1100,w_1100,f_auto/products/Memory/vengeance-rgb-ddr5-config/white/2up/Vengeance-RGB-DDR5-2UP-64GB-WHITE_01.webp
+	out=corsair-vengeance-d5-1.webp
+https://assets.corsair.com/image/upload/c_pad,q_85,h_1100,w_1100,f_auto/products/Memory/vengeance-rgb-ddr5-config/white/2up/Vengeance-RGB-DDR5-2UP-64GB-WHITE_01.webp
+	out=corsair-vengeance-d5-2.webp
+https://webapi3.adata.com/storage/ProductGallery/productGallery7422.jpg
+	out=adata-xpg-d50-d4-1.jpg
+https://webapi3.adata.com/storage/product/d50_pk_single_gr_1000x1000.png
+	out=adata-xpg-d50-d4-2.png
+https://www-oss.lexar.com/uploads/product_images/aresddr4_slider_16GB_1.png
+	out=lexar-ares-rgb-d4-1.png
+https://www-oss.lexar.com/uploads/product_images/aresddr4_slider_16GB_5.png
+	out=lexar-ares-rgb-d4-2.png
+https://webapi3.adata.com/storage/product/869_gallery_05.png
+	out=adata-xpg-d5-1.png
+https://webapi3.adata.com/storage/product/869_gallery_03.png
+	out=adata-xpg-d5-2.png
+https://webapi3.adata.com/storage/product/lancer_rgb_pk_dual_bk.png
+	out=adata-xpg-d5-3.png
+https://media.kingston.com/kingston/product/FURY_Beast_RGB_DDR5_2-zm-lg.jpg
+	out=kingston-fury-beast-d5-1.jpg
+https://media.kingston.com/kingston/product/FURY_Beast_RGB_DDR5_2_angle-zm-lg.jpg
+	out=kingston-fury-beast-d5-2.jpg
+https://assets.corsair.com/image/upload/c_pad,q_85,h_1100,w_1100,f_auto/products/Memory/CMT64GX4M4E3200C16/Gallery/DOMINATOR_PLAT_RGB_09.webp
+	out=corsair-dominator-platinum-rgb-d4-1.webp
+https://assets.corsair.com/image/upload/c_pad,q_85,h_1100,w_1100,f_auto/products/Memory/CMT64GX4M4E3200C16/Gallery/DOMINATOR_PLAT_RGB_10.webp
+	out=corsair-dominator-platinum-rgb-d4-2.webp
+https://assets.corsair.com/image/upload/c_pad,q_85,h_1100,w_1100,f_auto/products/Memory/CMW16GX4M2C3200C16/Gallery/Vengeance_RGB_Pro_01.webp
+	out=corsair-vengeance-rgb-pro-d4-1.webp
+https://assets.corsair.com/image/upload/c_pad,q_85,h_1100,w_1100,f_auto/products/Memory/CMW16GX4M2C3200C16/Gallery/Vengeance_RGB_Pro_03.webp
+	out=corsair-vengeance-rgb-pro-d4-2.webp
+https://media.kingston.com/kingston/product/FURY_Renegade_RGB_Black_DDR4_2_angle-zm-lg.jpg
+	out=kingston-fury-renegade-rgb-d4-1.jpg
+https://media.kingston.com/kingston/product/FURY_Renegade_RGB_Black_DDR4_2_pkg-zm-lg.jpg
+	out=kingston-fury-renegade-rgb-d4-2.jpg
+https://media.kingston.com/kingston/product/FURY_Renegade_RGB_Black_DDR4_2_angle-zm-lg.jpg
+	out=kingston-fury-renegade-rgb-d4-1.jpg
+https://media.kingston.com/kingston/product/FURY_Renegade_RGB_Black_DDR4_2_pkg-zm-lg.jpg
+	out=kingston-fury-renegade-rgb-d4-2.jpg
+https://bizweb.dktcdn.net/100/329/122/products/crucial-ballistix-gaming-rgb-01-0a649674-efb4-4eae-bcbb-7e03cc646971.jpg?v=1609428951740
+	out=crucial-ballistix-d4-jpg
+https://www.bhphotovideo.com/cdn-cgi/image/fit=scale-down,width=500,quality=95/https://www.bhphotovideo.com/images/images500x500/crucial_bl2k16g36c16u4wl_ballistix_rgb_32gb_16x2_3600_1582805206_1548872.jpg
+	out=crucial-ballistix-d4-jpg
+https://media.kingston.com/kingston/product/FURY_Renegade_Silver_Black_DDR5_2_angle-zm-lg.jpg
+	out=kingston-fury-renegade-d5-1.jpg
+https://media.kingston.com/kingston/product/FURY_Renegade_Silver_DDR5_2_pkg-zm-lg.jpg
+	out=kingston-fury-renegade-d5-2.jpg

@@ -1,0 +1,14 @@
+https://resource.logitechg.com/w_544,h_544,ar_1,c_fill,q_auto,f_auto,dpr_2.0/d_transparent.gif/content/dam/gaming/en/products/g305/2026-update/g305-lightspeed-mouse-black-lifestyle-gallery-2-new.jpg
+	out=logitech-g304-lightspeed-1.jpg
+https://resource.logitechg.com/w_544,h_466,ar_7:6,c_pad,q_auto,f_auto,dpr_2.0/d_transparent.gif/content/dam/gaming/en/non-braid/g213-finch/g213-gallery-1-nb.png
+	out=logitech-g213-prodigy-png
+https://assets.corsair.com/image/upload/c_limit,f_auto,q_85,w_1600,h_1600/products/Gaming-Keyboards/base-k60-rgb-pro-se-config/Gallery/K60_RGB_PRO_SE_01.webp
+	out=corsair-k60-pro-se-webp
+https://images.ctfassets.net/hmm5mo4qf4mf/2yt5bxGCEbi0Wym2AHqWAQ/c5603bd4ed02257fc86036e15271da62/arctis_nova_7_wl_gen_2_black_pdp_img_buy_01.png?fm=webp&q=90&fit=scale&w=1920
+	out=steelseries-arctis-nova-7-wireless-png
+https://images.ctfassets.net/hmm5mo4qf4mf/1LmTjOKEqxZeA59KMXaHek/33a82cea1eb6789755dcee4546d00076/qck_heavy_xxl_black_pdp_img_buy_01.png?fm=webp&q=90&fit=scale&w=1920
+	out=steelseries-qck-heavy-xxl-png
+https://owlgaming.vn/wp-content/uploads/2022/11/human-motion-t9-pro-ii-white-600x600.jpg
+	out=human-motion-t9-pro-jpg
+https://row.hyperx.com/cdn/shop/files/hyperx_quadcast_s_1_front.jpg?v=1737792675
+	out=hyperx-quadcast-s-jpg

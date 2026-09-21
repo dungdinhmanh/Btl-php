@@ -1,0 +1,8 @@
+https://a.storyblok.com/f/281110/bfdd39e881/elite-v3-230v-500w-gallery-1.png/m/1920x0/smart
+	out=cooler-master-elite-v3-1.png
+https://a.storyblok.com/f/281110/7c513b3c96/elite-v3-230v-500w-gallery-2.png/m/1920x0/smart
+	out=cooler-master-elite-v3-2.png
+https://assets.corsair.com/image/upload/c_limit,f_auto,q_85,w_1600,h_1600/products/rme-series-2025/Gallery/CP-9020302-NA_01.webp
+	out=corsair-rm650e-webp
+https://storage-asset.msi.com/global/picture/image/feature/power/MAG/A650BN/pd06.png
+	out=msi-mag-a650bn-png
