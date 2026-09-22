@@ -265,6 +265,173 @@ body .btn-link:hover {
 	margin-bottom: 2px;
 }
 
+/* Shared TNC-style header: utility bar, search bar, and category navigation. */
+.store-header {
+	position: sticky;
+	top: 0;
+	z-index: 1030;
+	width: 100%;
+	background: #fff;
+	box-shadow: 0 2px 12px rgba(9, 47, 100, 0.12);
+}
+
+.store-header .header-top {
+	background: #0a57aa;
+	color: #fff;
+	font-size: 0.8rem;
+}
+
+.header-top-inner,
+.header-mid-inner,
+.header-bottom-inner {
+	display: flex;
+	align-items: center;
+}
+
+.header-top-inner {
+	min-height: 33px;
+	justify-content: space-between;
+}
+
+.store-header .header-top a {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	color: #fff;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.header-contact {
+	display: flex;
+	align-items: center;
+	gap: 1.25rem;
+}
+
+.store-header .header-mid {
+	background: #fff;
+	border-bottom: 1px solid #e7edf5;
+}
+
+.header-mid-inner {
+	gap: 0.85rem;
+	min-height: 76px;
+}
+
+.store-header .logo {
+	flex: 0 0 112px;
+	margin: 0;
+}
+
+.store-header .logo img {
+	width: 108px;
+	max-width: 100%;
+}
+
+.store-header .category-toggle {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+	min-height: 42px;
+	border: 1px solid #d7e1ef;
+	border-radius: 4px;
+	background: #f6f9fd;
+	color: #164b8b;
+}
+
+.store-header .search-form {
+	flex: 1 1 420px;
+	margin: 0;
+}
+
+.store-header .search-form .form-control {
+	min-height: 42px;
+	border-color: #cbd9e9;
+	border-radius: 4px;
+	background: #fff;
+}
+
+.store-header .search-button {
+	top: 3px;
+	right: 3px;
+	width: 36px;
+	height: 36px;
+	border-radius: 3px;
+	background: #0a57aa;
+}
+
+.store-header .header-actions {
+	flex: 0 0 auto;
+	gap: 1rem;
+}
+
+.store-header .header-action {
+	gap: 0.45rem;
+	color: #1c3553;
+	font-size: 0.78rem;
+}
+
+.store-header .header-action:hover {
+	color: #0a57aa;
+}
+
+.store-header .header-action > i,
+.store-header .cart-icon > i {
+	color: #0a57aa;
+	font-size: 1.4rem;
+}
+
+.store-header .header-action small {
+	color: #6b7b8e;
+	font-size: 0.68rem;
+}
+
+.store-header .cart-icon b {
+	background: #e52d37;
+}
+
+.store-header .header-bottom {
+	background: #073b78;
+}
+
+.header-bottom-inner {
+	min-height: 42px;
+}
+
+.all-categories {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.55rem;
+	align-self: stretch;
+	padding: 0 1rem;
+	background: #0a57aa;
+	color: #fff;
+	font-size: 0.84rem;
+	font-weight: 700;
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+.store-header .header-menu {
+	display: flex;
+	align-items: center;
+	min-width: 0;
+	overflow-x: auto;
+}
+
+.store-header .header-menu a {
+	padding: 0.7rem 0.8rem;
+	color: #fff;
+	font-size: 0.8rem;
+	font-weight: 600;
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+.store-header .header-menu a:hover {
+	background: rgba(255, 255, 255, 0.12);
+}
+
 /* Home carousel */
 .promo-slide {
 	color: #fff;
@@ -1877,6 +2044,21 @@ body .btn-link:hover {
 
 /* Responsive adjustments */
 @media (max-width: 991.98px) {
+	.store-header .header-mid-inner {
+		flex-wrap: wrap;
+		padding-top: 0.65rem;
+		padding-bottom: 0.65rem;
+	}
+	.store-header .search-form {
+		order: 3;
+		flex-basis: calc(100% - 125px);
+	}
+	.store-header .header-actions {
+		margin-left: auto;
+	}
+	.store-header .header-bottom {
+		overflow-x: auto;
+	}
 	.header-actions {
 		justify-content: flex-end;
 		padding-bottom: 0.25rem;
@@ -1896,6 +2078,38 @@ body .btn-link:hover {
 }
 
 @media (max-width: 575.98px) {
+	.header-contact a:last-child,
+	.store-header .header-action:not(.cart-action) span {
+		display: none;
+	}
+	.store-header .header-top-inner {
+		font-size: 0.72rem;
+	}
+	.header-contact {
+		gap: 0.65rem;
+	}
+	.store-header .logo {
+		flex-basis: 90px;
+	}
+	.store-header .logo img {
+		width: 86px;
+	}
+	.store-header .category-toggle {
+		padding: 0.55rem 0.65rem;
+	}
+	.store-header .search-form {
+		flex-basis: 100%;
+		order: 4;
+	}
+	.store-header .header-actions {
+		gap: 0.7rem;
+	}
+	.store-header .header-action {
+		font-size: 0.7rem;
+	}
+	.store-header .header-bottom-inner {
+		min-width: max-content;
+	}
 	.header-actions {
 		justify-content: space-between;
 		gap: 0.75rem;
