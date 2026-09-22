@@ -19,16 +19,15 @@ main {
 	padding: 5% 0 5% 0;
 }
 
-banner-top {
+.banner-top {
 	width: 100%; 
 	margin: 0 auto;
 	background: #ff6300;
-	position: fixed;
 	margin: 0 auto;
 }
-banner-top img {
-	width:1600;
-	height: 100%;
+.banner-top img {
+	width:1600px;
+	height: auto;
 	display: block;
 }
 
@@ -42,6 +41,13 @@ h1,
 h2,
 h3 {
 	letter-spacing: -0.03em;
+}
+h2 {
+	font-size: 24px;
+	font-weight: 700;
+	text-transform: uppercase;
+	border-bottom: 3px solid var(--color-global);
+	display: inline-block;
 }
 body .btn-primary {
 	--bs-btn-bg: var(--header-accent);
@@ -78,13 +84,6 @@ body .btn-link:hover {
 .btn.show {
 	box-shadow: 0 0 0 0.25rem rgba(41, 51, 79, 0.25);
 	outline: none;
-}
-
-.banner-top {
-	background: #ff6300;
-	width: 100%;
-	margin: 0 auto;
-	position: relative;
 }
 /* Header */
 .header {
@@ -395,7 +394,7 @@ body .btn-link:hover {
 	font-size: 0.82rem;
 }
 .category-tile img {
-	width: 30%;
+	width: 70%;
 	margin-top: 1rem;
 	object-fit: cover;
 	border-radius: 0.25rem;

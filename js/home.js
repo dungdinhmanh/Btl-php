@@ -1,7 +1,3 @@
-/**
- * Home page dynamic renderer
- */
-
 document.addEventListener("DOMContentLoaded", async () => {
 	const container = document.querySelector("#featured-products-list");
 	if (!container) return;
@@ -9,9 +5,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 		String(value ?? "").replace(/[&<>'"]/g, (character) =>
 			({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[character],
 		);
-
-	// MySQL-backed products take priority once the database is configured.
-	// The CSV renderer below remains a local-development fallback until then.
 	try {
 		const apiBase = window.TNC_API_BASE || "backend/api";
 		const response = await fetch(`${apiBase}/products.php?featured=1&limit=4`);
@@ -37,7 +30,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 	const cpuList = await fetchAndParseCSV("assets/products/cpu/sources.csv");
 	if (!cpuList || cpuList.length === 0) return;
 
-	// Lấy 4 sản phẩm CPU tiêu biểu có ảnh
 	const featured = cpuList.filter((p) => p.Ảnh && p.Ảnh.trim().length > 0).slice(0, 4);
 
 	container.innerHTML = featured
