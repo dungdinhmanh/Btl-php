@@ -2,6 +2,8 @@
 	--header-ink: #17212b;
 	--header-accent: #29324e;
 	--header-border: #e8ebee;
+	--color-global: #3278f6;
+	--color-red: #fb4e4e;
 }
 * {
 	font-family: "Chakra Petch" !important;
@@ -95,7 +97,7 @@ body .btn-link:hover {
 	top: 0;
 }
 .header .header-top {
-	background-color: #3278F6;
+	background-color: var(--color-global);
 	padding: 10px 0;
 	text-align: right;
 }
@@ -263,10 +265,6 @@ body .btn-link:hover {
 	margin-bottom: 2px;
 }
 
-.header-action:hover {
-	color: var(--header-accent);
-}
-
 /* Home carousel */
 .promo-slide {
 	color: #fff;
@@ -332,7 +330,7 @@ body .btn-link:hover {
 	text-transform: uppercase;
 }
 .section-space {
-	padding: 5rem 0;
+	padding: 2rem 0;
 }
 .section-muted {
 	background: #f5f7fa;
@@ -373,10 +371,8 @@ body .btn-link:hover {
 	text-align: center;
 }
 .category-tile:hover {
-	transform: translateY(-5px);
-	border-color: #aab5cc;
-	box-shadow: 0 12px 26px rgba(41, 51, 79, 0.1);
-	color: var(--header-accent);
+	-webkit-clip-path: polygon(0 0,100% 0,65% 100%,0% 100%);
+    clip-path: polygon(0 0,100% 0,65% 100%,0% 100%);
 }
 .category-tile-copy {
 	display: flex;
