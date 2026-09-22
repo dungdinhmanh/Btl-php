@@ -1,4 +1,120 @@
 <?php
 require_once __DIR__ . '/backend/bootstrap.php';
-$legacyPage = 'contact';
-require BACKEND_PATH . '/views/legacy-page.php';
+?>
+<!doctype html>
+<html lang="vi">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Liên hệ | TNC Store</title>
+		<link rel="stylesheet" href="css/style.css" />
+		<link rel="icon" href="assets/favicon.png" />
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+		/>
+	</head>
+	<body>
+		<?php require 'partial/header.php' ?>
+		<main>
+			<section class="page-intro">
+				<div class="container">
+					<p class="eyebrow">TNC Store / Hỗ trợ</p>
+					<h1>
+						Chúng tôi đang
+						<br />
+						<span>lắng nghe bạn.</span>
+					</h1>
+				</div>
+			</section>
+			<section class="section-space">
+				<div class="container">
+					<div class="row g-5">
+						<div class="col-lg-5">
+							<p class="eyebrow">Kết nối cùng TNC</p>
+							<h2>Hỏi bất cứ điều gì.</h2>
+							<p class="lead-copy">
+								Từ chọn linh kiện tới theo dõi đơn hàng, đội ngũ của chúng tôi sẽ
+								phản hồi trong vòng 24 giờ làm việc.
+							</p>
+							<div class="contact-detail">
+								<i class="bi bi-envelope"></i>
+								<span>
+									<small>Email</small>
+									hello@tncstore.vn
+								</span>
+							</div>
+							<div class="contact-detail">
+								<i class="bi bi-telephone"></i>
+								<span>
+									<small>Hotline</small>
+									1900 6868
+								</span>
+							</div>
+							<div class="contact-detail">
+								<i class="bi bi-geo-alt"></i>
+								<span>
+									<small>Showroom</small>
+									123 Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh
+								</span>
+							</div>
+						</div>
+						<div class="col-lg-6 offset-lg-1">
+							<form class="contact-form">
+								<div class="row g-3">
+									<div class="col-md-6">
+										<label for="contact-name">Tên của bạn</label>
+										<input
+											id="contact-name"
+											class="form-control"
+											type="text"
+											placeholder="Nguyễn Văn A"
+										/>
+									</div>
+									<div class="col-md-6">
+										<label for="contact-email">Email</label>
+										<input
+											id="contact-email"
+											class="form-control"
+											type="email"
+											placeholder="you@example.com"
+										/>
+									</div>
+									<div class="col-12">
+										<label for="contact-topic">Chủ đề</label>
+										<select id="contact-topic" class="form-select">
+											<option>Tư vấn sản phẩm</option>
+											<option>Hỗ trợ đơn hàng</option>
+											<option>Hợp tác</option>
+										</select>
+									</div>
+									<div class="col-12">
+										<label for="contact-message">Nội dung</label>
+										<textarea
+											id="contact-message"
+											class="form-control"
+											rows="5"
+											placeholder="Bạn cần TNC hỗ trợ điều gì?"
+										></textarea>
+									</div>
+									<div class="col-12">
+										<button class="btn btn-primary" type="submit">
+											Gửi tin nhắn
+											<i class="bi bi-arrow-right ms-2"></i>
+										</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</section>
+		</main>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+		<?php require 'partial/footer.php' ?>
+	</body>
+</html>
