@@ -76,6 +76,6 @@ require_once __DIR__ . '/backend/bootstrap.php';
 		</main>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 		<script src="js/cart.js"></script>
-	    <?php require 'partial/header.php' ?>
+	    <?php require 'partial/footer.php' ?>
 	</body>
 </html>
