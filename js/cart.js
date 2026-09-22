@@ -17,17 +17,25 @@ function formatPrice(value) {
 }
 
 function getProductFromCard(card) {
+	// Cards rendered by js/catalog.js expose the product through data attributes, which
+	// keeps the cart entry accurate for every product type (CPU, mainboard, VGA).
 	const priceText = card.querySelector(".product-price")?.textContent || "0";
-	const icon = card.querySelector(".product-image i")?.className || "bi bi-box";
+	const icon =
+		card.dataset.productIcon || card.querySelector(".product-image i")?.className || "bi bi-box";
 	const imageClass = card.querySelector(".product-image")?.className || "product-image";
+	const heading = card.querySelector("h3")?.textContent.trim();
 
 	return {
 		id:
-			card.querySelector("h3")?.textContent.trim().toLowerCase().replace(/\s+/g, "-") ||
+			card.dataset.productId ||
+			heading?.toLowerCase().replace(/\s+/g, "-") ||
 			Date.now().toString(),
-		name: card.querySelector("h3")?.textContent.trim() || "Sản phẩm",
-		brand: card.querySelector(".product-brand")?.textContent.trim() || "TNC STORE",
-		price: Number(priceText.replace(/[^\d]/g, "")),
+		name: card.dataset.productName || heading || "Sản phẩm",
+		brand:
+			card.dataset.productBrand ||
+			card.querySelector(".product-brand")?.textContent.trim() ||
+			"TNC STORE",
+		price: Number(card.dataset.productPrice) || Number(priceText.replace(/[^\d]/g, "")),
 		icon,
 		imageClass,
 		quantity: 1,

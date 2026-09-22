@@ -1,72 +1,110 @@
 /**
- * Home page dynamic renderer
+ * Home page renderer.
+ *
+ * Renders the "DEAL GIỜ VÀNG" countdown and the category product rails that mirror the
+ * rows on tncstore.vn. All card markup comes from js/catalog.js so the home page and the
+ * catalog page stay in sync.
+ *
+ * Depends on: js/csv-parser.js, js/catalog.js.
  */
 
 document.addEventListener("DOMContentLoaded", async () => {
-	const container = document.querySelector("#featured-products-list");
-	if (!container) return;
-	const escapeHtml = (value) =>
-		String(value ?? "").replace(/[&<>'"]/g, (character) =>
-			({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[character],
-		);
+	const rails = [...document.querySelectorAll("[data-rail]")];
+	startDealCountdown(document.querySelector("[data-deal-timer]"));
+
+	if (rails.length === 0) return;
 
 	// MySQL-backed products take priority once the database is configured.
-	// The CSV renderer below remains a local-development fallback until then.
-	try {
-		const apiBase = window.TNC_API_BASE || "backend/api";
-		const response = await fetch(`${apiBase}/products.php?featured=1&limit=4`);
-		const payload = await response.json();
-		if (response.ok && payload.ok && Array.isArray(payload.data) && payload.data.length) {
-			container.innerHTML = payload.data
-				.map((product) => {
-					const name = escapeHtml(product.name);
-					const brand = escapeHtml(product.brand || "TNC Store");
-					const socket = escapeHtml(product.socket || "Liên hệ");
-					const image = escapeHtml(product.image || "assets/img/branding/tnc.png");
-					const url = `product-detail.php?slug=${encodeURIComponent(product.slug)}`;
-					const price = new Intl.NumberFormat("vi-VN").format(Number(product.price) || 0);
-					return `<div class="col-sm-6 col-lg-3 d-flex"><article class="product-card d-flex w-100 flex-column"><a href="${url}" class="product-image p-3 text-center bg-white d-block text-decoration-none"><img src="${image}" alt="${name}" class="img-fluid" style="height: 160px; object-fit: contain;"><span class="product-tag">Bán chạy</span></a><p class="product-brand">${brand} · ${socket}</p><h3><a href="${url}" class="text-decoration-none text-dark">${name}</a></h3><strong class="product-price">${price} đ</strong><button class="btn btn-outline-primary w-100 mt-auto" type="button"><i class="bi bi-cart-plus me-2"></i>Thêm vào giỏ</button></article></div>`;
-				})
-				.join("");
-			return;
-		}
-	} catch {
-		// The API is intentionally optional until MySQL and its schema are available.
+	// The CSV catalog below stays as the local-development fallback.
+	const apiProducts = await fetchFeaturedFromApi();
+	const products = await loadCatalog();
+
+	if (products.length === 0 && apiProducts.length === 0) {
+		rails.forEach((rail) => {
+			rail.innerHTML = '<p class="rail-empty">Chưa tải được dữ liệu sản phẩm.</p>';
+		});
+		return;
 	}
 
-	const cpuList = await fetchAndParseCSV("assets/products/cpu/sources.csv");
-	if (!cpuList || cpuList.length === 0) return;
+	const picks = {
+		deal: () => pickProducts(products, { sort: "deal", limit: 10 }),
+		vga: () => pickProducts(products, { type: "vga", limit: 10 }),
+		cpu: () => pickProducts(products, { type: "cpu", limit: 10 }),
+		mainboard: () => pickProducts(products, { type: "mainboard", limit: 10 }),
+		featured: () => (apiProducts.length ? apiProducts : pickProducts(products, { limit: 10 })),
+	};
 
-	// Lấy 4 sản phẩm CPU tiêu biểu có ảnh
-	const featured = cpuList.filter((p) => p.Ảnh && p.Ảnh.trim().length > 0).slice(0, 4);
+	rails.forEach((rail) => {
+		const pick = picks[rail.dataset.rail] || picks.featured;
+		const items = pick();
 
-	container.innerHTML = featured
-		.map((p) => {
-			const firstImg = p.Ảnh.split("|")[0].trim();
-			const imgSrc = `assets/products/cpu/${firstImg}`;
-			const detailUrl = `product-detail.html?model=${encodeURIComponent(p.Model)}`;
-			const fullName = `CPU ${p.Hãng} ${p.Model}`;
-			const price = p["Giá TB (VNĐ)"] || "Liên hệ";
-
-			return `
-				<div class="col-sm-6 col-lg-3 d-flex">
-					<article class="product-card d-flex w-100 flex-column">
-						<a href="${detailUrl}" class="product-image p-3 text-center bg-white d-block text-decoration-none">
-							<img src="${imgSrc}" alt="${fullName}" class="img-fluid" style="height: 160px; object-fit: contain;">
-							<span class="product-tag">Bán chạy</span>
-						</a>
-						<p class="product-brand">${p.Hãng} · Socket ${p.Socket}</p>
-						<h3>
-							<a href="${detailUrl}" class="text-decoration-none text-dark">${fullName}</a>
-						</h3>								
-						<strong class="product-price">${price}</strong>
-						<button class="btn btn-outline-primary w-100 mt-auto" type="button">
-							<i class="bi bi-cart-plus me-2"></i>
-							Thêm vào giỏ
-						</button>
-					</article>
-				</div>
-			`;
-		})
-		.join("");
+		rail.innerHTML = items.length
+			? productRailMarkup(items)
+			: '<p class="rail-empty">Danh mục này đang được cập nhật.</p>';
+		rail.removeAttribute("aria-busy");
+	});
 });
+
+/**
+ * Reads the featured products from the PHP/MySQL API. Returns an empty array when the
+ * database is not configured yet, which is the normal state for local development.
+ */
+async function fetchFeaturedFromApi() {
+	try {
+		const apiBase = window.TNC_API_BASE || "backend/api";
+		const response = await fetch(`${apiBase}/products.php?featured=1&limit=8`);
+		const payload = await response.json();
+
+		if (!response.ok || !payload.ok || !Array.isArray(payload.data)) return [];
+
+		return payload.data.map((row) => {
+			const product = decorateProduct({
+				type: "api",
+				id: `api-${row.slug || row.id}`,
+				brand: row.brand || "TNC Store",
+				model: row.name,
+				name: row.name,
+				spec: row.socket ? `Socket ${row.socket}` : "Chính hãng",
+				highlights: [],
+				image: row.image || "",
+				priceNum: Number(row.price) || 0,
+			});
+			product.detailUrl = `${storefrontPage("product-detail")}?slug=${encodeURIComponent(row.slug || "")}`;
+			return product;
+		});
+	} catch {
+		// The API is intentionally optional until MySQL and its schema are available.
+		return [];
+	}
+}
+
+/**
+ * Counts down to the end of the current three-hour window, matching the deal clock on the
+ * original storefront (the window resets at 00:00, 03:00, 06:00 and so on).
+ */
+function startDealCountdown(timer) {
+	if (!timer) return;
+
+	const units = {
+		hours: timer.querySelector('[data-deal-unit="hours"]'),
+		minutes: timer.querySelector('[data-deal-unit="minutes"]'),
+		seconds: timer.querySelector('[data-deal-unit="seconds"]'),
+	};
+	if (!units.hours || !units.minutes || !units.seconds) return;
+
+	const pad = (value) => String(value).padStart(2, "0");
+
+	const tick = () => {
+		const now = new Date();
+		const windowEnd = new Date(now);
+		windowEnd.setHours(Math.floor(now.getHours() / 3) * 3 + 3, 0, 0, 0);
+
+		const remaining = Math.max(0, Math.floor((windowEnd - now) / 1000));
+		units.hours.textContent = pad(Math.floor(remaining / 3600));
+		units.minutes.textContent = pad(Math.floor((remaining % 3600) / 60));
+		units.seconds.textContent = pad(remaining % 60);
+	};
+
+	tick();
+	setInterval(tick, 1000);
+}
