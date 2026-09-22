@@ -1,4 +1,271 @@
 <?php
 require_once __DIR__ . '/backend/bootstrap.php';
-$legacyPage = 'buildpc';
-require BACKEND_PATH . '/views/legacy-page.php';
+?>
+<!doctype html>
+<html lang="vi">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta
+			name="description"
+			content="Tự chọn linh kiện và xây dựng cấu hình PC phù hợp tại TNC Store."
+		/>
+		<title>Build PC | TNC Store</title>
+		<link rel="stylesheet" href="css/style.css" />
+		<link rel="icon" href="assets/favicon.png" />
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+		/>
+	</head>
+	<body class="buildpc-body">
+		<?php require 'partial/header.php' ?>
+		<main>
+			<section class="buildpc-intro">
+				<div class="container">
+					<div class="buildpc-intro-copy">
+						<p class="eyebrow">TNC Build / Tự chọn linh kiện</p>
+						<h1>
+							Xây cấu hình
+							<br />
+							<span>đúng nhu cầu.</span>
+						</h1>
+						<p>
+							Chọn từng linh kiện, theo dõi ngân sách và kiểm tra tương thích ngay
+							trong lúc build. Cấu hình của bạn sẽ được lưu trên trình duyệt này.
+						</p>
+					</div>
+					<div class="buildpc-intro-art" aria-hidden="true">
+						<i class="bi bi-cpu"></i>
+						<span>
+							BUILD
+							<br />
+							<b>YOUR WAY</b>
+						</span>
+					</div>
+				</div>
+			</section>
+
+			<section class="section-space buildpc-workspace">
+				<div class="container">
+					<div class="buildpc-toolbar">
+						<div>
+							<p class="eyebrow">Bộ linh kiện</p>
+							<h2>Chọn phần cứng</h2>
+						</div>
+						<button id="reset-build" class="btn btn-outline-primary" type="button">
+							<i class="bi bi-arrow-counterclockwise me-2"></i>
+							Làm lại
+						</button>
+					</div>
+					<div class="row g-4 align-items-start">
+						<div class="col-xl-8">
+							<div id="component-list" class="component-list"></div>
+						</div>
+						<aside class="col-xl-4">
+							<div class="build-summary" aria-live="polite">
+								<div class="build-summary-head">
+									<div>
+										<p class="eyebrow">Cấu hình của bạn</p>
+										<h2 id="summary-title">Chưa hoàn thiện</h2>
+									</div>
+									<span id="selected-count" class="build-count">0/8</span>
+								</div>
+								<div id="compatibility-message" class="compatibility-message">
+									<i class="bi bi-info-circle"></i>
+									<span>Chọn CPU và bo mạch chủ để bắt đầu kiểm tra.</span>
+								</div>
+								<div id="summary-list" class="summary-list"></div>
+								<div class="summary-total">
+									<span>Tạm tính</span>
+									<strong id="total-price">Chưa có dữ liệu</strong>
+								</div>
+								<button
+									id="consult-build"
+									class="btn btn-primary w-100"
+									type="button"
+								>
+									<i class="bi bi-chat-square-text me-2"></i>
+									Nhận tư vấn cấu hình
+								</button>
+								<p class="build-summary-note">
+									TNC sẽ kiểm tra lại nguồn, socket và khả năng nâng cấp trước khi
+									chốt đơn.
+								</p>
+							</div>
+						</aside>
+					</div>
+				</div>
+			</section>
+
+			<section class="section-space section-muted buildpc-notes">
+				<div class="container">
+					<div class="row g-4">
+						<div class="col-md-4">
+							<div class="build-note">
+								<i class="bi bi-shield-check"></i>
+								<h3>Tương thích rõ ràng</h3>
+								<p>
+									Socket CPU, loại RAM và công suất nguồn được kiểm tra trong lúc
+									chọn.
+								</p>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="build-note">
+								<i class="bi bi-sliders"></i>
+								<h3>Đi theo ngân sách</h3>
+								<p>
+									Thay từng linh kiện để cân bằng hiệu năng chơi game, làm việc
+									hoặc sáng tạo.
+								</p>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="build-note">
+								<i class="bi bi-person-check"></i>
+								<h3>Có người kiểm tra</h3>
+								<p>
+									Gửi cấu hình cho đội ngũ TNC để được rà soát trước khi đặt hàng.
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<div class="modal fade" id="consultModal" tabindex="-1" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered modal-sm">
+				<div class="modal-content account-modal">
+					<div class="modal-header border-0">
+						<h2 class="modal-title">Gửi cấu hình cho TNC</h2>
+						<button
+							type="button"
+							class="btn-close"
+							data-bs-dismiss="modal"
+							aria-label="Đóng"
+						></button>
+					</div>
+					<div class="modal-body pt-0">
+						<p class="build-modal-copy">
+							Để lại thông tin, đội ngũ tư vấn sẽ liên hệ với bạn.
+						</p>
+						<form id="consult-form">
+							<label for="consult-name">Họ và tên</label>
+							<input
+								id="consult-name"
+								class="form-control mb-3"
+								type="text"
+								required
+							/>
+							<label for="consult-phone">Số điện thoại</label>
+							<input
+								id="consult-phone"
+								class="form-control mb-3"
+								type="tel"
+								required
+							/>
+							<button class="btn btn-primary w-100" type="submit">Gửi yêu cầu</button>
+						</form>
+						<p id="consult-success" class="consult-success" hidden>
+							Đã ghi nhận cấu hình. TNC sẽ liên hệ sớm với bạn.
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="partPickerModal" tabindex="-1" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered modal-lg">
+				<div class="modal-content part-picker-modal">
+					<div class="modal-header">
+						<div>
+							<p class="eyebrow">Kho sản phẩm</p>
+							<h2 class="modal-title" id="part-picker-title">Chọn linh kiện</h2>
+						</div>
+						<button
+							type="button"
+							class="btn-close"
+							data-bs-dismiss="modal"
+							aria-label="Đóng"
+						></button>
+					</div>
+					<div class="modal-body">
+						<div class="part-picker-toolbar">
+							<label class="part-picker-search" for="part-search">
+								<i class="bi bi-search" aria-hidden="true"></i>
+								<input
+									id="part-search"
+									type="search"
+									placeholder="Tìm theo tên, thương hiệu..."
+									autocomplete="off"
+								/>
+							</label>
+							<select
+								id="part-brand-filter"
+								class="form-select"
+								aria-label="Lọc theo thương hiệu"
+							>
+								<option value="">Tất cả thương hiệu</option>
+							</select>
+						</div>
+						<div id="part-picker-results" class="part-picker-results">
+							<div class="part-picker-empty">
+								<i class="bi bi-database-exclamation"></i>
+								<strong>Chưa có dữ liệu sản phẩm</strong>
+								<p>
+									Kết quả từ database sẽ xuất hiện ở đây khi backend được kết nối.
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+		<script src="js/buildpc.js"></script>
+		<script src="js/cart.js"></script>
+		<footer class="site-footer">
+			<div class="container">
+				<div class="row g-4">
+					<div class="col-lg-5">
+						<a class="logo" href="index.html">
+							<img src="assets/img/branding/tnc.png" alt="TNC Store" />
+						</a>
+						<p>Thiết bị công nghệ chọn lọc cho những người luôn muốn làm tốt hơn.</p>
+					</div>
+					<div class="col-6 col-lg-2">
+						<h3>Khám phá</h3>
+						<a href="products.html">Sản phẩm</a>
+						<a href="about.html">Về TNC</a>
+						<a href="contact.html">Liên hệ</a>
+					</div>
+					<div class="col-6 col-lg-2">
+						<h3>Hỗ trợ</h3>
+						<a href="cart.html">Giỏ hàng</a>
+						<a href="payment.html">Thanh toán</a>
+						<a href="404.html">Tra cứu đơn</a>
+					</div>
+					<div class="col-lg-3">
+						<h3>Đăng ký nhận tin</h3>
+						<p>Ưu đãi mới, cập nhật sản phẩm mới mỗi tuần.</p>
+						<form class="newsletter">
+							<input
+								type="email"
+								placeholder="Email của bạn"
+								aria-label="Email của bạn"
+							/>
+							<button type="submit" aria-label="Subscribe">
+								<i class="bi bi-arrow-right"></i>
+							</button>
+						</form>
+					</div>
+				</div>
+		<?php require 'partial/header.php' ?>
+	</body>
+</html>
