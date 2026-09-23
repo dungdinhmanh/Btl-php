@@ -100,7 +100,7 @@ body .btn-link:hover {
 	width: 100%;
 	background: #29324e;
 }
-.header .header-fixed {
+.header.header-fixed {
 	position: fixed;
 	z-index: 999;
 	box-shadow: 0 6px 20px rgba(23, 33, 43, 0.25);

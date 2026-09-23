@@ -1,10 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
 	const header = document.querySelector(".header");
 	if (!header) return;
+	const initialOffsetTop = header.getBoundingClientRect().top + window.scrollY;
 
 	const syncHeaderState = () => {
-		const stuckAt = parseFloat(getComputedStyle(header).top) || 0;
-		header.classList.toggle("header-fixed", header.getBoundingClientRect().top <= stuckAt + 0.5);
+		header.classList.toggle("header-fixed", window.scrollY > initialOffsetTop);
 	};
 
 	window.addEventListener("scroll", syncHeaderState, { passive: true });
