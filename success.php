@@ -7,16 +7,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Đặt hàng thành công - TNC Store</title>
-		<link rel="stylesheet" href="css/style.css" />
-		<link rel="icon" href="assets/favicon.png" />
-		<link
-			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-			rel="stylesheet"
-		/>
-		<link
-			rel="stylesheet"
-			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css"
-		/>
+		<?php require 'partial/link.php' ?>
 	</head>
 	<body class="bg-light d-flex justify-content-center align-items-center vh-100">
 		<?php require 'partial/header.php' ?>
@@ -33,11 +24,10 @@ require_once __DIR__ . '/backend/bootstrap.php';
 			</p>
 			<!--  -->
 			<div class="d-grid gap-2">
-				<a href="index.html" class="btn btn-primary">Về trang chủ</a>
-				<a href="products.html" class="btn btn-outline-secondary">Tiếp tục mua sắm</a>
+				<a href="index.php" class="btn btn-primary">Về trang chủ</a>
+				<a href="products.php" class="btn btn-outline-secondary">Tiếp tục mua sắm</a>
 			</div>
 		</div>
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 		<?php require 'partial/footer.php' ?>
 	</body>
 </html>

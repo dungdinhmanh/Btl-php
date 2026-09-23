@@ -7,16 +7,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>Thanh toán | TNC Store</title>
-		<link rel="stylesheet" href="css/style.css" />
-		<link rel="icon" href="assets/favicon.png" />
-		<link
-			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-			rel="stylesheet"
-		/>
-		<link
-			rel="stylesheet"
-			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
-		/>
+		<?php require 'partial/link.php' ?>
 	</head>
 	<body>
   		<?php require 'partial/header.php' ?>
@@ -31,7 +22,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 				<div class="container">
 					<div class="row g-5">
 						<div class="col-lg-7">
-							<form class="checkout-form" id="checkoutForm" action="success.html">
+							<form class="checkout-form" id="checkoutForm" action="success.php">
 								<h2>Thông tin giao hàng</h2>
 								<div class="row g-3">
 									<div class="col-md-6">
@@ -185,8 +176,6 @@ require_once __DIR__ . '/backend/bootstrap.php';
 				</div>
 			</section>
 		</main>
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-		<script src="js/cart.js"></script>
 		<script src="js/checkout.js"></script>
 		<?php require 'partial/footer.php' ?>
 	</body>

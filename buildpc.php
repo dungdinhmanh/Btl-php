@@ -11,16 +11,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 			content="Tự chọn linh kiện và xây dựng cấu hình PC phù hợp tại TNC Store."
 		/>
 		<title>Build PC | TNC Store</title>
-		<link rel="stylesheet" href="css/style.css" />
-		<link rel="icon" href="assets/favicon.png" />
-		<link
-			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-			rel="stylesheet"
-		/>
-		<link
-			rel="stylesheet"
-			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
-		/>
+		<?php require 'partial/link.php' ?>
 	</head>
 	<body class="buildpc-body">
 		<?php require 'partial/header.php' ?>
@@ -227,45 +218,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 				</div>
 			</div>
 		</div>
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 		<script src="js/buildpc.js"></script>
-		<script src="js/cart.js"></script>
-		<footer class="site-footer">
-			<div class="container">
-				<div class="row g-4">
-					<div class="col-lg-5">
-						<a class="logo" href="index.html">
-							<img src="assets/img/branding/tnc.png" alt="TNC Store" />
-						</a>
-						<p>Thiết bị công nghệ chọn lọc cho những người luôn muốn làm tốt hơn.</p>
-					</div>
-					<div class="col-6 col-lg-2">
-						<h3>Khám phá</h3>
-						<a href="products.html">Sản phẩm</a>
-						<a href="about.html">Về TNC</a>
-						<a href="contact.html">Liên hệ</a>
-					</div>
-					<div class="col-6 col-lg-2">
-						<h3>Hỗ trợ</h3>
-						<a href="cart.html">Giỏ hàng</a>
-						<a href="payment.html">Thanh toán</a>
-						<a href="404.html">Tra cứu đơn</a>
-					</div>
-					<div class="col-lg-3">
-						<h3>Đăng ký nhận tin</h3>
-						<p>Ưu đãi mới, cập nhật sản phẩm mới mỗi tuần.</p>
-						<form class="newsletter">
-							<input
-								type="email"
-								placeholder="Email của bạn"
-								aria-label="Email của bạn"
-							/>
-							<button type="submit" aria-label="Subscribe">
-								<i class="bi bi-arrow-right"></i>
-							</button>
-						</form>
-					</div>
-				</div>
 		<?php require 'partial/footer.php' ?>
 	</body>
 </html>

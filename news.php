@@ -7,16 +7,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Tin tức công nghệ | TNC Store</title>
-		<link rel="icon" href="assets/favicon.png" />
-		<link
-			rel="stylesheet"
-			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-		/>
-		<link
-			rel="stylesheet"
-			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
-		/>
-		<link rel="stylesheet" href="css/style.css" />
+		<?php require 'partial/link.php' ?>
 	</head>
 	<body>
 		<?php require 'partial/header.php' ?>
@@ -42,7 +33,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 					<div class="row g-4 mb-5">
 						<div class="col-lg-7">
 							<article class="news-feature-card h-100">
-								<a class="news-image-wrap" href="news-post.html?post=pc-gaming">
+								<a class="news-image-wrap" href="news-post.php?post=pc-gaming">
 									<img
 										src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=1200&q=85"
 										alt="Bộ máy tính gaming với màn hình hiển thị"
@@ -54,7 +45,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 										<time datetime="2026-09-16">16.09.2026</time>
 									</div>
 									<h3>
-										<a href="news-post.html?post=pc-gaming">
+										<a href="news-post.php?post=pc-gaming">
 											Hướng dẫn chọn cấu hình PC Gaming phù hợp từng nhu cầu
 										</a>
 									</h3>
@@ -62,7 +53,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 										Đặt mục tiêu sử dụng và ngân sách trước, sau đó cân bằng
 										CPU, VGA và khả năng nâng cấp cho bộ máy.
 									</p>
-									<a class="news-read-link" href="news-post.html?post=pc-gaming">
+									<a class="news-read-link" href="news-post.php?post=pc-gaming">
 										Đọc bài viết
 										<i class="bi bi-arrow-right"></i>
 									</a>
@@ -72,7 +63,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 						<div class="col-lg-5">
 							<div class="news-list-card">
 								<article class="news-list-item">
-									<a class="news-thumb" href="news-post.html?post=monitor">
+									<a class="news-thumb" href="news-post.php?post=monitor">
 										<img
 											src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=600&q=80"
 											alt="Góc làm việc với nhiều màn hình"
@@ -84,14 +75,14 @@ require_once __DIR__ . '/backend/bootstrap.php';
 											<time datetime="2026-09-14">14.09.2026</time>
 										</div>
 										<h3>
-											<a href="news-post.html?post=monitor">
+											<a href="news-post.php?post=monitor">
 												4 thông số cần biết trước khi mua màn hình mới
 											</a>
 										</h3>
 									</div>
 								</article>
 								<article class="news-list-item">
-									<a class="news-thumb" href="news-post.html?post=setup">
+									<a class="news-thumb" href="news-post.php?post=setup">
 										<img
 											src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80"
 											alt="Góc máy tính với phụ kiện gaming"
@@ -103,14 +94,14 @@ require_once __DIR__ . '/backend/bootstrap.php';
 											<time datetime="2026-09-12">12.09.2026</time>
 										</div>
 										<h3>
-											<a href="news-post.html?post=setup">
+											<a href="news-post.php?post=setup">
 												5 nâng cấp nhỏ giúp góc máy gọn hơn
 											</a>
 										</h3>
 									</div>
 								</article>
 								<article class="news-list-item">
-									<a class="news-thumb" href="news-post.html?post=laptop">
+									<a class="news-thumb" href="news-post.php?post=laptop">
 										<img
 											src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80"
 											alt="Laptop trên bàn làm việc"
@@ -122,7 +113,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 											<time datetime="2026-09-10">10.09.2026</time>
 										</div>
 										<h3>
-											<a href="news-post.html?post=laptop">
+											<a href="news-post.php?post=laptop">
 												Laptop cho sinh viên: chọn gì là đủ?
 											</a>
 										</h3>
@@ -142,7 +133,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 					<div class="row g-4">
 						<div class="col-md-4">
 							<article class="news-grid-card">
-								<a href="news-post.html?post=pc-gaming">
+								<a href="news-post.php?post=pc-gaming">
 									<img
 										src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=700&q=80"
 										alt="Linh kiện máy tính"
@@ -154,7 +145,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 										<time datetime="2026-09-08">08.09.2026</time>
 									</div>
 									<h3>
-										<a href="news-post.html?post=pc-gaming">
+										<a href="news-post.php?post=pc-gaming">
 											CPU và VGA: phân bổ ngân sách sao cho hợp lý?
 										</a>
 									</h3>
@@ -164,7 +155,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 						</div>
 						<div class="col-md-4">
 							<article class="news-grid-card">
-								<a href="news-post.html?post=monitor">
+								<a href="news-post.php?post=monitor">
 									<img
 										src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=700&q=80"
 										alt="Laptop và màn hình trên bàn"
@@ -176,7 +167,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 										<time datetime="2026-09-06">06.09.2026</time>
 									</div>
 									<h3>
-										<a href="news-post.html?post=monitor">
+										<a href="news-post.php?post=monitor">
 											Tần số quét, độ phân giải và màu sắc: hiểu nhanh
 										</a>
 									</h3>
@@ -186,7 +177,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 						</div>
 						<div class="col-md-4">
 							<article class="news-grid-card">
-								<a href="news-post.html?post=setup">
+								<a href="news-post.php?post=setup">
 									<img
 										src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=700&q=80"
 										alt="Bàn phím và thiết bị gaming"
@@ -198,7 +189,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 										<time datetime="2026-09-04">04.09.2026</time>
 									</div>
 									<h3>
-										<a href="news-post.html?post=setup">
+										<a href="news-post.php?post=setup">
 											Hoàn thiện gaming setup không cần mua mọi thứ cùng lúc
 										</a>
 									</h3>
@@ -210,8 +201,6 @@ require_once __DIR__ . '/backend/bootstrap.php';
 				</section>
 			</div>
 		</main>
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-		<script src="js/cart.js"></script>
 		<?php require 'partial/footer.php' ?>	
 	</body>
 </html>

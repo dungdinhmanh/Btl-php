@@ -7,16 +7,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title id="page-title">Chi tiết sản phẩm | TNC Store</title>
-		<link rel="stylesheet" href="css/style.css" />
-		<link rel="icon" href="assets/favicon.png" />
-		<link
-			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-			rel="stylesheet"
-		/>
-		<link
-			rel="stylesheet"
-			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
-		/>
+		<?php require 'partial/link.php' ?>
 	</head>
 	<body>
 		<?php require 'partial/header.php' ?>
@@ -25,9 +16,9 @@ require_once __DIR__ . '/backend/bootstrap.php';
 				<!-- Breadcrumb -->
 				<nav aria-label="breadcrumb" class="mb-4">
 					<ol class="breadcrumb mb-0">
-						<li class="breadcrumb-item"><a href="index.html">Trang chủ</a></li>
+						<li class="breadcrumb-item"><a href="index.php">Trang chủ</a></li>
 						<li class="breadcrumb-item">
-							<a href="products.html">Sản phẩm</a>
+							<a href="products.php">Sản phẩm</a>
 						</li>
 						<li
 							class="breadcrumb-item active text-truncate"
@@ -100,7 +91,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 									<i class="bi bi-cart-plus me-2"></i>
 									Thêm vào giỏ hàng
 								</button>
-								<a href="checkout.html" class="btn btn-danger flex-fill py-2">
+								<a href="checkout.php" class="btn btn-danger flex-fill py-2">
 									Mua ngay
 								</a>
 							</div>
@@ -122,9 +113,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 				</div>
 			</div>
 		</main>
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 		<script src="js/csv-parser.js"></script>
-		<script src="js/cart.js"></script>
 		<script src="js/product-detail.js"></script>
 		<?php require 'partial/footer.php' ?>
 	</body>

@@ -7,16 +7,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>Giỏ hàng | TNC Store</title>
-		<link rel="stylesheet" href="css/style.css" />
-		<link rel="icon" href="assets/favicon.png" />
-		<link
-			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-			rel="stylesheet"
-		/>
-		<link
-			rel="stylesheet"
-			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
-		/>
+		<?php require 'partial/link.php' ?>
 	</head>
 	<body>
 		<?php require 'partial/header.php' ?>
@@ -31,7 +22,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 				<div class="container">
 					<div class="alert alert-light border d-none" data-cart-empty>
 						Giỏ hàng đang trống.
-						<a href="products.html">Tiếp tục mua sắm</a>
+						<a href="products.php">Tiếp tục mua sắm</a>
 					</div>
 					<div class="row g-5" data-cart-content>
 						<div class="col-lg-8">
@@ -42,7 +33,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 									<strong>Bạn có mã giảm giá?</strong>
 									<p>Nhập mã ở bước thanh toán để nhận ưu đãi.</p>
 								</div>
-								<a href="checkout.html">
+								<a href="checkout.php">
 									Thanh toán
 									<i class="bi bi-arrow-right"></i>
 								</a>
@@ -64,7 +55,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 									<span>Tổng cộng</span>
 									<strong data-cart-total>0đ</strong>
 								</div>
-								<a class="btn btn-primary w-100 mt-4" href="checkout.html">
+								<a class="btn btn-primary w-100 mt-4" href="checkout.php">
 									Tiến hành thanh toán
 									<i class="bi bi-arrow-right ms-2"></i>
 								</a>
@@ -74,8 +65,6 @@ require_once __DIR__ . '/backend/bootstrap.php';
 				</div>
 			</section>
 		</main>
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-		<script src="js/cart.js"></script>
 	    <?php require 'partial/footer.php' ?>
 	</body>
 </html>

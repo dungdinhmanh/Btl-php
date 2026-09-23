@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 			imgSrc,
 			priceStr,
 			priceNum,
-			detailUrl: `product-detail.html?type=cpu&model=${encodeURIComponent(p.Model)}`,
+			detailUrl: `product-detail.php?type=cpu&model=${encodeURIComponent(p.Model)}`,
 		};
 	});
 
@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 				imgSrc,
 				priceStr,
 				priceNum,
-				detailUrl: `product-detail.html?type=mainboard&model=${encodeURIComponent(model)}`,
+				detailUrl: `product-detail.php?type=mainboard&model=${encodeURIComponent(model)}`,
 			};
 		}),
 	);

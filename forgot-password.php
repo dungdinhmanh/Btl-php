@@ -7,16 +7,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>Quên mật khẩu | TNC Store</title>
-		<link rel="stylesheet" href="css/style.css" />
-		<link rel="icon" href="assets/favicon.png" />
-		<link
-			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-			rel="stylesheet"
-		/>
-		<link
-			rel="stylesheet"
-			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
-		/>
+		<?php require 'partial/link.php' ?>
 	</head>
 	<body style="background-color: #f5f7fa">
 		<?php require 'partial/header.php' ?>
@@ -40,7 +31,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 							<button class="btn btn-primary w-100 mb-3" type="submit">
 								Gửi yêu cầu
 							</button>
-							<a href="index.html#accountModal" class="btn btn-link w-100">
+							<a href="index.php#accountModal" class="btn btn-link w-100">
 								Quay lại đăng nhập
 							</a>
 						</form>
@@ -48,8 +39,6 @@ require_once __DIR__ . '/backend/bootstrap.php';
 				</div>
 			</section>
 		</main>
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-		<script src="js/cart.js"></script>
 		<?php require 'partial/footer.php' ?>
 	</body>
 </html>

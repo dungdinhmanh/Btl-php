@@ -12,10 +12,6 @@ require_once __DIR__ . '/backend/bootstrap.php';
 		<?php require 'partial/link.php' ?>
 	</head>
 	<body>
-		<div class="banner-top">
-			<a href=""></a>
-			<img src="assets/img/banner/banner-ad.png" alt="Banner top" />
-		</div>
 		<?php require 'partial/header.php'?>
 		<main>
 			<section class="promo-carousel-section">
@@ -161,14 +157,14 @@ require_once __DIR__ . '/backend/bootstrap.php';
 				<div class="container">
 					<h2 class="category-featured-title">Danh mục nổi bật</h2>
 					<div class="category-grid">
-						<a href="products.html?category=pc" class="category-tile">
+						<a href="products.php?category=pc" class="category-tile">
 							<div class="category-tile-copy">
 								<strong>PC GAMING</strong>
 								<span>Mua ngay - Giá đang rẻ</span>
 							</div>
 							<img src="assets/img/category/cat-pc-gaming-miku.jpg" alt="PC gaming" />
 						</a>
-						<a href="products.html?category=pc" class="category-tile">
+						<a href="products.php?category=pc" class="category-tile">
 							<div class="category-tile-copy">
 								<strong>PC ĐỒ HỌA AI</strong>
 								<span>Tối ưu công việc - Tối thiểu giá thành</span>
@@ -178,7 +174,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 								alt="PC đồ họa AI"
 							/>
 						</a>
-						<a href="products.html?category=monitor" class="category-tile">
+						<a href="products.php?category=monitor" class="category-tile">
 							<div class="category-tile-copy">
 								<strong>MÀN HÌNH MÁY TÍNH</strong>
 								<span>Thế giới màn hình giá rẻ</span>
@@ -188,7 +184,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 								alt="Màn hình máy tính"
 							/>
 						</a>
-						<a href="products.html?category=pc" class="category-tile">
+						<a href="products.php?category=pc" class="category-tile">
 							<div class="category-tile-copy">
 								<strong>VGA - CARD MÀN HÌNH</strong>
 								<span>Tổng kho VGA rẻ nhất Hà Nội</span>
@@ -198,7 +194,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 								alt="VGA card màn hình"
 							/>
 						</a>
-						<a href="products.html?category=pc" class="category-tile">
+						<a href="products.php?category=pc" class="category-tile">
 							<div class="category-tile-copy">
 								<strong>LAPTOP GAMING</strong>
 								<span>Giá rẻ - Cấu hình khủng</span>
@@ -208,7 +204,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 								alt="Laptop gaming"
 							/>
 						</a>
-						<a href="products.html?category=gaming-gear" class="category-tile">
+						<a href="products.php?category=gaming-gear" class="category-tile">
 							<div class="category-tile-copy">
 								<strong>MÁY CHƠI GAME PS5</strong>
 								<span>Chính hãng - Giá rẻ - Bảo hành 1 đổi 1</span>
@@ -218,7 +214,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 								alt="Máy chơi game PS5"
 							/>
 						</a>
-						<a href="products.html?category=gaming-gear" class="category-tile">
+						<a href="products.php?category=gaming-gear" class="category-tile">
 							<div class="category-tile-copy">
 								<strong>NINTENDO SWITCH</strong>
 								<span>Giá rẻ - Chơi game tuyệt đỉnh</span>
@@ -228,7 +224,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 								alt="Nintendo Switch"
 							/>
 						</a>
-						<a href="products.html?category=gaming-gear" class="category-tile">
+						<a href="products.php?category=gaming-gear" class="category-tile">
 							<div class="category-tile-copy">
 								<strong>GHẾ GAMING</strong>
 								<span>Rẻ, hiện đại, tối ưu công năng</span>
@@ -238,13 +234,77 @@ require_once __DIR__ . '/backend/bootstrap.php';
 					</div>
 				</div>
 			</section>
+			<?php
+			$productGroups = [
+				[
+					'title' => 'PC Gaming nổi bật',
+					'banner' => 'cat_big_82_1764436058.jpg',
+					'folders' => ['case', 'psu', 'vga', 'cpu'],
+				],
+				[
+					'title' => 'PC Đồ Họa AI nổi bật',
+					'banner' => 'cat_big_210_1764436013.jpg',
+					'folders' => ['vga', 'ram', 'cpu', 'mainboard'],
+				],
+				[
+					'title' => 'Laptop - Máy Tính Xách Tay nổi bật',
+					'banner' => 'cat_big_79_1764436023.jpg',
+					'folders' => ['ram', 'SSD'],
+				],
+				[
+					'title' => 'Màn Hình Máy Tính nổi bật',
+					'banner' => 'cat_big_68_1764436032.jpg',
+					'folders' => ['display'],
+				],
+				[
+					'title' => 'Máy chơi game - Console nổi bật',
+					'banner' => 'cat_big_217_1764436040.jpg',
+					'folders' => ['phụ kiện'],
+				],
+				[
+					'title' => 'Gaming Gears nổi bật',
+					'banner' => 'cat_big_78_1764436048.jpg',
+					'folders' => ['phụ kiện', 'case'],
+				],
+			];
+			?>
+			<div class="box-group-category">
+				<div class="container">
+					<?php foreach ($productGroups as $group): ?>
+					<div
+						class="group-category-home background-white"
+						data-group-folders="<?= implode(',', $group['folders']) ?>"
+					>
+						<div class="group-title d-flex align-items space-between">
+							<h2 class="title-left"><?= $group['title'] ?></h2>
+							<a href="products.php" class="more-all">
+								<span class="hover-txt">Xem tất cả</span>
+								<i class="bi bi-arrow-right" aria-hidden="true"></i>
+							</a>
+						</div>
+						<div class="content-product-category d-flex">
+							<a href="products.php" class="banner-sale-cate">
+								<img
+									src="assets/img/category/<?= $group['banner'] ?>"
+									width="100%"
+									height="100%"
+									alt="<?= $group['title'] ?>"
+									loading="lazy"
+								/>
+							</a>
+							<div class="product-list row g-4" data-product-list></div>
+						</div>
+					</div>
+					<?php endforeach; ?>
+				</div>
+			</div>
 			<section class="section-space section-muted">
 				<div class="container">
 					<div class="section-heading">
 						<div>
 							<h2>Sản phẩm nổi bật</h2>
 						</div>
-						<a href="products.html" class="text-link">
+						<a href="products.php" class="text-link">
 							Xem cửa hàng
 							<i class="bi bi-arrow-up-right"></i>
 						</a>
@@ -259,7 +319,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 								<p class="product-brand">Intel · Socket LGA1700</p>
 								<h3>
 									<a
-										href="product-detail.html?model=Core%20i5-12400F"
+										href="product-detail.php?model=Core%20i5-12400F"
 										class="text-decoration-none text-dark"
 									>
 										CPU Intel Core i5-12400F
@@ -283,7 +343,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 				</div>
 				<div class="row g-4 mb-4">
 					<div class="col-lg-6 col-md-12">
-						<div class="overflow-hidden h-100 ">
+						<div class="overflow-hidden ratio ratio-21x9">
 							<img
 								src="assets/img/Banner KM/anh1.jpg"
 								class="card-img object-fit-cover"
@@ -292,7 +352,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 						</div>
 					</div>
 					<div class="col-lg-6 col-md-12">
-						<div class="overflow-hidden h-100 ">
+						<div class="overflow-hidden ratio ratio-21x9">
 							<img
 								src="assets/img/Banner KM/anh2.jpg"
 								class="card-img object-fit-cover"
@@ -303,7 +363,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 				</div>
 				<div class="row g-4">
 					<div class="col-lg-6 col-md-12">
-						<div class="overflow-hidden shadow-sm h-100 hover-zoom">
+						<div class="overflow-hidden shadow-sm ratio ratio-21x9 hover-zoom">
 							<img
 								src="assets/img/Banner KM/anh3.jpg"
 								class="card-img object-fit-cover"
@@ -313,7 +373,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 					</div>
 					<!-- Banner 4 -->
 					<div class="col-lg-6 col-md-12">
-						<div class="overflow-hidden shadow-sm h-100 hover-zoom">
+						<div class="overflow-hidden shadow-sm ratio ratio-21x9 hover-zoom">
 							<img
 								src="assets/img/Banner KM/anh4.jpg"
 								class="card-img object-fit-cover"
@@ -333,7 +393,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 							<p class="eyebrow">Góc công nghệ TNC</p>
 							<h2 id="home-news-title">Tin tức mới nhất</h2>
 						</div>
-						<a href="news.html" class="text-link">
+						<a href="news.php" class="text-link">
 							Xem tất cả
 							<i class="bi bi-arrow-up-right"></i>
 						</a>
@@ -341,7 +401,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 					<div class="row g-4">
 						<div class="col-lg-6">
 							<article class="news-feature-card h-100">
-								<a href="news-post.html?post=pc-gaming" class="news-image-wrap">
+								<a href="news-post.php?post=pc-gaming" class="news-image-wrap">
 									<img
 										src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=1200&q=85"
 										alt="Bộ máy tính gaming với màn hình hiển thị"
@@ -353,7 +413,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 										<time datetime="2026-09-16">16.09.2026</time>
 									</div>
 									<h3>
-										<a href="news-post.html?post=pc-gaming">
+										<a href="news-post.php?post=pc-gaming">
 											Hướng dẫn chọn cấu hình PC Gaming phù hợp từng nhu cầu
 										</a>
 									</h3>
@@ -361,7 +421,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 										Từ CPU, card đồ họa đến ngân sách: các điểm cần cân nhắc
 										trước khi bắt đầu build PC.
 									</p>
-									<a class="news-read-link" href="news-post.html?post=pc-gaming">
+									<a class="news-read-link" href="news-post.php?post=pc-gaming">
 										Đọc bài viết
 										<i class="bi bi-arrow-right"></i>
 									</a>
@@ -371,7 +431,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 						<div class="col-lg-6">
 							<div class="news-list-card">
 								<article class="news-list-item">
-									<a href="news-post.html?post=monitor" class="news-thumb">
+									<a href="news-post.php?post=monitor" class="news-thumb">
 										<img
 											src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=600&q=80"
 											alt="Không gian làm việc với nhiều màn hình"
@@ -383,7 +443,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 											<time datetime="2026-09-14">14.09.2026</time>
 										</div>
 										<h3>
-											<a href="news-post.html?post=monitor">
+											<a href="news-post.php?post=monitor">
 												Chọn màn hình cho công việc và giải trí: đừng bỏ qua
 												4 thông số này
 											</a>
@@ -391,7 +451,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 									</div>
 								</article>
 								<article class="news-list-item">
-									<a href="news-post.html?post=setup" class="news-thumb">
+									<a href="news-post.php?post=setup" class="news-thumb">
 										<img
 											src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80"
 											alt="Góc máy tính với phụ kiện gaming"
@@ -403,14 +463,14 @@ require_once __DIR__ . '/backend/bootstrap.php';
 											<time datetime="2026-09-12">12.09.2026</time>
 										</div>
 										<h3>
-											<a href="news-post.html?post=setup">
+											<a href="news-post.php?post=setup">
 												5 nâng cấp nhỏ giúp góc máy gọn gàng và hiệu quả hơn
 											</a>
 										</h3>
 									</div>
 								</article>
 								<article class="news-list-item">
-									<a href="news-post.html?post=laptop" class="news-thumb">
+									<a href="news-post.php?post=laptop" class="news-thumb">
 										<img
 											src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80"
 											alt="Laptop trên bàn làm việc"
@@ -422,7 +482,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 											<time datetime="2026-09-10">10.09.2026</time>
 										</div>
 										<h3>
-											<a href="news-post.html?post=laptop">
+											<a href="news-post.php?post=laptop">
 												Laptop cho sinh viên: ưu tiên hiệu năng, pin hay
 												tính cơ động?
 											</a>
@@ -434,142 +494,133 @@ require_once __DIR__ . '/backend/bootstrap.php';
 					</div>
 				</div>
 			</section>
-			<section class="section-space">
+			<div class="feedback-customer">
 				<div class="container">
-					<div class="trust-strip">
-						<div>
-							<i class="bi bi-shield-check"></i>
-							<span>
-								<strong>Hàng chính hãng</strong>
-								Đổi trả minh bạch
-							</span>
-						</div>
-						<div>
-							<i class="bi bi-truck"></i>
-							<span>
-								<strong>Giao hàng toàn quốc</strong>
-								Đóng gói cẩn thận
-							</span>
-						</div>
-						<div>
-							<i class="bi bi-headset"></i>
-							<span>
-								<strong>Tư vấn tận tâm</strong>
-								Hỗ trợ trước và sau mua
-							</span>
-						</div>
-					</div>
-				</div>
-			</section>
-		</main>
-		<div
-			class="modal fade"
-			id="accountModal"
-			tabindex="-1"
-			aria-labelledby="accountModalLabel"
-			aria-hidden="true"
-		>
-			<div class="modal-dialog modal-dialog-centered modal-sm">
-				<div class="modal-content account-modal">
-					<div class="modal-header border-0 pb-0">
-						<h2 class="modal-title" id="accountModalLabel">Tài khoản</h2>
-						<button
-							type="button"
-							class="btn-close"
-							data-bs-dismiss="modal"
-							aria-label="Đóng"
-						></button>
-					</div>
-					<div class="modal-body pt-2">
-						<ul class="nav nav-tabs account-tabs mb-4" role="tablist">
-							<li class="nav-item" role="presentation">
-								<button
-									class="nav-link active"
-									data-bs-toggle="tab"
-									data-bs-target="#account-login-pane"
-									type="button"
-									role="tab"
-								>
-									Đăng nhập
-								</button>
-							</li>
-							<li class="nav-item" role="presentation">
-								<button
-									class="nav-link"
-									data-bs-toggle="tab"
-									data-bs-target="#account-register-pane"
-									type="button"
-									role="tab"
-								>
-									Đăng ký
-								</button>
-							</li>
-						</ul>
-						<div class="tab-content">
-							<div
-								class="tab-pane fade show active"
-								id="account-login-pane"
-								role="tabpanel"
-							>
-								<form>
-									<label for="modal-login-email">Email</label>
-									<input
-										id="modal-login-email"
-										class="form-control mb-3"
-										type="email"
-										placeholder="you@example.com"
-										required
-									/>
-									<label for="modal-login-password">Mật khẩu</label>
-									<input
-										id="modal-login-password"
-										class="form-control mb-3"
-										type="password"
-										placeholder="••••••••"
-										required
-									/>
-									<button class="btn btn-primary w-100" type="submit">
-										Đăng nhập
-									</button>
-								</form>
-								<a href="forgot-password.html" class="auth-link">Quên mật khẩu?</a>
+					<div class="content-feedback d-flex">
+						<div class="left-content-feedback">
+							<b>Cảm ơn</b>
+							<b class="red">1.000.000+</b>
+							<b>KHÁCH HÀNG ĐÃ VÀ ĐANG CHỌN</b>
+							<div class="list-star d-flex align-items">
+								<i class="bi bi-star-fill" aria-hidden="true"></i>
+								<i class="bi bi-star-fill" aria-hidden="true"></i>
+								<i class="bi bi-star-fill" aria-hidden="true"></i>
+								<i class="bi bi-star-fill" aria-hidden="true"></i>
+								<i class="bi bi-star-fill" aria-hidden="true"></i>
 							</div>
-							<div class="tab-pane fade" id="account-register-pane" role="tabpanel">
-								<form>
-									<label for="modal-register-name">Họ và tên</label>
-									<input
-										id="modal-register-name"
-										class="form-control mb-3"
-										type="text"
-										placeholder="Nguyễn Văn A"
-										required
-									/>
-									<label for="modal-register-email">Email</label>
-									<input
-										id="modal-register-email"
-										class="form-control mb-3"
-										type="email"
-										placeholder="you@example.com"
-										required
-									/>
-									<label for="modal-register-password">Mật khẩu</label>
-									<input
-										id="modal-register-password"
-										class="form-control mb-3"
-										type="password"
-										placeholder="Tối thiểu 8 ký tự"
-										required
-									/>
-									<button class="btn btn-primary w-100" type="submit">
-										Tạo tài khoản
-									</button>
-								</form>
+							<img
+								src="assets/img/feedback/logo-feedback.png"
+								width="126"
+								height="65"
+								alt="TNC Store"
+							/>
+						</div>
+						<div
+							class="list-feedback carousel slide"
+							id="js-slider-feedback"
+							data-bs-ride="carousel"
+						>
+							<div class="carousel-inner">
+								<div class="carousel-item active">
+									<a href="products.php" class="item">
+										<img
+											src="assets/img/feedback/anh-khach-hang-18-12.jpg"
+											width="2047"
+											height="1358"
+											alt="Khách hàng TNC Store"
+										/>
+									</a>
+									<a href="products.php" class="item">
+										<img
+											src="assets/img/feedback/anh-khach-hang-19-12-2.jpg"
+											width="2047"
+											height="1358"
+											alt="Khách hàng TNC Store"
+										/>
+									</a>
+								</div>
+								<div class="carousel-item">
+									<a href="products.php" class="item">
+										<img
+											src="assets/img/feedback/anh-khach-hang-19-12-2.jpg"
+											width="2047"
+											height="1358"
+											alt="Khách hàng TNC Store"
+										/>
+									</a>
+									<a href="products.php" class="item">
+										<img
+											src="assets/img/feedback/11_01-cead646c48b7b3e9c83eeb98bdb47e101.jpg"
+											width="2047"
+											height="1358"
+											alt="Khách hàng TNC Store"
+										/>
+									</a>
+								</div>
+								<div class="carousel-item">
+									<a href="products.php" class="item">
+										<img
+											src="assets/img/feedback/11_01-cead646c48b7b3e9c83eeb98bdb47e101.jpg"
+											width="2047"
+											height="1358"
+											alt="Khách hàng TNC Store"
+										/>
+									</a>
+									<a href="products.php" class="item">
+										<img
+											src="assets/img/feedback/anh-khach-hang-18-12.jpg"
+											width="2047"
+											height="1358"
+											alt="Khách hàng TNC Store"
+										/>
+									</a>
+								</div>
+							</div>
+							<button
+								class="carousel-control-prev"
+								type="button"
+								data-bs-target="#js-slider-feedback"
+								data-bs-slide="prev"
+							>
+								<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+								<span class="visually-hidden">Trước</span>
+							</button>
+							<button
+								class="carousel-control-next"
+								type="button"
+								data-bs-target="#js-slider-feedback"
+								data-bs-slide="next"
+							>
+								<span class="carousel-control-next-icon" aria-hidden="true"></span>
+								<span class="visually-hidden">Sau</span>
+							</button>
+							<div class="carousel-indicators">
+								<button
+									type="button"
+									data-bs-target="#js-slider-feedback"
+									data-bs-slide-to="0"
+									class="active"
+									aria-current="true"
+									aria-label="Nhóm ảnh 1"
+								></button>
+								<button
+									type="button"
+									data-bs-target="#js-slider-feedback"
+									data-bs-slide-to="1"
+									aria-label="Nhóm ảnh 2"
+								></button>
+								<button
+									type="button"
+									data-bs-target="#js-slider-feedback"
+									data-bs-slide-to="2"
+									aria-label="Nhóm ảnh 3"
+								></button>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		</main>
 		<div class="brand-slider-container">
 			<div class="brand-slider-title">Thương hiệu đồng hành</div>
 			<div class="brand-slider">
@@ -636,8 +687,6 @@ require_once __DIR__ . '/backend/bootstrap.php';
 		<?php require 'partial/footer.php'?>
 		<script src="js/csv-parser.js"></script>
 		<script src="js/home.js"></script>
-		<script src="js/cart.js"></script>
-		<script src="js/account.js"></script>
 		<script src="js/header.js"></script>
 	</body>
 </html>

@@ -7,25 +7,16 @@ require_once __DIR__ . '/backend/bootstrap.php';
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Hướng dẫn chọn cấu hình PC Gaming | TNC Store</title>
-		<link rel="icon" href="assets/favicon.png" />
-		<link
-			rel="stylesheet"
-			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-		/>
-		<link
-			rel="stylesheet"
-			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
-		/>
-		<link rel="stylesheet" href="css/style.css" />
+		<?php require 'partial/link.php' ?>
 	</head>
 	<body>
 		<?php require 'partial/header.php' ?>
 		<main class="article-page">
 			<article class="article-shell">
 				<div class="article-breadcrumb">
-					<a href="index.html">Trang chủ</a>
+					<a href="index.php">Trang chủ</a>
 					<i class="bi bi-chevron-right mx-1"></i>
-					<a href="news.html">Tin tức</a>
+					<a href="news.php">Tin tức</a>
 					<i class="bi bi-chevron-right mx-1"></i>
 					Hướng dẫn
 				</div>
@@ -78,14 +69,13 @@ require_once __DIR__ . '/backend/bootstrap.php';
 						Bạn có thể bắt đầu bằng danh sách linh kiện mình cần, sau đó dùng công cụ
 						Build PC để kiểm tra sự tương thích trước khi đặt hàng.
 					</p>
-					<a href="buildpc.html" class="btn btn-primary mt-2">
+					<a href="buildpc.php" class="btn btn-primary mt-2">
 						Bắt đầu Build PC
 						<i class="bi bi-arrow-right ms-1"></i>
 					</a>
 				</div>
 			</article>
 		</main>
-		<script src="js/cart.js"></script>
 		<?php require 'partial/footer.php' ?>
 	</body>
 </html>

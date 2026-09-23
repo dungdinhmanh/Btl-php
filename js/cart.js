@@ -39,6 +39,40 @@ function updateCartCount() {
 	document.querySelectorAll(".cart-icon b").forEach((counter) => {
 		counter.textContent = count;
 	});
+	renderCartHover();
+}
+
+function renderCartHover() {
+	const holder = document.querySelector("[data-cart-hover]");
+	if (!holder) return;
+
+	const cart = getCart();
+
+	if (cart.length === 0) {
+		holder.innerHTML =
+			'<b class="d-block text-center p-4">Có 0 sản phẩm trong giỏ hàng</b>';
+		return;
+	}
+
+	holder.innerHTML =
+		cart
+			.map(
+				(item) => `
+					<div class="cart-item">
+						<div class="cart-product-image ${item.imageClass.replace("product-image", "")}">
+							<i class="${item.icon}"></i>
+						</div>
+						<div class="flex-grow-1">
+							<p class="cart-meta">${item.brand}</p>
+							<h2>${item.name}</h2>
+							<p class="cart-meta">Số lượng: ${item.quantity}</p>
+						</div>
+						<strong>${formatPrice(item.price * item.quantity)}</strong>
+					</div>
+				`,
+			)
+			.join("") +
+		'<a href="cart.php" class="btn-submit"><span class="txt">Xem giỏ hàng</span></a>';
 }
 
 function addToCart(product) {

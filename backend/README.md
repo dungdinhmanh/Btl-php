@@ -1,6 +1,6 @@
 # PHP + MySQL backend skeleton
 
-The storefront now has PHP entry points (`index.php`, `products.php`, `news.php`, and the other page counterparts). They render the existing Bootstrap UI through `backend/views/legacy-page.php`, so the visual site stays intact while the data layer is migrated.
+The storefront now has PHP entry points (`index.php`, `products.php`, `news.php`, and the other page counterparts). Every page pulls the shared markup from `partial/header.php` and `partial/footer.php`, so the visual site stays consistent while the data layer is migrated.
 
 ## Local setup
 
@@ -53,5 +53,4 @@ backend/
   api/                          # read endpoints
   auth/                         # registration and login actions
   src/Repositories/             # prepared-statement data access
-  views/legacy-page.php         # temporary PHP migration bridge
 ```
