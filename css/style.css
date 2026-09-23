@@ -15,14 +15,12 @@
 }
 
 body {
-	/* Reserve room for the fixed top strip, which is out of flow */
-	padding-top: var(--banner-h);
 	color: var(--header-ink);
 	background: #fff;
 }
 
 main {
-	padding: 5% 0 5% 0;
+	padding: 10% 0 5% 0;
 }
 /* Homepage carousel sits flush under the header */
 main:has(> .promo-carousel-section) {
@@ -30,10 +28,8 @@ main:has(> .promo-carousel-section) {
 }
 
 .banner-top {
-	position: fixed;
-	top: 0;
-	left: 0;
-	z-index: 1000;
+	position: static;
+	z-index: 999;
 	width: 100%;
 	margin: 0 auto;
 	background: #ff6300;
@@ -42,7 +38,6 @@ main:has(> .promo-carousel-section) {
 	display: block;
 	width: 100%;
 	max-width: 1600px;
-	height: auto;
 	margin: 0 auto;
 }
 
@@ -102,13 +97,12 @@ body .btn-link:hover {
 }
 /* Header */
 .header {
-	position: sticky;
-	top: var(--banner-h);
-	z-index: 999;
 	width: 100%;
 	background: #29324e;
 }
-.header.header-fixed {
+.header .header-fixed {
+	position: fixed;
+	z-index: 999;
 	box-shadow: 0 6px 20px rgba(23, 33, 43, 0.25);
 }
 .header .header-top {
@@ -301,9 +295,6 @@ body .btn-link:hover {
 .header-bottom .header-bottom-right .item:last-child {
 	border-right: 0;
 }
-.header-bottom .header-bottom-right .item:hover {
-	color: #9fc4ff;
-}
 @media (max-width: 991.98px) {
 	.header-bottom .header-bottom-content {
 		flex-wrap: wrap;
@@ -322,6 +313,25 @@ body .btn-link:hover {
 	.header-bottom .header-bottom-right {
 		margin-left: 0;
 	}
+}
+.hover {
+	position: relative;
+	text-decoration: none;
+}
+.hover::after {
+	content: "";
+	position: absolute;
+	left: 15px;
+    right: 15px;
+	bottom: 0;
+	height: 1.5px;
+	background-color: #fff;
+	transform: scaleX(0);
+	transform-origin: left;
+	transition: transform 0.3s ease;
+}
+.hover:hover::after {
+	transform: scaleX(1);
 }
 .logo {
 	display: inline-flex;
@@ -781,7 +791,7 @@ body .btn-link:hover {
 	font-size: 1rem;
 }
 .product-price {
-	color: var(--header-accent);
+	color: var(--color-red);
 }
 .feedback-customer {
 	margin-top: 32px;

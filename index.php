@@ -9,7 +9,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 		<title>TNC Store</title>
 		<meta name="description" content="" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<?php require 'partial/link.php' ?>
+		<?php require 'partial/link.php'?>
 	</head>
 	<body>
 		<?php require 'partial/header.php'?>
