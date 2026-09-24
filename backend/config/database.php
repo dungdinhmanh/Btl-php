@@ -14,20 +14,28 @@ function database(): PDO
     $name = getenv('DB_DATABASE') ?: '';
     $user = getenv('DB_USERNAME') ?: '';
     $password = getenv('DB_PASSWORD') ?: '';
+    $sslCa = getenv('DB_SSL_CA') ?: '';
 
     if ($name === '' || $user === '') {
         throw new RuntimeException('Database is not configured. Copy backend/config/.env.example to .env and fill in the connection values.');
     }
 
-    $connection = new PDO(
+    $option = [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
+    ];
+
+    if ($sslCa !== '') {
+    $options[PDO::MYSQL_ATTR_SSL_CA] = __DIR__ . DIRECTORY_SEPARATOR . $sslCa;
+    $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true;
+}
+
+    $connection = new PDO (
         "mysql:host={$host};port={$port};dbname={$name};charset=utf8mb4",
         $user,
         $password,
-        [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-        ],
+        $option,
     );
 
     return $connection;

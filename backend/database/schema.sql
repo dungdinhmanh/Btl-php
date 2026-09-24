@@ -1,6 +1,3 @@
--- TNC Store database schema
--- Target: MySQL 8.0.16+ / InnoDB / utf8mb4
--- This file creates structure and small lookup data only; it contains no sample customers or orders.
 
 CREATE DATABASE IF NOT EXISTS tnc_store
   CHARACTER SET utf8mb4
