@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	const initialOffsetTop = header.getBoundingClientRect().top + window.scrollY;
 
 	const syncHeaderState = () => {
-		header.classList.toggle("header-fixed", window.scrollY > 700);
+		header.classList.toggle("header-fixed", window.scrollY > initialOffsetTop);
 	};
 
 	window.addEventListener("scroll", syncHeaderState, { passive: true });

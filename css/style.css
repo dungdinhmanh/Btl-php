@@ -99,11 +99,8 @@ body .btn-link:hover {
 .header {
 	width: 100%;
 	background: #29324e;
-	transition: 0.5s;
-	top: -50px
 }
 .header.header-fixed {
-	top: 0;
 	position: fixed;
 	z-index: 999;
 	box-shadow: 0 6px 20px rgba(23, 33, 43, 0.25);
