@@ -16,7 +16,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 				<div class="container">
 					<div class="auth-card account-modal">
 						<h1 class="modal-title mb-4">Tạo tài khoản</h1>
-						<form>
+						<form action="backend/auth/register.php">
 							<label for="register-name">Họ và tên</label>
 							<input
 								id="register-name"

@@ -4,7 +4,6 @@ declare(strict_types=1);
 final class ProductRepository
 {
     public function __construct(private readonly PDO $db) {}
-
     /**
      * Reads the normalized products, brands, categories, and product_images tables.
      */
