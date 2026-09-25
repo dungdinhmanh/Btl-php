@@ -371,7 +371,6 @@ require_once __DIR__ . '/backend/bootstrap.php';
 							/>
 						</div>
 					</div>
-					<!-- Banner 4 -->
 					<div class="col-lg-6 col-md-12">
 						<div class="overflow-hidden shadow-sm ratio ratio-21x9 hover-zoom">
 							<img
@@ -390,7 +389,6 @@ require_once __DIR__ . '/backend/bootstrap.php';
 				<div class="container">
 					<div class="section-heading">
 						<div>
-							<p class="eyebrow">Góc công nghệ TNC</p>
 							<h2 id="home-news-title">Tin tức mới nhất</h2>
 						</div>
 						<a href="news.php" class="text-link">
@@ -500,7 +498,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 						<div class="left-content-feedback">
 							<b>Cảm ơn</b>
 							<b class="red">1.000.000+</b>
-							<b>KHÁCH HÀNG ĐÃ VÀ ĐANG CHỌN</b>
+							<b>KHÁCH HÀNG ĐÃ VÀ ĐANG CHỌN</b>0
 							<div class="list-star d-flex align-items">
 								<i class="bi bi-star-fill" aria-hidden="true"></i>
 								<i class="bi bi-star-fill" aria-hidden="true"></i>
