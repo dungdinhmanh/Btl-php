@@ -837,14 +837,13 @@ body .btn-link:hover {
 }
 .list-feedback .carousel-item.active {
 	display: flex;
-	gap: 16px;
 }
 .list-feedback .item {
 	flex: 1 1 0;
 	min-width: 0;
 }
 .list-feedback .item img {
-	height: auto;
+	max-height: 800px;
 }
 .list-feedback .carousel-control-prev,
 .list-feedback .carousel-control-next {
@@ -1360,6 +1359,60 @@ body .btn-link:hover {
 	border: 1px solid #edf0f4;
 }
 
+.part-picker-item {
+	display: flex;
+	width: 100%;
+	align-items: center;
+	gap: 1rem;
+	padding: 0.75rem 1rem;
+	border: 0;
+	border-bottom: 1px solid #edf0f4;
+	background: transparent;
+	text-align: left;
+	cursor: pointer;
+}
+
+.part-picker-item:last-child {
+	border-bottom: 0;
+}
+
+.part-picker-item:hover,
+.part-picker-item:focus-visible {
+	background: #f7f9fc;
+}
+
+.part-picker-item img {
+	width: 56px;
+	height: 56px;
+	flex-shrink: 0;
+	object-fit: contain;
+}
+
+.part-picker-info {
+	display: flex;
+	min-width: 0;
+	flex: 1;
+	flex-direction: column;
+}
+
+.part-picker-info strong {
+	color: var(--header-ink);
+	font-size: 0.82rem;
+	line-height: 1.4;
+}
+
+.part-picker-info small {
+	color: #8490a0;
+	font-size: 0.72rem;
+}
+
+.part-picker-price {
+	color: var(--header-accent);
+	font-size: 0.85rem;
+	font-weight: 700;
+	white-space: nowrap;
+}
+
 .part-picker-empty {
 	display: flex;
 	min-height: 245px;
@@ -1386,14 +1439,6 @@ body .btn-link:hover {
 	color: #8490a0;
 	font-size: 0.78rem;
 	line-height: 1.6;
-}
-
-.part-picker-api-note {
-	margin-top: 1rem;
-	padding: 0.35rem 0.55rem;
-	background: #f2f4f8;
-	color: #68737d;
-	font-size: 0.68rem;
 }
 
 .consult-success {
@@ -1779,6 +1824,23 @@ body .btn-link:hover {
 	background: #e5e9f2;
 	color: #536487;
 	font-size: 3rem;
+}
+.cart-product-image.has-image {
+	background: #fff;
+	border: 1px solid #e4e8ee;
+}
+.cart-product-image img {
+	width: 100%;
+	height: 100%;
+	padding: 0.4rem;
+	object-fit: contain;
+}
+.mini-product-thumb {
+	width: 22px;
+	height: 22px;
+	margin-right: 0.4rem;
+	object-fit: contain;
+	vertical-align: middle;
 }
 .cart-item h2 {
 	margin-bottom: 0.35rem;
@@ -2610,6 +2672,23 @@ body .btn-link:hover {
 	color: #68737d;
 	font-weight: 600;
 	background: #f8f9fa;
+}
+
+.product-stock {
+	margin: 0 0 1rem;
+	color: #68737d;
+	font-size: 0.9rem;
+	font-weight: 600;
+}
+.product-stock:empty {
+	display: none;
+}
+
+.admin-loading {
+	grid-column: 1 / -1;
+	padding: 2rem 1rem;
+	text-align: center;
+	color: #9aa3af;
 }
 
 .brand-slider-container {

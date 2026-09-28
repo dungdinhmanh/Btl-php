@@ -1,107 +1,139 @@
 /**
- * Dynamic product detail page renderer
+ * Product detail page: renders one product fetched from the products endpoint.
  */
+
+const TNC_CATEGORY_ICONS = {
+	cpu: "bi-cpu",
+	mainboard: "bi-motherboard",
+	vga: "bi-gpu-card",
+	ram: "bi-memory",
+	ssd: "bi-device-ssd",
+	case: "bi-pc",
+	psu: "bi-lightning-charge",
+	display: "bi-display",
+	"phu-kien": "bi-plug",
+};
 
 document.addEventListener("DOMContentLoaded", async () => {
 	const params = new URLSearchParams(window.location.search);
-	const targetParam = (params.get("model") || params.get("id") || params.get("slug") || "")
-		.trim()
-		.toLowerCase();
-	const productType = params.get("type") === "mainboard" ? "mainboard" : "cpu";
-	const sourcePath = `assets/products/${productType}/sources.csv`;
-	const modelField = productType === "mainboard" ? "Tên sản phẩm" : "Model";
+	const identifier = (params.get("slug") || params.get("model") || params.get("id") || "").trim();
 
-	const productList = await fetchAndParseCSV(sourcePath, productType === "cpu" ? undefined : []);
-	if (!productList || productList.length === 0) {
-		console.warn(`Không tải được dữ liệu ${productType} từ sources.csv`);
+	if (identifier === "") {
+		showProductError("Đường dẫn thiếu tham số sản phẩm.");
 		return;
 	}
 
-	// Tìm sản phẩm khớp hoặc mặc định lấy sản phẩm đầu tiên có ảnh
-	let product = null;
-	if (targetParam) {
-		product = productList.find((p) => {
-			const modelSlug = toSlug(p[modelField]);
-			const modelLower = (p[modelField] || "").toLowerCase();
-			return (
-				modelSlug === targetParam ||
-				modelLower === targetParam ||
-				modelSlug.includes(targetParam) ||
-				modelLower.includes(targetParam)
-			);
-		});
-	}
+	const specBody = document.querySelector("#spec-table tbody");
+	if (specBody) specBody.innerHTML = TNC.loadingRow(2, "Đang tải thông số...");
 
-	if (!product) {
-		product =
-			productType === "cpu"
-				? productList.find((p) => (p.Model || "").includes("12400F")) || productList[0]
-				: productList[0];
+	try {
+		renderProductDetail(await TNC.api.product(identifier));
+	} catch (error) {
+		showProductError(error?.message || "Không tải được sản phẩm.");
 	}
-
-	renderProductDetail(product, productType);
 });
 
-function renderProductDetail(product, productType) {
-	const model = productType === "mainboard" ? product["Tên sản phẩm"] : product.Model;
-	const fullName = `${productType === "mainboard" ? "Mainboard" : "CPU"} ${product.Hãng} ${model}`;
-	const priceNum = Number((product["Giá TB (VNĐ)"] || "0").replace(/[^\d]/g, ""));
-	const images = (product["Ảnh"] || "")
-		.split("|")
-		.map((img) => img.trim())
-		.filter(Boolean)
-		.map((img) => `assets/products/${productType}/${img}`);
+function showProductError(message) {
+	const nameEl = document.querySelector("#product-name");
+	if (nameEl) nameEl.textContent = "Không tìm thấy sản phẩm";
 
-	// 1. Tiêu đề trang & Breadcrumb
-	const pageTitle = document.querySelector("#page-title");
-	if (pageTitle) pageTitle.textContent = `${fullName} | TNC Store`;
+	const priceEl = document.querySelector("#product-price");
+	if (priceEl) priceEl.textContent = "---";
 
-	const breadcrumbName = document.querySelector("#breadcrumb-product-name");
-	if (breadcrumbName) breadcrumbName.textContent = fullName;
+	const specBody = document.querySelector("#spec-table tbody");
+	if (specBody) {
+		specBody.innerHTML = `<tr><td colspan="2">${TNC.escapeHtml(message)}</td></tr>`;
+	}
+}
 
-	// 2. Thông tin chính
+function renderProductDetail(product) {
+	const title = document.querySelector("#page-title");
+	if (title) title.textContent = `${product.name} | TNC Store`;
+
+	const breadcrumb = document.querySelector("#breadcrumb-product-name");
+	if (breadcrumb) breadcrumb.textContent = product.name;
+
 	const brandEl = document.querySelector("#product-brand");
 	if (brandEl) {
-		brandEl.textContent = product.Hãng;
+		brandEl.textContent = product.brand || product.categoryName;
 		brandEl.className = "badge bg-dark text-uppercase mb-2 align-self-start px-2 py-1";
 	}
 
 	const nameEl = document.querySelector("#product-name");
-	if (nameEl) nameEl.textContent = fullName;
+	if (nameEl) nameEl.textContent = product.name;
 
 	const modelEl = document.querySelector("#product-model");
-	if (modelEl) {
-		modelEl.textContent =
-			productType === "mainboard"
-				? `Socket: ${product.Socket} · ${product["Chuẩn RAM (DDR4/DDR5)"]} · ${product["Form factor (ATX/mATX/ITX)"]}`
-				: `Socket: ${product.Socket} · ${product["Số nhân/luồng"] || ""} · ${product["Xung nhịp"] || ""}`;
-	}
+	if (modelEl) modelEl.textContent = buildModelLine(product);
 
 	const priceEl = document.querySelector("#product-price");
-	if (priceEl) {
-		priceEl.textContent = product["Giá TB (VNĐ)"] || "Liên hệ";
-	}
+	if (priceEl) priceEl.textContent = product.priceText;
 
-	// 3. Mô tả ngắn
-	const descEl = document.querySelector("#product-desc");
-	if (descEl) {
-		const igpuText =
-			product.iGPU && product.iGPU !== "Không có"
-				? `Tích hợp nhân đồ họa ${product.iGPU}.`
-				: "Sản phẩm không tích hợp sẵn nhân đồ họa, cần sử dụng kèm card màn hình rời (VGA).";
+	renderStock(product);
+	renderGallery(product);
+	renderSpecs(product);
+	wireAddToCart(product);
+}
 
-		descEl.textContent =
-			productType === "mainboard"
-				? `Bo mạch chủ ${product.Hãng} ${model}, chuẩn Socket ${product.Socket}, hỗ trợ ${product["Chuẩn RAM (DDR4/DDR5)"]} và kích thước ${product["Form factor (ATX/mATX/ITX)"]}.`
-				: `Bộ vi xử lý ${product.Hãng} ${model} chuẩn Socket ${product.Socket}, cấu hình ${product["Số nhân/luồng"] || "đa nhân"}, tốc độ tối đa ${product["Xung nhịp"] || ""}, công suất tiêu thụ cơ bản ${product.TDP || "65W"}. ${igpuText}`;
-	}
+function buildModelLine(product) {
+	const parts = [];
+	if (product.socket) parts.push(`Socket: ${product.socket}`);
+	product.specs.slice(0, 2).forEach((spec) => parts.push(`${spec.label}: ${spec.value}`));
 
-	// 4. Gallery ảnh tương tác
+	return parts.join(" · ");
+}
+
+function renderStock(product) {
+	const holder = document.querySelector("#product-stock");
+	if (!holder) return;
+
+	holder.className = "product-stock";
+	holder.textContent = `Tồn kho: ${Number(product.stock) || 0}`;
+}
+
+function renderGallery(product) {
 	const mainImg = document.querySelector("#main-product-img");
 	const thumbsContainer = document.querySelector("#gallery-thumbs");
-	const zoomContainer = mainImg?.closest(".product-image-zoom");
+	const images = product.images?.length ? product.images : [product.image];
 
-	if (mainImg && zoomContainer) {
+	if (mainImg) {
+		mainImg.src = images[0];
+		mainImg.alt = product.name;
+	}
+
+	thumbsContainer?.querySelectorAll(".product-thumb").forEach((thumb) => {
+		thumb.replaceWith(thumb.cloneNode(true));
+	});
+
+	if (thumbsContainer) {
+		thumbsContainer.innerHTML = images
+			.map(
+				(imgSrc, index) => `
+					<img
+						src="${TNC.escapeHtml(imgSrc)}"
+						alt="${TNC.escapeHtml(product.name)} ${index + 1}"
+						class="product-thumb ${index === 0 ? "active" : ""}"
+						data-img-src="${TNC.escapeHtml(imgSrc)}"
+					/>
+				`,
+			)
+			.join("");
+
+		thumbsContainer.querySelectorAll(".product-thumb").forEach((thumb) => {
+			const switchImg = () => {
+				thumbsContainer
+					.querySelectorAll(".product-thumb")
+					.forEach((other) => other.classList.remove("active"));
+				thumb.classList.add("active");
+				if (mainImg) mainImg.src = thumb.dataset.imgSrc;
+			};
+			thumb.addEventListener("click", switchImg);
+			thumb.addEventListener("mouseenter", switchImg);
+		});
+	}
+
+	const zoomContainer = mainImg?.closest(".product-image-zoom");
+	if (mainImg && zoomContainer && !zoomContainer.dataset.zoomReady) {
+		zoomContainer.dataset.zoomReady = "true";
 		zoomContainer.addEventListener("mouseenter", () => {
 			mainImg.style.transform = "scale(2)";
 		});
@@ -116,113 +148,60 @@ function renderProductDetail(product, productType) {
 			mainImg.style.transformOrigin = "center center";
 		});
 	}
+}
 
-	if (images.length > 0) {
-		if (mainImg) {
-			mainImg.src = images[0];
-			mainImg.alt = fullName;
-		}
+function renderSpecs(product) {
+	const specBody = document.querySelector("#spec-table tbody");
+	if (!specBody) return;
 
-		if (thumbsContainer) {
-			thumbsContainer.innerHTML = images
-				.map(
-					(imgSrc, index) => `
-						<img
-							src="${imgSrc}"
-							alt="${fullName} ${index + 1}"
-							class="product-thumb ${index === 0 ? "active" : ""}"
-							data-img-src="${imgSrc}"
-						/>
-					`,
-				)
-				.join("");
+	const rows = [
+		{ label: "Hãng sản xuất", value: product.brand || "Đang cập nhật" },
+		{ label: "Danh mục", value: product.categoryName },
+	];
+	if (product.socket) rows.push({ label: "Chuẩn Socket", value: product.socket });
+	product.specs.forEach((spec) =>
+		rows.push({ label: spec.label, value: spec.unit ? `${spec.value} ${spec.unit}` : spec.value }),
+	);
+	rows.push({ label: "Bảo hành", value: "36 Tháng" });
 
-			thumbsContainer.querySelectorAll(".product-thumb").forEach((thumb) => {
-				const switchImg = () => {
-					thumbsContainer
-						.querySelectorAll(".product-thumb")
-						.forEach((t) => t.classList.remove("active"));
-					thumb.classList.add("active");
-					if (mainImg) mainImg.src = thumb.dataset.imgSrc;
-				};
-				thumb.addEventListener("click", switchImg);
-				thumb.addEventListener("mouseenter", switchImg);
+	specBody.innerHTML = rows
+		.map(
+			(row) => `
+				<tr>
+					<th>${TNC.escapeHtml(row.label)}</th>
+					<td>${TNC.escapeHtml(row.value)}</td>
+				</tr>
+			`,
+		)
+		.join("");
+}
+
+function wireAddToCart(product) {
+	const button = document.querySelector("#btn-add-to-cart");
+	if (!button) return;
+
+	button.onclick = () => {
+		const qtyInput = document.querySelector("#product-qty");
+		const quantity = Math.max(1, parseInt(qtyInput?.value, 10) || 1);
+
+		if (typeof addToCart === "function") {
+			addToCart({
+				id: product.slug,
+				name: product.name,
+				brand: product.brand || "TNC STORE",
+				price: product.price,
+				image: product.image,
+				icon: `bi ${TNC_CATEGORY_ICONS[product.category] || "bi-box-seam"}`,
+				quantity,
 			});
 		}
-	} else {
-		if (mainImg) mainImg.src = "assets/img/branding/tnc.png";
-		if (thumbsContainer) thumbsContainer.innerHTML = "";
-	}
 
-	// 5. Bảng thông số kỹ thuật (Specs table)
-	const specTable = document.querySelector("#spec-table tbody");
-	if (specTable) {
-		const specs =
-			productType === "mainboard"
-				? [
-						{ label: "Hãng sản xuất", value: product.Hãng },
-						{ label: "Model", value: model },
-						{ label: "Chuẩn Socket", value: product.Socket },
-						{ label: "Chuẩn RAM", value: product["Chuẩn RAM (DDR4/DDR5)"] },
-						{ label: "Form factor", value: product["Form factor (ATX/mATX/ITX)"] },
-						{ label: "Tình trạng", value: "Mới 100% - Chính hãng" },
-						{ label: "Bảo hành", value: "36 Tháng" },
-					]
-				: [
-						{ label: "Hãng sản xuất", value: product.Hãng },
-						{ label: "Model", value: model },
-						{ label: "Chuẩn Socket", value: product.Socket },
-						{ label: "Số nhân / Số luồng", value: product["Số nhân/luồng"] || "---" },
-						{ label: "Xung nhịp tối đa", value: product["Xung nhịp"] || "---" },
-						{ label: "Điện năng tiêu thụ (TDP)", value: product.TDP || "---" },
-						{ label: "Đồ họa tích hợp (iGPU)", value: product.iGPU || "Không có" },
-						{ label: "Tình trạng", value: "Mới 100% - Chính hãng" },
-						{ label: "Bảo hành", value: "36 Tháng" },
-					];
-
-		specTable.innerHTML = specs
-			.map(
-				(s) => `
-					<tr>
-						<th>${s.label}</th>
-						<td>${s.value}</td>
-					</tr>
-				`,
-			)
-			.join("");
-	}
-
-	// 6. Xử lý nút Thêm vào giỏ hàng
-	const addToCartBtn = document.querySelector("#btn-add-to-cart");
-	if (addToCartBtn) {
-		addToCartBtn.onclick = () => {
-			const qtyInput = document.querySelector("#product-qty");
-			const qty = Math.max(1, parseInt(qtyInput?.value, 10) || 1);
-
-			const cartItem = {
-				id: toSlug(`${productType}-${model}`) || Date.now().toString(),
-				name: fullName,
-				brand: product.Hãng || "TNC STORE",
-				price: priceNum,
-				icon: productType === "mainboard" ? "bi bi-motherboard" : "bi bi-cpu",
-				imageClass: "product-image",
-				quantity: qty,
-			};
-
-			// Gọi addToCart hoặc tự lưu nếu đã có cart.js
-			if (typeof addToCart === "function") {
-				for (let i = 0; i < qty; i++) {
-					addToCart({ ...cartItem, quantity: 1 });
-				}
-			}
-
-			const originalHtml = addToCartBtn.innerHTML;
-			addToCartBtn.innerHTML = '<i class="bi bi-check2 me-2"></i>Đã thêm vào giỏ';
-			addToCartBtn.classList.replace("btn-primary", "btn-success");
-			setTimeout(() => {
-				addToCartBtn.innerHTML = originalHtml;
-				addToCartBtn.classList.replace("btn-success", "btn-primary");
-			}, 1500);
-		};
-	}
+		const originalHtml = button.innerHTML;
+		button.innerHTML = '<i class="bi bi-check2 me-2"></i>Đã thêm vào giỏ';
+		button.classList.replace("btn-primary", "btn-success");
+		setTimeout(() => {
+			button.innerHTML = originalHtml;
+			button.classList.replace("btn-success", "btn-primary");
+		}, 1500);
+	};
 }

@@ -249,7 +249,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 				[
 					'title' => 'Laptop - Máy Tính Xách Tay nổi bật',
 					'banner' => 'cat_big_79_1764436023.jpg',
-					'folders' => ['ram', 'SSD'],
+					'folders' => ['ram', 'ssd'],
 				],
 				[
 					'title' => 'Màn Hình Máy Tính nổi bật',
@@ -259,12 +259,12 @@ require_once __DIR__ . '/backend/bootstrap.php';
 				[
 					'title' => 'Máy chơi game - Console nổi bật',
 					'banner' => 'cat_big_217_1764436040.jpg',
-					'folders' => ['phụ kiện'],
+					'folders' => ['phu-kien'],
 				],
 				[
 					'title' => 'Gaming Gears nổi bật',
 					'banner' => 'cat_big_78_1764436048.jpg',
-					'folders' => ['phụ kiện', 'case'],
+					'folders' => ['phu-kien', 'case'],
 				],
 			];
 			?>
@@ -683,7 +683,6 @@ require_once __DIR__ . '/backend/bootstrap.php';
 			</div>
 		</div>
 		<?php require 'partial/footer.php'?>
-		<script src="js/csv-parser.js"></script>
 		<script src="js/home.js"></script>
 		<script src="js/header.js"></script>
 	</body>

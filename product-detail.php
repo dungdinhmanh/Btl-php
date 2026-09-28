@@ -62,9 +62,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 								---
 							</h2>
 
-							<p class="text-secondary mb-4" id="product-desc">
-								Đang tải thông tin sản phẩm...
-							</p>
+							<p class="product-stock" id="product-stock"></p>
 
 							<!-- Số lượng -->
 							<div class="mb-4">
@@ -113,7 +111,6 @@ require_once __DIR__ . '/backend/bootstrap.php';
 				</div>
 			</div>
 		</main>
-		<script src="js/csv-parser.js"></script>
 		<script src="js/product-detail.js"></script>
 		<?php require 'partial/footer.php' ?>
 	</body>

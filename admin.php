@@ -63,49 +63,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 					<i class="bi bi-chevron-down"></i>
 				</div>
 			</header>
-			<section class="admin-stats">
-				<div>
-					<span class="admin-stat-icon">
-						<i class="bi bi-currency-dollar"></i>
-					</span>
-					<p>Doanh thu tháng này</p>
-					<strong>248.600.000đ</strong>
-					<small class="positive">
-						<i class="bi bi-arrow-up"></i>
-						12.8% so với tháng trước
-					</small>
-				</div>
-				<div>
-					<span class="admin-stat-icon">
-						<i class="bi bi-bag-check"></i>
-					</span>
-					<p>Đơn hàng mới</p>
-					<strong>186</strong>
-					<small class="positive">
-						<i class="bi bi-arrow-up"></i>
-						8.4% so với tháng trước
-					</small>
-				</div>
-				<div>
-					<span class="admin-stat-icon">
-						<i class="bi bi-people"></i>
-					</span>
-					<p>Khách hàng mới</p>
-					<strong>94</strong>
-					<small class="positive">
-						<i class="bi bi-arrow-up"></i>
-						5.2% so với tháng trước
-					</small>
-				</div>
-				<div>
-					<span class="admin-stat-icon">
-						<i class="bi bi-box"></i>
-					</span>
-					<p>Sản phẩm đang bán</p>
-					<strong>1,284</strong>
-					<small class="neutral">Cập nhật hôm nay</small>
-				</div>
-			</section>
+			<section class="admin-stats" id="admin-stats"></section>
 			<section class="admin-grid">
 				<div class="admin-panel chart-panel">
 					<div class="admin-panel-head">
@@ -163,36 +121,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 						</div>
 						<a class="text-link" href="products.php">Xem tất cả</a>
 					</div>
-					<div class="stock-row">
-						<span class="stock-product">
-							<i class="bi bi-keyboard"></i>
-							<span>
-								Bàn phím Nova 75
-								<small>TNC Select</small>
-							</span>
-						</span>
-						<strong>3</strong>
-					</div>
-					<div class="stock-row">
-						<span class="stock-product">
-							<i class="bi bi-mouse3"></i>
-							<span>
-								G Pro X Superlight
-								<small>Logitech</small>
-							</span>
-						</span>
-						<strong>5</strong>
-					</div>
-					<div class="stock-row">
-						<span class="stock-product">
-							<i class="bi bi-headset"></i>
-							<span>
-								Cloud III Wireless
-								<small>HyperX</small>
-							</span>
-						</span>
-						<strong>7</strong>
-					</div>
+					<div id="admin-low-stock"></div>
 				</div>
 			</section>
 			<section class="admin-panel orders-panel">
@@ -214,39 +143,12 @@ require_once __DIR__ . '/backend/bootstrap.php';
 								<th>Trạng thái</th>
 							</tr>
 						</thead>
-						<tbody>
-							<tr>
-								<td><strong>#TNC-1048</strong></td>
-								<td>Nguyễn Minh Anh</td>
-								<td>14/09/2026</td>
-								<td>4.280.000đ</td>
-								<td>
-									<span class="status-pill status-success">Đã giao</span>
-								</td>
-							</tr>
-							<tr>
-								<td><strong>#TNC-1047</strong></td>
-								<td>Lê Hoàng Nam</td>
-								<td>14/09/2026</td>
-								<td>28.490.000đ</td>
-								<td>
-									<span class="status-pill status-pending">Đang xử lý</span>
-								</td>
-							</tr>
-							<tr>
-								<td><strong>#TNC-1046</strong></td>
-								<td>Trần Gia Hân</td>
-								<td>13/09/2026</td>
-								<td>1.890.000đ</td>
-								<td>
-									<span class="status-pill status-shipping">Đang giao</span>
-								</td>
-							</tr>
-						</tbody>
+						<tbody id="admin-recent-orders"></tbody>
 					</table>
 				</div>
 			</section>
 		</main>
+		<script src="js/api.js"></script>
 		<script src="js/admin.js"></script>
 	</body>
 </html>

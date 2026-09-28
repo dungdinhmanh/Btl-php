@@ -39,5 +39,6 @@ declare(strict_types=1);
 		</div>
 	</div>
 </footer>
+<script src="js/api.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/account.js"></script>

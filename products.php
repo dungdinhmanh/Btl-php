@@ -18,42 +18,18 @@ require_once __DIR__ . '/backend/bootstrap.php';
 						<aside class="col-lg-3">
 							<div class="filter-panel">
 								<h2>Bộ lọc</h2>
-								<label class="filter-check">
-									<input
-										type="checkbox"
-										value="components"
-										data-category-filter
-									/>
-									PC & Linh kiện
-									<span data-category-count="components">0</span>
-								</label>
-								<label class="filter-check">
-									<input type="checkbox" value="keyboard" data-category-filter />
-									Bàn phím
-									<span data-category-count="keyboard">0</span>
-								</label>
-								<label class="filter-check">
-									<input type="checkbox" value="monitor" data-category-filter />
-									Màn hình
-									<span data-category-count="monitor">0</span>
-								</label>
-								<label class="filter-check">
-									<input type="checkbox" value="gaming" data-category-filter />
-									Gaming gear
-									<span data-category-count="gaming">0</span>
-								</label>
+								<div id="category-filters"></div>
 								<hr />
 								<label for="sort-price" class="filter-label">Sắp xếp theo</label>
 								<select id="sort-price" class="form-select">
-									<option>Nổi bật nhất</option>
-									<option>Giá thấp đến cao</option>
-									<option>Giá cao đến thấp</option>
+									<option value="newest">Nổi bật nhất</option>
+									<option value="price-asc">Giá thấp đến cao</option>
+									<option value="price-desc">Giá cao đến thấp</option>
 								</select>
 							</div>
 						</aside>
 						<div class="col-lg-9">
 							<div class="row g-4" id="product-grid">
-								<!-- Rendered dynamically from CSV -->
 								<div class="col-12 py-5 text-center text-muted">
 									<div
 										class="spinner-border spinner-border-sm me-2"
@@ -67,7 +43,6 @@ require_once __DIR__ . '/backend/bootstrap.php';
 				</div>
 			</section>
 		</main>
-		<script src="js/csv-parser.js"></script>
 		<script src="js/products.js"></script>
 		<?php require 'partial/footer.php' ?>
 	</body>

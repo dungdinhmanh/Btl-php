@@ -16,10 +16,26 @@ function formatPrice(value) {
 	return `${value.toLocaleString("vi-VN")}đ`;
 }
 
+const escapeAttr = (value) =>
+	String(value ?? "").replace(
+		/[&<>'"]/g,
+		(character) =>
+			({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[character],
+	);
+
+/** Product thumbnail: the real photo when known, otherwise the legacy icon. */
+function cartThumb(item) {
+	if (item.image) {
+		return `<div class="cart-product-image has-image">
+			<img src="${escapeAttr(item.image)}" alt="${escapeAttr(item.name)}" loading="lazy" />
+		</div>`;
+	}
+
+	return `<div class="cart-product-image"><i class="${escapeAttr(item.icon || "bi bi-box")}"></i></div>`;
+}
+
 function getProductFromCard(card) {
 	const priceText = card.querySelector(".product-price")?.textContent || "0";
-	const icon = card.querySelector(".product-image i")?.className || "bi bi-box";
-	const imageClass = card.querySelector(".product-image")?.className || "product-image";
 
 	return {
 		id:
@@ -28,8 +44,8 @@ function getProductFromCard(card) {
 		name: card.querySelector("h3")?.textContent.trim() || "Sản phẩm",
 		brand: card.querySelector(".product-brand")?.textContent.trim() || "TNC STORE",
 		price: Number(priceText.replace(/[^\d]/g, "")),
-		icon,
-		imageClass,
+		image: card.querySelector(".product-image img")?.getAttribute("src") || "",
+		icon: card.querySelector(".product-image i")?.className || "bi bi-box",
 		quantity: 1,
 	};
 }
@@ -59,9 +75,7 @@ function renderCartHover() {
 			.map(
 				(item) => `
 					<div class="cart-item">
-						<div class="cart-product-image ${item.imageClass.replace("product-image", "")}">
-							<i class="${item.icon}"></i>
-						</div>
+						${cartThumb(item)}
 						<div class="flex-grow-1">
 							<p class="cart-meta">${item.brand}</p>
 							<h2>${item.name}</h2>
@@ -111,9 +125,7 @@ function renderCartPage() {
 		.map(
 			(item) => `
 				<div class="cart-item" data-cart-id="${item.id}">
-					<div class="cart-product-image ${item.imageClass.replace("product-image", "")}">
-						<i class="${item.icon}"></i>
-					</div>
+					${cartThumb(item)}
 					<div class="flex-grow-1">
 						<p class="product-brand">${item.brand}</p>
 						<h2>${item.name}</h2>
@@ -159,7 +171,11 @@ function renderCheckoutPage() {
 				(item) => `
 					<div class="mini-product">
 						<span>
-							<i class="${item.icon}"></i>
+							${
+								item.image
+									? `<img class="mini-product-thumb" src="${escapeAttr(item.image)}" alt="${escapeAttr(item.name)}" loading="lazy" />`
+									: `<i class="${escapeAttr(item.icon || "bi bi-box")}"></i>`
+							}
 							${item.name}
 							<b>× ${item.quantity}</b>
 						</span>

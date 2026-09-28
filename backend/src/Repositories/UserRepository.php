@@ -5,7 +5,6 @@ final class UserRepository
 {
     public function __construct(private readonly PDO $db) {}
 
-    /** Reads the normalized users and roles tables. */
     public function findByEmail(string $email): ?array
     {
         $statement = $this->db->prepare(

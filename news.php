@@ -12,7 +12,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 	<body>
 		<?php require 'partial/header.php' ?>
 		<main class="news-page">
-			<div class="container">
+			<div class="container" id="news-list-root">
 				<header class="news-page-header">
 					<p class="eyebrow">TNC Store / News</p>
 					<h1>Tin tức công nghệ</h1>
@@ -201,6 +201,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 				</section>
 			</div>
 		</main>
+		<script src="js/news.js"></script>
 		<?php require 'partial/footer.php' ?>	
 	</body>
 </html>

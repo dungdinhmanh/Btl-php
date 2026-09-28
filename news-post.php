@@ -12,7 +12,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 	<body>
 		<?php require 'partial/header.php' ?>
 		<main class="article-page">
-			<article class="article-shell">
+			<article class="article-shell" id="news-article">
 				<div class="article-breadcrumb">
 					<a href="index.php">Trang chủ</a>
 					<i class="bi bi-chevron-right mx-1"></i>
@@ -76,6 +76,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 				</div>
 			</article>
 		</main>
+		<script src="js/news.js"></script>
 		<?php require 'partial/footer.php' ?>
 	</body>
 </html>

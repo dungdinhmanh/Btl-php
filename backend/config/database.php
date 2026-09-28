@@ -15,27 +15,39 @@ function database(): PDO
     $user = getenv('DB_USERNAME') ?: '';
     $password = getenv('DB_PASSWORD') ?: '';
     $sslCa = getenv('DB_SSL_CA') ?: '';
+    $sslVerify = filter_var(getenv('DB_SSL_VERIFY') ?: 'true', FILTER_VALIDATE_BOOL);
 
     if ($name === '' || $user === '') {
         throw new RuntimeException('Database is not configured. Copy backend/config/.env.example to .env and fill in the connection values.');
     }
 
-    $option = [
+    $options = [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES => false,
+        PDO::ATTR_STRINGIFY_FETCHES => false,
+        PDO::ATTR_TIMEOUT => 10,
     ];
 
     if ($sslCa !== '') {
-    $options[PDO::MYSQL_ATTR_SSL_CA] = __DIR__ . DIRECTORY_SEPARATOR . $sslCa;
-    $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true;
-}
+        // Relative CA paths are resolved against this config directory.
+        $caPath = str_starts_with($sslCa, DIRECTORY_SEPARATOR) || preg_match('/^[A-Za-z]:[\\\\\/]/', $sslCa)
+            ? $sslCa
+            : __DIR__ . DIRECTORY_SEPARATOR . $sslCa;
 
-    $connection = new PDO (
+        if (!is_file($caPath)) {
+            throw new RuntimeException("Database TLS CA file not found at {$caPath}. Check DB_SSL_CA in backend/config/.env.");
+        }
+
+        $options[PDO::MYSQL_ATTR_SSL_CA] = $caPath;
+        $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = $sslVerify;
+    }
+
+    $connection = new PDO(
         "mysql:host={$host};port={$port};dbname={$name};charset=utf8mb4",
         $user,
         $password,
-        $option,
+        $options,
     );
 
     return $connection;
