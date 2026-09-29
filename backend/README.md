@@ -291,7 +291,6 @@ Những gì `TNC` cung cấp:
 | `product-detail.js` | `product-detail.php` | Chi tiết, thư viện ảnh, bảng thông số, nút thêm vào giỏ |
 | `home.js` | `index.php` | Sản phẩm nổi bật + các dải sản phẩm theo danh mục; kéo thả carousel |
 | `buildpc.js` | `buildpc.php` | Chọn linh kiện, tính tạm tính, kiểm tra socket |
-| `news.js` | `news.php`, `news-post.php` | Danh sách & chi tiết bài viết |
 | `admin.js` | `admin.php` | Số liệu, tồn kho thấp, đơn gần đây |
 | `cart.js` | mọi trang (qua footer) | Giỏ hàng |
 | `header.js`, `search-form.js` | mọi trang | Menu dính khi cuộn, dropdown tìm kiếm |
@@ -378,7 +377,7 @@ Biết rõ để không mất thời gian đoán:
 | Vấn đề | Chi tiết |
 | --- | --- |
 | Biểu đồ doanh thu ở `admin.php` | Vẫn là **hình vẽ SVG tĩnh** với số liệu bịa. Mọi con số khác trên trang admin đều là dữ liệu thật từ DB |
-| `news.php`, `news-post.php` | Còn giữ nguyên khối HTML tĩnh cũ. `news.js` sẽ ghi đè khi tải xong, nhưng khối tĩnh đó vẫn nằm trong file và có thể lệch với DB |
+| Tin tức | `index.php`, `news.php`, `news-post.php` render phía server bằng `NewsRepository` (helper markup ở `partial/news-cards.php`). Nội dung 5/6 bài trong `seed.sql` mới chỉ là 1 đoạn ngắn, cần viết đầy đủ |
 | `profile.php`, `about.php` | Nội dung tĩnh, chưa nối DB |
 | Giỏ hàng & thanh toán | Chỉ dùng `localStorage`, chưa ghi vào `carts`/`orders` |
 | Đăng nhập | API đã có (`backend/auth/`), nhưng form ở `login.php`/`register.php` chưa gọi API đó |
