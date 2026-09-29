@@ -148,7 +148,7 @@ const TNC = (() => {
 			icon: offline ? "bi-database-exclamation" : "bi-exclamation-triangle",
 			title: offline ? "Chưa kết nối được cơ sở dữ liệu" : "Không tải được dữ liệu",
 			text: offline
-				? "Kiểm tra cấu hình DB_* trong backend/config/.env rồi tải lại trang."
+				? "Kiểm tra lại cấu hình database hoặc internet"
 				: error?.message || "",
 		});
 	}

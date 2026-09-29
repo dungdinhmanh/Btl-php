@@ -1550,7 +1550,7 @@ body .btn-link:hover {
 .global-login {
 	position: absolute;
 	top: 100%;
-	right: 0;
+	right: 6rem;
 	z-index: 999;
 	display: none;
 	width: 340px;
@@ -1598,6 +1598,7 @@ body .btn-link:hover {
 }
 .global-login .note a {
 	color: var(--color-global);
+	text-decoration: none;
 }
 
 /* Auth pages (login / register) */
@@ -1679,6 +1680,7 @@ body .btn-link:hover {
 	line-height: 40px;
 	text-align: center;
 	cursor: pointer;
+	text-decoration: none;
 }
 .btn-submit::before {
 	position: absolute;
@@ -1707,6 +1709,7 @@ body .btn-link:hover {
 	position: relative;
 	display: flex;
 	align-items: center;
+	background-color: #3E4B75;
 }
 .header-cart-hover {
 	position: absolute;
@@ -2516,19 +2519,14 @@ body .btn-link:hover {
 	position: relative;
 	display: inline-flex;
 }
-
-.cart-icon b {
-	position: absolute;
-	top: -7px;
-	right: -9px;
-	display: grid;
-	width: 17px;
-	height: 17px;
-	place-items: center;
-	border-radius: 50%;
-	background: var(--header-accent);
-	color: #fff;
-	font-size: 0.65rem;
+.cart-counter{
+	color: #FFFFFF;
+	width: 24px;
+	height: 24px;
+	background-color: var(--color-red);
+	text-align: center;
+	line-height: 24px;
+	font-size: 15px;
 }
 
 /* Responsive adjustments */

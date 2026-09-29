@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 	const container = document.querySelector("#featured-products-list");
 	if (!container) return;
 
-	TNC.showLoading(container, "Đang tải sản phẩm nổi bật...");
+	TNC.showLoading(container, "Đang tải sản phẩm ...");
 
 	try {
 		const products = await TNC.api.featured(4);

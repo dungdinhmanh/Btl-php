@@ -52,7 +52,7 @@ function getProductFromCard(card) {
 
 function updateCartCount() {
 	const count = getCart().reduce((total, item) => total + item.quantity, 0);
-	document.querySelectorAll(".cart-icon b").forEach((counter) => {
+	document.querySelectorAll(".cart-counter").forEach((counter) => {
 		counter.textContent = count;
 	});
 	renderCartHover();

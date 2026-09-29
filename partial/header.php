@@ -427,15 +427,14 @@ $headerQuickLinks = [
 						data-account-toggle
 					>
 						<i class="bi bi-person-circle" aria-hidden="true"></i>
-						<span>Tài khoản</span>
+						<span class="hover">Tài khoản</span>
 					</a>
 					<div class="header-cart-dropdown">
 						<a class="header-action cart-action" href="cart.php">
 							<span class="cart-icon">
 								<i class="bi bi-cart3" aria-hidden="true"></i>
-								<b>0</b>
 							</span>
-							<span>Giỏ hàng</span>
+							<span class="cart-counter">0</span>
 						</a>
 						<div class="header-cart-hover" data-cart-hover>
 							<b class="d-block text-center p-4">Có 0 sản phẩm trong giỏ hàng</b>
@@ -481,11 +480,11 @@ $headerQuickLinks = [
 						<a href="javascript:void(0)" class="btn-submit">
 							<span class="txt">Đăng nhập</span>
 						</a>
-						<div class="note d-flex align-items text-center space-center">
+						<div class="note d-flex text-center space-center">
 							<p>Khách hàng mới?</p>
 							<a href="javascript:void(0)" data-account-form-link="register">Tạo tài khoản</a>
 						</div>
-						<div class="note d-flex align-items text-center space-center">
+						<div class="note d-flex text-center space-center">
 							<p>Quên mật khẩu?</p>
 							<a href="javascript:void(0)" data-account-form-link="forgot-password"><span class="txt">Đặt lại mật khẩu</span></a>
 						</div>
@@ -528,7 +527,7 @@ $headerQuickLinks = [
 						<a href="javascript:void(0)" class="btn-submit">
 							<span class="txt">Tạo tài khoản</span>
 						</a>
-						<div class="note d-flex align-items text-center space-center">
+						<div class="note d-flex text-center space-center">
 							<p>Đã có tài khoản?</p>
 							<a href="javascript:void(0)" data-account-form-link="login"><span class="txt">Đăng nhập</span></a>
 						</div>
@@ -550,7 +549,7 @@ $headerQuickLinks = [
 						<a href="javascript:void(0)" class="btn-submit">
 							<span class="txt">Lấy lại mật khẩu</span>
 						</a>
-						<div class="note d-flex align-items text-center space-center">
+						<div class="note d-flex text-center space-center">
 							<p>Nhớ mật khẩu?</p>
 							<a href="javascript:void(0)" data-account-form-link="login"><span class="txt">Đăng nhập</span></a>
 						</div>
