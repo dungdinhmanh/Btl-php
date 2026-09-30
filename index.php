@@ -1,5 +1,12 @@
 <?php
 require_once __DIR__ . '/backend/bootstrap.php';
+require_once __DIR__ . '/partial/news-cards.php';
+
+try {
+	$homeNews = (new NewsRepository(database()))->latest(4);
+} catch (Throwable $exception) {
+	$homeNews = [];
+}
 ?>
 <!doctype html>
 <html>
@@ -382,6 +389,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 					</div>
 				</div>
 			</div>
+			<?php if ($homeNews): ?>
 			<section
 				class="section-space section-muted home-news-section"
 				aria-labelledby="home-news-title"
@@ -397,101 +405,18 @@ require_once __DIR__ . '/backend/bootstrap.php';
 						</a>
 					</div>
 					<div class="row g-4">
-						<div class="col-lg-6">
-							<article class="news-feature-card h-100">
-								<a href="news-post.php?post=pc-gaming" class="news-image-wrap">
-									<img
-										src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=1200&q=85"
-										alt="Bộ máy tính gaming với màn hình hiển thị"
-									/>
-								</a>
-								<div class="news-card-body">
-									<div class="news-meta">
-										<span>Hướng dẫn</span>
-										<time datetime="2026-09-16">16.09.2026</time>
-									</div>
-									<h3>
-										<a href="news-post.php?post=pc-gaming">
-											Hướng dẫn chọn cấu hình PC Gaming phù hợp từng nhu cầu
-										</a>
-									</h3>
-									<p>
-										Từ CPU, card đồ họa đến ngân sách: các điểm cần cân nhắc
-										trước khi bắt đầu build PC.
-									</p>
-									<a class="news-read-link" href="news-post.php?post=pc-gaming">
-										Đọc bài viết
-										<i class="bi bi-arrow-right"></i>
-									</a>
-								</div>
-							</article>
-						</div>
+						<div class="col-lg-6"><?= newsFeatureCard($homeNews[0]) ?></div>
 						<div class="col-lg-6">
 							<div class="news-list-card">
-								<article class="news-list-item">
-									<a href="news-post.php?post=monitor" class="news-thumb">
-										<img
-											src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=600&q=80"
-											alt="Không gian làm việc với nhiều màn hình"
-										/>
-									</a>
-									<div>
-										<div class="news-meta">
-											<span>Thủ thuật</span>
-											<time datetime="2026-09-14">14.09.2026</time>
-										</div>
-										<h3>
-											<a href="news-post.php?post=monitor">
-												Chọn màn hình cho công việc và giải trí: đừng bỏ qua
-												4 thông số này
-											</a>
-										</h3>
-									</div>
-								</article>
-								<article class="news-list-item">
-									<a href="news-post.php?post=setup" class="news-thumb">
-										<img
-											src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80"
-											alt="Góc máy tính với phụ kiện gaming"
-										/>
-									</a>
-									<div>
-										<div class="news-meta">
-											<span>Gaming gear</span>
-											<time datetime="2026-09-12">12.09.2026</time>
-										</div>
-										<h3>
-											<a href="news-post.php?post=setup">
-												5 nâng cấp nhỏ giúp góc máy gọn gàng và hiệu quả hơn
-											</a>
-										</h3>
-									</div>
-								</article>
-								<article class="news-list-item">
-									<a href="news-post.php?post=laptop" class="news-thumb">
-										<img
-											src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80"
-											alt="Laptop trên bàn làm việc"
-										/>
-									</a>
-									<div>
-										<div class="news-meta">
-											<span>Tư vấn mua hàng</span>
-											<time datetime="2026-09-10">10.09.2026</time>
-										</div>
-										<h3>
-											<a href="news-post.php?post=laptop">
-												Laptop cho sinh viên: ưu tiên hiệu năng, pin hay
-												tính cơ động?
-											</a>
-										</h3>
-									</div>
-								</article>
+								<?php foreach (array_slice($homeNews, 1, 3) as $post): ?>
+									<?= newsListItem($post) ?>
+								<?php endforeach; ?>
 							</div>
 						</div>
 					</div>
 				</div>
 			</section>
+			<?php endif; ?>
 			<div class="feedback-customer">
 				<div class="container">
 					<div class="content-feedback d-flex">

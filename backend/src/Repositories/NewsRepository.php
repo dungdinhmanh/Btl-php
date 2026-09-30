@@ -86,6 +86,23 @@ final class NewsRepository
         return $row === false ? null : $this->presentOne($row);
     }
 
+    /** Latest other published posts, for the "Tin liên quan" block under an article. */
+    public function related(int $excludeId, int $limit = 6): array
+    {
+        $statement = $this->db->prepare(
+            self::SELECT . ' ' . self::FROM . '
+             WHERE n.post_status = :status AND n.news_post_id <> :id
+             ORDER BY n.published_at DESC, n.news_post_id DESC
+             LIMIT :limit',
+        );
+        $statement->bindValue(':status', 'published');
+        $statement->bindValue(':id', $excludeId, PDO::PARAM_INT);
+        $statement->bindValue(':limit', max(1, min($limit, 12)), PDO::PARAM_INT);
+        $statement->execute();
+
+        return $this->presentMany($statement->fetchAll());
+    }
+
     /** @param array<int, array<string, mixed>> $rows */
     private function presentMany(array $rows): array
     {
