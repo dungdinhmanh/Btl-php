@@ -461,6 +461,7 @@ $headerQuickLinks = [
 							<input
 								type="text"
 								id="js-login-email"
+								name="email"
 								placeholder="Nhập email đăng ký của bạn"
 								autocomplete="off"
 							/>
@@ -471,12 +472,13 @@ $headerQuickLinks = [
 							<input
 								type="password"
 								id="js-login-password"
+								name="password"
 								placeholder="Nhập mật khẩu của bạn"
 								autocomplete="off"
 							/>
 							<div class="note-error"></div>
 						</div>
-						<div id="js-form-note"></div>
+						<div id="js-form-note" class="auth-note" role="alert"></div>
 						<a href="javascript:void(0)" class="btn-submit">
 							<span class="txt">Đăng nhập</span>
 						</a>
@@ -498,6 +500,7 @@ $headerQuickLinks = [
 							<input
 								type="text"
 								id="js-popup-register-name"
+								name="name"
 								placeholder="Nhập họ và tên của bạn"
 								autocomplete="off"
 							/>
@@ -508,6 +511,7 @@ $headerQuickLinks = [
 							<input
 								type="text"
 								id="js-popup-register-email"
+								name="email"
 								placeholder="Nhập email mà bạn muốn đăng ký"
 								autocomplete="off"
 							/>
@@ -518,12 +522,13 @@ $headerQuickLinks = [
 							<input
 								type="password"
 								id="js-popup-register-password"
+								name="password"
 								placeholder="Nhập mật khẩu của bạn"
 								autocomplete="off"
 							/>
 							<div class="note-error"></div>
 						</div>
-						<div id="js-popup-register-note"></div>
+						<div id="js-popup-register-note" class="auth-note" role="alert"></div>
 						<a href="javascript:void(0)" class="btn-submit">
 							<span class="txt">Tạo tài khoản</span>
 						</a>
@@ -541,11 +546,12 @@ $headerQuickLinks = [
 							<input
 								type="text"
 								id="js-forgotpass-email"
+								name="email"
 								placeholder="Nhập email mà bạn đã đăng ký"
 								autocomplete="off"
 							/>
 						</div>
-						<div id="js-forgotpass-note"></div>
+						<div id="js-forgotpass-note" class="auth-note" role="alert"></div>
 						<a href="javascript:void(0)" class="btn-submit">
 							<span class="txt">Lấy lại mật khẩu</span>
 						</a>

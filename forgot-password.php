@@ -19,15 +19,17 @@ require_once __DIR__ . '/backend/bootstrap.php';
 						<p class="text-muted small mb-4">
 							Nhập email của bạn để nhận mã xác nhận đặt lại mật khẩu.
 						</p>
-						<form>
+						<form data-auth-form="forgot-password" novalidate>
 							<label for="forgot-email">Email đăng ký</label>
 							<input
 								id="forgot-email"
+								name ="email"
 								class="form-control mb-3"
 								type="email"
 								placeholder="name@example.com"
 								required
 							/>
+							<div class="auth-note mb-3" role="alert"></div>
 							<button class="btn btn-primary w-100 mb-3" type="submit">
 								Gửi yêu cầu
 							</button>

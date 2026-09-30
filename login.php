@@ -16,10 +16,11 @@ require_once __DIR__ . '/backend/bootstrap.php';
 				<div class="container">
 					<div class="auth-card account-modal">
 						<h1 class="modal-title mb-4">Đăng nhập</h1>
-						<form action="backend/auth/login.php">
+						<form method="post" action="backend/auth/login.php" data-auth-form="login" novalidate>
 							<label for="login-email">Email</label>
 							<input
 								id="login-email"
+								name="email"
 								class="form-control mb-3"
 								type="email"
 								placeholder="you@example.com"
@@ -28,11 +29,13 @@ require_once __DIR__ . '/backend/bootstrap.php';
 							<label for="login-password">Mật khẩu</label>
 							<input
 								id="login-password"
+								name="password"
 								class="form-control mb-3"
 								type="password"
 								placeholder="••••••••"
 								required
 							/>
+							<div class="auth-note mb-3" role="alert"></div>
 							<button class="btn btn-primary w-100" type="submit">Đăng nhập</button>
 						</form>
 						<a href="forgot-password.php" class="auth-link">Quên mật khẩu?</a>

@@ -16,10 +16,11 @@ require_once __DIR__ . '/backend/bootstrap.php';
 				<div class="container">
 					<div class="auth-card account-modal">
 						<h1 class="modal-title mb-4">Tạo tài khoản</h1>
-						<form action="backend/auth/register.php">
+						<form method="post" action="backend/auth/register.php" data-auth-form="register" novalidate>
 							<label for="register-name">Họ và tên</label>
 							<input
 								id="register-name"
+								name="name"
 								class="form-control mb-3"
 								type="text"
 								placeholder="Nguyễn Văn A"
@@ -28,6 +29,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 							<label for="register-email">Email</label>
 							<input
 								id="register-email"
+								name="email"
 								class="form-control mb-3"
 								type="email"
 								placeholder="you@example.com"
@@ -36,11 +38,13 @@ require_once __DIR__ . '/backend/bootstrap.php';
 							<label for="register-password">Mật khẩu</label>
 							<input
 								id="register-password"
+								name="password"
 								class="form-control mb-3"
 								type="password"
 								placeholder="Tối thiểu 8 ký tự"
 								required
 							/>
+							<div class="auth-note mb-3" role="alert"></div>
 							<button class="btn btn-primary w-100" type="submit">
 								Tạo tài khoản
 							</button>
