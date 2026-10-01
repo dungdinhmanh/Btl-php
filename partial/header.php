@@ -349,7 +349,7 @@ $headerQuickLinks = [
 			</a>
 		</div>
 	</div>
-	<div class="header-mid container-fluid">
+	<div class="header-mid container">
 		<nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
 			<a class="navbar-brand logo" href="index.php" aria-label="TNC Store home">
 				<img src="assets/img/branding/tnc.png" alt="TNC Store" />

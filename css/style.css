@@ -135,11 +135,11 @@ body .btn-link:hover {
 	padding: 0 24px;
 }
 .header .container {
-	max-width: 1300px;
+	max-width: 1200px;
 }
 .header .header-bottom {
 	position: relative;
-	background: #1d2640;
+	background: inherit;
 }
 /* Header-bottom mega menu */
 .header-bottom .header-bottom-content {
@@ -321,7 +321,7 @@ body .btn-link:hover {
 	position: relative;
 	text-decoration: none;
 }
-.hover::after {
+.hover::before {
 	content: "";
 	position: absolute;
 	left: 15px;
@@ -333,7 +333,7 @@ body .btn-link:hover {
 	transform-origin: left;
 	transition: transform 0.3s ease;
 }
-.hover:hover::after {
+.hover:hover::before {
 	transform: scaleX(1);
 }
 .logo {
