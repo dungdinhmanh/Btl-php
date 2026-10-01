@@ -394,27 +394,125 @@ try {
 				class="section-space section-muted home-news-section"
 				aria-labelledby="home-news-title"
 			>
-				<div class="container">
-					<div class="section-heading">
-						<div>
-							<h2 id="home-news-title">Tin tức mới nhất</h2>
-						</div>
-						<a href="news.php" class="text-link">
-							Xem tất cả
-							<i class="bi bi-arrow-up-right"></i>
-						</a>
-					</div>
-					<div class="row g-4">
-						<div class="col-lg-6"><?= newsFeatureCard($homeNews[0]) ?></div>
-						<div class="col-lg-6">
-							<div class="news-list-card">
-								<?php foreach (array_slice($homeNews, 1, 3) as $post): ?>
-									<?= newsListItem($post) ?>
-								<?php endforeach; ?>
-							</div>
-						</div>
-					</div>
-				</div>
+				<div class="container my-4">
+    <div class="row g-4">
+        
+        <!-- ================= CỘT TRÁI: TNC CHANNEL ================= -->
+        <div class="col-lg-6">
+            <div class="bg-white p-3 rounded shadow-sm border">
+                <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                    <h2 class="h5 fw-bold text-uppercase m-0 text-dark" style="font-size: 1rem;">TNC Channel</h2>
+                    <a href="news.php?cat=tnc-channel" class="text-decoration-none text-primary small">Xem tất cả &gt;</a>
+                </div>
+
+                <div class="d-flex flex-column gap-3">
+                    <?php 
+                    // Mảng dữ liệu mẫu tĩnh hiển thị đủ 4 bài giống mẫu gốc
+                    $sampleTncChannel = [
+                        [
+                            'title' => 'PC Gaming Gần 40 Triệu Cho Sinh Viên Thiết Kế Đồ Họa',
+                            'excerpt' => 'Khảo bộ PC Gaming gần 40 triệu dành cho sinh viên thiết kế đồ họa...',
+                            'date' => '23-07-2026, 3:22 pm', 'views' => '11', 'slug' => 'pc-gaming'
+                        ],
+                        [
+                            'title' => 'PC Gaming 150 Triệu 2026: RTX 5080 Có Thực Sự Là Tất Cả Những Gì Game Thủ Cần?',
+                            'excerpt' => '', 'date' => '03-07-2026, 11:38 am', 'views' => '190', 'slug' => 'pc-150-trieu'
+                        ],
+                        [
+                            'title' => 'Vỏ Case ASUS Đẹp Nhất 2026? Trải Nghiệm ASUS PRIME AP202 TG Black',
+                            'excerpt' => '', 'date' => '20-06-2026, 5:25 pm', 'views' => '77', 'slug' => 'vo-case-asus'
+                        ],
+                        [
+                            'title' => 'Xếp Hạng VGA 2026: Card Đồ Họa Nào Đáng Mua Nhất Từ RTX 5050 Đến RTX 5090?',
+                            'excerpt' => '', 'date' => '09-06-2026, 3:08 pm', 'views' => '707', 'slug' => 'xep-hang-vga'
+                        ]
+                    ];
+
+                    foreach ($sampleTncChannel as $index => $post): 
+                    ?>
+                        <div class="d-flex gap-3 align-items-start <?= $index > 0 ? 'pt-3 border-top border-light' : '' ?>">
+                            <div class="position-relative flex-shrink-0" style="width: 130px; height: 80px;">
+                                <img src="assets/img/default.jpg" alt="" class="w-100 h-100 object-fit-cover rounded bg-secondary">
+                                <span class="position-absolute top-50 start-50 translate-middle badge bg-dark bg-opacity-75 rounded-circle p-2 text-white" style="font-size: 0.6rem;">▶</span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h3 class="mb-1">
+                                    <a href="news-post.php?slug=<?= $post['slug'] ?>" class="text-decoration-none text-dark fw-bold" style="font-size: 0.9rem; line-height: 1.3;">
+                                        <?= $post['title'] ?>
+                                    </a>
+                                </h3>
+                                <?php if ($index === 0 && !empty($post['excerpt'])): ?>
+                                    <p class="text-secondary small mb-1 text-truncate" style="font-size: 0.8rem;"><?= $post['excerpt'] ?></p>
+                                <?php endif; ?>
+                                <div class="text-muted" style="font-size: 0.7rem;">
+                                    <span>🕒 <?= $post['date'] ?></span> &nbsp;|&nbsp; <span>👁️ <?= $post['views'] ?></span>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= CỘT PHẢI: TIN TỨC ================= -->
+        <div class="col-lg-6">
+            <div class="bg-white p-3 rounded shadow-sm border">
+                <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                    <h2 class="h5 fw-bold text-uppercase m-0 text-dark" style="font-size: 1rem;">Tin Tức</h2>
+                    <a href="news.php?cat=tin-tuc" class="text-decoration-none text-primary small">Xem tất cả &gt;</a>
+                </div>
+
+                <div class="d-flex flex-column gap-3">
+                    <?php 
+                    $sampleNews = [
+                        [
+                            'title' => 'Meta Connect 2026: Meta Ra Mắt Kính VR Mới, AI Agent Muse Và Loạt Kính Thông Minh Thế Hệ Mới',
+                            'excerpt' => 'Meta Connect 2026 giới thiệu Meta VR Glasses, AI agent Muse...',
+                            'date' => '26-08-2026, 4:08 pm', 'views' => '32', 'slug' => 'meta-connect'
+                        ],
+                        [
+                            'title' => 'GPT-6 Sol Và GPT-6 Luna Chính Thức Ra Mắt: Mạnh Hơn, Rẻ Hơn Và Dễ Tiếp Cận Hơn',
+                            'excerpt' => '', 'date' => '24-08-2026, 2:06 pm', 'views' => '12', 'slug' => 'gpt-6'
+                        ],
+                        [
+                            'title' => 'PUBG Công Bố Cấm Vĩnh Viễn Himass Và TanVuu Khỏi Toàn Bộ Hệ Thống Giải Đấu',
+                            'excerpt' => '', 'date' => '23-08-2026, 5:28 pm', 'views' => '22', 'slug' => 'pubg-ban'
+                        ],
+                        [
+                            'title' => 'Bạn Đã Có Điện Thoại Android? Googlebook Là Lựa Chọn Của Bạn',
+                            'excerpt' => '', 'date' => '22-08-2026, 2:50 pm', 'views' => '15', 'slug' => 'googlebook'
+                        ]
+                    ];
+
+                    foreach ($sampleNews as $index => $post): 
+                    ?>
+                        <div class="d-flex gap-3 align-items-start <?= $index > 0 ? 'pt-3 border-top border-light' : '' ?>">
+                            <div class="position-relative flex-shrink-0" style="width: 130px; height: 80px;">
+                                <img src="assets/img/default.jpg" alt="" class="w-100 h-100 object-fit-cover rounded bg-secondary">
+                                <span class="position-absolute top-0 end-0 badge bg-danger m-1" style="font-size: 0.55rem; padding: 2px 4px;">NEWS</span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h3 class="mb-1">
+                                    <a href="news-post.php?slug=<?= $post['slug'] ?>" class="text-decoration-none text-dark fw-bold" style="font-size: 0.9rem; line-height: 1.3;">
+                                        <?= $post['title'] ?>
+                                    </a>
+                                </h3>
+                                <?php if ($index === 0 && !empty($post['excerpt'])): ?>
+                                    <p class="text-secondary small mb-1 text-truncate" style="font-size: 0.8rem;"><?= $post['excerpt'] ?></p>
+                                <?php endif; ?>
+                                <div class="text-muted" style="font-size: 0.7rem;">
+                                    <span>🕒 <?= $post['date'] ?></span> &nbsp;|&nbsp; <span>👁️ <?= $post['views'] ?></span>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
 			</section>
 			<?php endif; ?>
 			<div class="feedback-customer">

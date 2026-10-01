@@ -21,7 +21,7 @@ if ($slug !== '') {
 }
 
 // 3) No such row -> real 404 (search engines need the status code).
-if ($post === null) { {
+if ($post === null) {
     http_response_code(404);
     require __DIR__ . '/404.php';
     exit;
