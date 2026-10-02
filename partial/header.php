@@ -335,17 +335,17 @@ $headerQuickLinks = [
 <div class="header">
 	<div class="header-top">
 		<div class="container right">
-			<a href="sitemap" class="item hover">
+			<a href="sitemap" class="item">
 				<i class="bi bi-telephone"></i>
-				<span>Tất cả sản phẩm</span>
+				<span class="hover">Tất cả sản phẩm</span>
 			</a>
-			<a href="tel:0868302123" class="item hover">
+			<a href="tel:0868302123" class="item">
 				<i class="bi bi-telephone"></i>
-				<span>0868 302 123</span>
+				<span class="hover">0868 302 123</span>
 			</a>
-			<a href="mailto:cskh@tncstore.vn" class="item hover">
+			<a href="mailto:cskh@tncstore.vn" class="item">
 				<i class="bi bi-envelope"></i>
-				<span>cskh@tncstore.vn</span>
+				<span class="hover">cskh@tncstore.vn</span>
 			</a>
 		</div>
 	</div>
@@ -605,7 +605,7 @@ $headerQuickLinks = [
 				</div>
 				<div class="header-bottom-right d-flex align-items">
 					<?php foreach ($headerQuickLinks as $link): ?>
-						<a href="<?= $link['url'] ?>" class="item hover">
+						<a href="<?= $link['url'] ?>" class="item">
 							<span class="txt" alt="<?= $link['title'] ?>"><?= $link['title'] ?></span>
 						</a>
 					<?php endforeach; ?>
