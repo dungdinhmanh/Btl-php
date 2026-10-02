@@ -4,7 +4,8 @@ declare(strict_types=1);
 final class NewsRepository
 {
     private const SELECT = 'SELECT n.news_post_id AS id, n.post_slug AS slug, n.title, n.excerpt, n.content,
-                    c.category_name AS category, n.cover_image_path AS coverImage, n.published_at AS publishedAt';
+                    c.category_name AS category, n.cover_image_path AS coverImage, n.published_at AS publishedAt,
+                    n.view_count AS views';
 
     private const FROM = 'FROM news_posts n
              INNER JOIN news_categories c ON c.news_category_id = n.news_category_id';
@@ -86,6 +87,15 @@ final class NewsRepository
         return $row === false ? null : $this->presentOne($row);
     }
 
+    /** Adds one view to a post (the page calls this once per visitor session). */
+    public function recordView(int $id): void
+    {
+        $statement = $this->db->prepare(
+            'UPDATE news_posts SET view_count = view_count + 1 WHERE news_post_id = :id',
+        );
+        $statement->execute([':id' => $id]);
+    }
+
     /** Latest other published posts, for the "Tin liên quan" block under an article. */
     public function related(int $excludeId, int $limit = 6): array
     {
@@ -131,6 +141,8 @@ final class NewsRepository
             'coverImage' => $row['coverImage'] !== null ? (string) $row['coverImage'] : null,
             'publishedAt' => $publishedAt,
             'date' => $timestamp !== false ? date('d.m.Y', $timestamp) : '',
+            'dateTime' => $timestamp !== false ? date('d-m-Y, g:i a', $timestamp) : '',
+            'views' => (int) $row['views'],
             'publishedAtIso' => $timestamp !== false ? date('Y-m-d', $timestamp) : '',
         ];
 

@@ -79,3 +79,20 @@ function newsGridCard(array $post): string
         . '<h3><a href="' . $url . '">' . e($post['title']) . '</a></h3>'
         . '<p>' . e($post['excerpt']) . '</p></div></article>';
 }
+
+/** One row of the right-hand "Tin liên quan" list: thumbnail, title, summary, date, views. */
+function newsRelatedItem(array $post): string
+{
+    $url = e(newsPostUrl($post));
+    $title = e($post['title']);
+
+    return '<div class="item-article d-flex">'
+        . '<a href="' . $url . '" class="image"><img src="' . e(newsCover($post)) . '" alt="' . $title . '" loading="lazy" /></a>'
+        . '<div class="info">'
+        . '<a href="' . $url . '" class="name line-clamp-2">' . $title . '</a>'
+        . '<div class="summary line-clamp-2">' . e($post['excerpt']) . '</div>'
+        . '<div class="time d-flex align-items-center">'
+        . '<div class="datetime"><i class="bi bi-clock"></i> ' . e($post['dateTime']) . '</div>'
+        . '<div class="view"><i class="bi bi-eye"></i> ' . number_format($post['views'], 0, ',', '.') . '</div>'
+        . '</div></div></div>';
+}
