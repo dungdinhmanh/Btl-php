@@ -14,7 +14,6 @@ require_once __DIR__ . '/backend/bootstrap.php';
 		<main>
 			<section class="page-intro compact">
 				<div class="container">
-					<p class="eyebrow">TNC Store / Checkout</p>
 					<h1>Giỏ hàng của bạn</h1>
 				</div>
 			</section>

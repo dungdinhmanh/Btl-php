@@ -66,27 +66,37 @@ function renderCartHover() {
 
 	if (cart.length === 0) {
 		holder.innerHTML =
-			'<b class="d-block text-center p-4">Có 0 sản phẩm trong giỏ hàng</b>';
+			holder.innerHTML =
+				'<div class="cart-items-holder"><b class="d-block text-center p-4">Có 0 sản phẩm trong giỏ hàng</b></div>';
 		return;
 	}
 
-	holder.innerHTML =
+	const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+	holder.innerHTML = `<div class="cart-items-holder">${
 		cart
 			.map(
 				(item) => `
-					<div class="cart-item">
-						${cartThumb(item)}
-						<div class="flex-grow-1">
-							<p class="cart-meta">${item.brand}</p>
-							<h2>${item.name}</h2>
-							<p class="cart-meta">Số lượng: ${item.quantity}</p>
+					<div class="cart-item js-item-row" data-cart-id="${escapeAttr(item.id)}">
+						<div class="cart-img">${cartThumb(item)}</div>
+						<div class="cart-mid">
+							<p class="cart-meta">${escapeAttr(item.brand)}</p>
+							<a href="cart.php" class="cart-name">${escapeAttr(item.name)}</a>
+							<div class="main-price"><b class="price">${formatPrice(item.price * item.quantity)}</b></div>
 						</div>
-						<strong>${formatPrice(item.price * item.quantity)}</strong>
+						<div class="cart-right">
+							<div class="quantity-control">
+								<button type="button" data-cart-action="decrease" aria-label="Giảm số lượng">−</button>
+								<span>${item.quantity}</span>
+								<button type="button" data-cart-action="increase" aria-label="Tăng số lượng">+</button>
+							</div>
+							<button type="button" class="remove-item" data-cart-action="remove">Xóa</button>
+						</div>
 					</div>
 				`,
 			)
-			.join("") +
-		'<a href="cart.php" class="btn-submit"><span class="txt">Xem giỏ hàng</span></a>';
+			.join("")
+	}</div><div class="cart-price-hover"><div class="cart-total-row"><p>Tổng chi phí</p><b>${formatPrice(total)}</b></div>
+	<div class="cart-hover-actions"><a href="cart.php" class="btn-goCart">Xem giỏ hàng</a><a href="checkout.php" class="btn-goCart cart-2">Mua hàng</a></div></div>`;
 }
 
 function addToCart(product) {
@@ -124,11 +134,11 @@ function renderCartPage() {
 	cartList.innerHTML = cart
 		.map(
 			(item) => `
-				<div class="cart-item" data-cart-id="${item.id}">
+				<div class="cart-item" data-cart-id="${escapeAttr(item.id)}">
 					${cartThumb(item)}
 					<div class="flex-grow-1">
-						<p class="product-brand">${item.brand}</p>
-						<h2>${item.name}</h2>
+						<p class="product-brand">${escapeAttr(item.brand)}</p>
+						<p class="cart-name">${escapeAttr(item.name)}</p>
 						<p class="cart-meta">Sản phẩm chính hãng</p>
 					</div>
 					<div class="quantity-control">
@@ -136,10 +146,10 @@ function renderCartPage() {
 						<span>${item.quantity}</span>
 						<button type="button" data-cart-action="increase" aria-label="Tăng số lượng">+</button>
 					</div>
-					<strong>${formatPrice(item.price * item.quantity)}</strong>
 					<button type="button" class="remove-item" data-cart-action="remove" aria-label="Xóa sản phẩm">
 						<i class="bi bi-x-lg"></i>
 					</button>
+					<strong>${formatPrice(item.price * item.quantity)}</strong>
 				</div>
 			`,
 		)
@@ -220,6 +230,7 @@ document.addEventListener("click", (event) => {
 	saveCart(cart);
 	updateCartCount();
 	renderCartPage();
+	renderCheckoutPage();
 });
 
 document.addEventListener("DOMContentLoaded", () => {
