@@ -1,0 +1,125 @@
+/* Trang bài viết: bài bên trái, cột "Tin liên quan" bên phải, mỗi tin xếp NGANG (ảnh trái, chữ phải). */
+.np-layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 520px;
+	gap: 2rem;
+	width: 100%;
+	max-width: 1600px;
+	margin: 0 auto;
+	padding: 1.5rem 16px 3rem;
+	align-items: start;
+	box-sizing: border-box;
+}
+.np-layout .article-shell {
+	max-width: none;
+	width: auto;
+	margin: 0;
+}
+
+.np-related {
+	position: sticky;
+	top: 6rem;
+	background: #fff;
+	padding: 1.5rem;
+	box-sizing: border-box;
+}
+.np-related-title {
+	margin: 0 0 1.25rem;
+	font-size: 1.5rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	color: #111;
+}
+.np-related-title span {
+	display: inline-block;
+	padding-bottom: 0.15rem;
+	border-bottom: 3px solid #3278f6;
+}
+.np-related .list-article {
+	display: flex;
+	flex-direction: column;
+	gap: 1.25rem;
+}
+
+/* Mỗi tin: ảnh bên trái, nội dung bên phải */
+.np-related .item-article {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	gap: 1rem;
+	padding: 0;
+	border: 0;
+}
+.np-related .item-article .image {
+	display: block;
+	flex: 0 0 160px;
+	width: 160px;
+	height: 90px;
+	border-radius: 4px;
+	overflow: hidden;
+	background: #e9edf2;
+}
+.np-related .item-article .image img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+.np-related .item-article .info {
+	flex: 1;
+	min-width: 0;
+}
+.np-related .item-article .name {
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	margin-bottom: 0.3rem;
+	color: #17212b;
+	font-size: 1.05rem;
+	font-weight: 700;
+	line-height: 1.35;
+	text-decoration: none;
+}
+.np-related .item-article .name:hover {
+	color: #3278f6;
+}
+.np-related .item-article .summary {
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	margin: 0 0 0.3rem;
+	color: #333;
+	font-size: 0.9rem;
+	line-height: 1.4;
+}
+.np-related .item-article .time {
+	display: flex;
+	align-items: center;
+	gap: 0.9rem;
+	color: #8a94a3;
+	font-size: 0.78rem;
+}
+.np-related .item-article .time i {
+	margin-right: 0.2rem;
+}
+
+@media (max-width: 1199px) {
+	.np-layout {
+		grid-template-columns: minmax(0, 1fr) 400px;
+	}
+	.np-related .item-article .image {
+		flex-basis: 130px;
+		width: 130px;
+		height: 74px;
+	}
+}
+@media (max-width: 991px) {
+	.np-layout {
+		grid-template-columns: minmax(0, 1fr);
+	}
+	.np-related {
+		position: static;
+	}
+}
