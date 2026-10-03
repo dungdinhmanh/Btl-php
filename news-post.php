@@ -52,20 +52,22 @@ $cover = $post && $post['coverImage'] ? absoluteUrl($post['coverImage']) : '';
 	<body>
 		<?php require 'partial/header.php' ?>
 		
-				<main class="article-page">
+						<main class="article-page">
 			<link rel="stylesheet" href="css/article-layout.css">
+			<?php if (!$loadError): ?>
+				<nav class="np-crumb">
+					<a href="index.php">Trang chủ</a>
+					<i class="bi bi-chevron-right"></i>
+					<a href="news.php">Tin tức</a>
+					<i class="bi bi-chevron-right"></i>
+					<span><?= e($post['category']) ?></span>
+				</nav>
+			<?php endif; ?>
 			<div class="np-layout">
 				<article class="article-shell" id="news-article">
 					<?php if ($loadError): ?>
 						<p class="text-center text-muted py-5">Không tải được bài viết. Vui lòng thử lại sau.</p>
 					<?php else: ?>
-						<div class="article-breadcrumb">
-							<a href="index.php">Trang chủ</a>
-							<i class="bi bi-chevron-right mx-1"></i>
-							<a href="news.php">Tin tức</a>
-							<i class="bi bi-chevron-right mx-1"></i>
-							<?= e($post['category']) ?>
-						</div>
 						<h1 class="article-title"><?= e($post['title']) ?></h1>
 						<div class="article-info">
 							<span><i class="bi bi-clock"></i><?= e($post['dateTime']) ?></span>

@@ -17,8 +17,7 @@
 }
 
 .np-related {
-	position: sticky;
-	top: 6rem;
+	position: static;
 	background: #fff;
 	padding: 1.5rem;
 	box-sizing: border-box;
@@ -122,4 +121,104 @@
 	.np-related {
 		position: static;
 	}
+}
+/* Tiêu đề và dòng ngày giờ giống trang mẫu */
+.np-layout .article-title {
+	margin: 0 0 0.75rem;
+	font-size: 2rem;
+	line-height: 1.25;
+}
+.np-layout .article-info {
+	display: flex;
+	align-items: center;
+	gap: 0.9rem;
+	margin: 0 0 1rem;
+	color: #8a94a3;
+	font-size: 0.85rem;
+}
+.np-layout .article-info span {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3rem;
+}
+.np-layout .article-info span + span {
+	padding-left: 0.9rem;
+	border-left: 1px solid #d5dbe2;
+}
+/* Chữ trong thân bài giống trang mẫu */
+.np-layout .article-content {
+	font-size: 1.05rem;
+	line-height: 1.7;
+	color: #222;
+}
+.np-layout .article-content p {
+	margin: 0 0 1rem;
+	font-size: 1.05rem;
+	line-height: 1.7;
+}
+.np-layout .article-content ul,
+.np-layout .article-content ol {
+	margin: 0 0 1rem;
+	padding-left: 1.5rem;
+	font-size: 1.05rem;
+	line-height: 1.7;
+}
+.np-layout .article-content li {
+	margin-bottom: 0.35rem;
+	font-size: 1.05rem;
+}
+.np-layout .article-content h2 {
+	display: block;
+	margin: 1.75rem 0 0.75rem;
+	padding: 0;
+	border: 0;
+	font-size: 1.25rem;
+	font-weight: 700;
+	line-height: 1.35;
+	letter-spacing: 0;
+	text-transform: none;
+	color: #111;
+}
+.np-layout .article-content h2::before,
+.np-layout .article-content h2::after {
+	content: none;
+	display: none;
+}
+/* Nền xám, bài viết và cột phải là hai khung trắng như trang mẫu */
+.article-page {
+	background: #f5f6f8;
+	padding-bottom: 2rem;
+}
+.np-crumb {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5rem;
+	max-width: 1600px;
+	margin: 0 auto;
+	padding: 1.25rem 16px 0;
+	box-sizing: border-box;
+	font-size: 0.95rem;
+	color: #111;
+}
+.np-crumb a {
+	color: #8a94a3;
+	text-decoration: none;
+}
+.np-crumb a:hover {
+	color: #3278f6;
+}
+.np-crumb i {
+	font-size: 0.7rem;
+	color: #8a94a3;
+}
+.np-layout {
+	padding-top: 1rem;
+}
+.np-layout .article-shell {
+	background: #fff;
+	padding: 1.5rem;
+	border: 0;
+	border-radius: 0;
+	box-shadow: none;
 }
