@@ -60,6 +60,8 @@ $cover = $post && $post['coverImage'] ? absoluteUrl($post['coverImage']) : '';
 					<i class="bi bi-chevron-right"></i>
 					<a href="news.php">Tin tức</a>
 					<i class="bi bi-chevron-right"></i>
+					<a href="news.php#latest">Bài viết mới nhất</a>
+					<i class="bi bi-chevron-right"></i>
 					<span><?= e($post['category']) ?></span>
 				</nav>
 			<?php endif; ?>

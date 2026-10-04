@@ -222,3 +222,53 @@
 	border-radius: 0;
 	box-shadow: none;
 }
+/* Thân bài dài giống trang mẫu */
+.np-layout .article-content img {
+	display: block;
+	max-width: min(100%, 700px);
+	height: auto;
+	margin: 1.25rem auto;
+}
+.np-layout .article-content iframe {
+	display: block;
+	max-width: 100%;
+	margin: 1rem auto;
+}
+.np-layout .article-content ul,
+.np-layout .article-content ol {
+	padding-left: 3rem;
+}
+.np-layout .article-content h2 {
+	font-size: 1.15rem;
+	margin: 1.75rem 0 0.75rem;
+}
+/* Ẩn tóm tắt và ảnh bìa ở đầu bài: bài bắt đầu thẳng bằng nội dung, giống trang mẫu */
+.np-layout .article-lead,
+.np-layout .article-hero {
+	display: none;
+}
+/* Breadcrumb đậm như trang mẫu */
+.np-crumb {
+	gap: 0.6rem;
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: #111;
+}
+.np-crumb a {
+	color: #111;
+	text-decoration: none;
+}
+.np-crumb a:first-child {
+	color: #9aa3b5;
+}
+.np-crumb a:hover {
+	color: #3278f6;
+}
+.np-crumb i {
+	font-size: 0.75rem;
+	font-weight: 400;
+	color: #8a94a3;
+}
+.np-crumb span {
+	color: #111;
+}
