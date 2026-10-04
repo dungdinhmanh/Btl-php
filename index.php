@@ -14,145 +14,8 @@ require_once __DIR__ . '/backend/bootstrap.php';
 	<body>
 		<?php require 'partial/header.php'?>
 		<main>
-			<section class="promo-carousel-section">
-				<div id="storePromoCarousel" class="carousel slide" data-bs-ride="carousel">
-					<div class="carousel-inner">
-						<div class="carousel-indicators">
-							<button
-								type="button"
-								data-bs-target="#storePromoCarousel"
-								data-bs-slide-to="0"
-								class="active"
-								aria-current="true"
-								aria-label="Back To School"
-							></button>
-							<button
-								type="button"
-								data-bs-target="#storePromoCarousel"
-								data-bs-slide-to="1"
-								aria-label="Build PC Asus Rinh quà hết nấc"
-							></button>
-							<button
-								type="button"
-								data-bs-target="#storePromoCarousel"
-								data-bs-slide-to="2"
-								aria-label="Build PC Gigabyte Intel"
-							></button>
-							<button
-								type="button"
-								data-bs-target="#storePromoCarousel"
-								data-bs-slide-to="3"
-								aria-label="Đồng hành trở về căn cứ Asus"
-							></button>
-							<button
-								type="button"
-								data-bs-target="#storePromoCarousel"
-								data-bs-slide-to="4"
-								aria-label="PC AI Gigabyte Web"
-							></button>
-							<button
-								type="button"
-								data-bs-target="#storePromoCarousel"
-								data-bs-slide-to="5"
-								aria-label="Razer len deal gear len doi"
-							></button>
-							<button
-								type="button"
-								data-bs-target="#storePromoCarousel"
-								data-bs-slide-to="6"
-								aria-label="Asus Miku Gear"
-							></button>
-							<button
-								type="button"
-								data-bs-target="#storePromoCarousel"
-								data-bs-slide-to="7"
-								aria-label="MSI Frieren"
-							></button>
-							<button
-								type="button"
-								data-bs-target="#storePromoCarousel"
-								data-bs-slide-to="8"
-								aria-label="Trang chu Asus T1 PC"
-							></button>
-						</div>
-						<div class="carousel-item active promo-slide">
-							<img
-								src="assets/img/banner/banner-back-to-school-pc-1.jpg"
-								width="100%"
-							/>
-						</div>
-						<div class="carousel-item promo-slide">
-							<img
-								src="assets/img/banner/banner-build-pc-asus-rinh-qua-het-nac.jpg"
-								width="100%"
-							/>
-						</div>
-						<div class="carousel-item promo-slide">
-							<img
-								src="assets/img/banner/banner-build-pc-gigabyte-intel-pc.jpg"
-								width="100%"
-							/>
-						</div>
-						<div class="carousel-item promo-slide">
-							<img
-								src="assets/img/banner/banner-dong-hanh-tro-ve-can-cu-asus-pc.jpg"
-								width="100%"
-							/>
-						</div>
-						<div class="carousel-item promo-slide">
-							<img
-								src="assets/img/banner/banner-pc-ai-gigabyte-web-7.jpg"
-								width="90%"
-								height="80%"
-							/>
-						</div>
-						<div class="carousel-item promo-slide">
-							<img
-								src="assets/img/banner/banner-razer-len-deal-gear-len-doi.png"
-								width="100%"
-							/>
-						</div>
-						<div class="carousel-item promo-slide">
-							<img
-								src="assets/img/banner/banner-trang-chu-asus-hiku.jpg"
-								width="100%"
-							/>
-						</div>
-						<div class="carousel-item promo-slide">
-							<img
-								src="assets/img/banner/banner-trang-chu-msi-frieren-mobile-1.jpg"
-								width="100%"
-							/>
-						</div>
-						<div class="carousel-item promo-slide">
-							<img
-								src="assets/img/banner/banner-trang-chu-asus-t1-pc-2.jpg"
-								width="100%"
-							/>
-						</div>
-					</div>
-					<div class="container">
-						<button
-							class="carousel-control-prev"
-							type="button"
-							data-bs-target="#storePromoCarousel"
-							data-bs-slide="prev"
-						>
-							<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-							<span class="visually-hidden">Previous</span>
-						</button>
-						<button
-							class="carousel-control-next"
-							type="button"
-							data-bs-target="#storePromoCarousel"
-							data-bs-slide="next"
-						>
-							<span class="carousel-control-next-icon" aria-hidden="true"></span>
-							<span class="visually-hidden">Next</span>
-						</button>
-					</div>
-				</div>
-			</section>
+			<?php require 'partial/promo.php'; ?>
+			<?php require 'partial/sale.php'; ?>
 			<section class="section-space">
 				<div class="container">
 					<h2 class="category-featured-title">Danh mục nổi bật</h2>
@@ -523,16 +386,12 @@ require_once __DIR__ . '/backend/bootstrap.php';
 									<a href="products.php" class="item">
 										<img
 											src="assets/img/feedback/anh-khach-hang-18-12.jpg"
-											width="2047"
-											height="1358"
 											alt="Khách hàng TNC Store"
 										/>
 									</a>
 									<a href="products.php" class="item">
 										<img
 											src="assets/img/feedback/anh-khach-hang-19-12-2.jpg"
-											width="2047"
-											height="1358"
 											alt="Khách hàng TNC Store"
 										/>
 									</a>
@@ -541,16 +400,12 @@ require_once __DIR__ . '/backend/bootstrap.php';
 									<a href="products.php" class="item">
 										<img
 											src="assets/img/feedback/anh-khach-hang-19-12-2.jpg"
-											width="2047"
-											height="1358"
 											alt="Khách hàng TNC Store"
 										/>
 									</a>
 									<a href="products.php" class="item">
 										<img
 											src="assets/img/feedback/11_01-cead646c48b7b3e9c83eeb98bdb47e101.jpg"
-											width="2047"
-											height="1358"
 											alt="Khách hàng TNC Store"
 										/>
 									</a>
@@ -559,16 +414,12 @@ require_once __DIR__ . '/backend/bootstrap.php';
 									<a href="products.php" class="item">
 										<img
 											src="assets/img/feedback/11_01-cead646c48b7b3e9c83eeb98bdb47e101.jpg"
-											width="2047"
-											height="1358"
 											alt="Khách hàng TNC Store"
 										/>
 									</a>
 									<a href="products.php" class="item">
 										<img
 											src="assets/img/feedback/anh-khach-hang-18-12.jpg"
-											width="2047"
-											height="1358"
 											alt="Khách hàng TNC Store"
 										/>
 									</a>

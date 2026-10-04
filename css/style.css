@@ -636,6 +636,13 @@ body .btn-link:hover {
 	width: 1.4rem;
 	height: 1.4rem;
 }
+.promo-carousel-section .carousel-inner img {
+height: auto;
+aspect-ratio: 1600 / 580;
+}
+.promo-carousel-section {
+padding-top: 1rem;
+}
 .carousel {
 	touch-action: pan-y;
 }
@@ -3106,5 +3113,104 @@ body .btn-link:hover {
 	.news-page,
 	.article-page {
 		padding-top: 6.5rem;
+	}
+}
+
+.banner-sale {
+	padding: 1rem 0 0;
+}
+
+.snap-carousel {
+	--per-view: 4;
+	--gap: 8px;
+	position: relative;
+}
+
+.snap-track {
+	display: flex;
+	gap: var(--gap);
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+	scroll-behavior: smooth;
+	scrollbar-width: none;
+}
+
+.snap-track::-webkit-scrollbar {
+	display: none;
+}
+
+.snap-item {
+	flex: 0 0 calc((100% - (var(--per-view) - 1) * var(--gap)) / var(--per-view));
+	scroll-snap-align: start;
+	overflow: hidden;
+}
+
+.snap-item img {
+	display: block;
+	width: 100%;
+	aspect-ratio: 822 / 477;
+	object-fit: cover;
+	transition: transform 0.3s ease;
+}
+
+.snap-item:hover img {
+	transform: scale(1.04);
+}
+
+.snap-nav {
+	position: absolute;
+	top: 50%;
+	z-index: 2;
+	display: grid;
+	place-items: center;
+	width: 36px;
+	height: 56px;
+	padding: 0;
+	border: 0;
+	background: rgba(41, 50, 78, 0.75);
+	color: #fff;
+	opacity: 0;
+	transform: translateY(-50%);
+	transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+.snap-prev {
+	left: 0;
+	border-radius: 0 6px 6px 0;
+}
+
+.snap-next {
+	right: 0;
+	border-radius: 6px 0 0 6px;
+}
+
+.snap-carousel:hover .snap-nav,
+.snap-carousel:focus-within .snap-nav {
+	opacity: 1;
+}
+
+.snap-nav:hover {
+	background: var(--header-accent);
+}
+
+.snap-carousel.is-static .snap-nav {
+	display: none;
+}
+
+@media (hover: none) {
+	.snap-nav {
+		opacity: 1;
+	}
+}
+
+@media (max-width: 991.98px) {
+	.snap-carousel {
+		--per-view: 2;
+	}
+}
+
+@media (max-width: 575.98px) {
+	.snap-carousel {
+		--per-view: 1.15;
 	}
 }
