@@ -1,6 +1,6 @@
 # TNC Store
 
-A PHP-based e-commerce and content website for a computer & gaming gear store. The project uses plain PHP with a MySQL database, server-side API endpoints, and frontend JavaScript to render product and dashboard data dynamically.
+A cloned tncstore using PHP-based. The project uses plain PHP with a MySQL database, server-side API endpoints, and frontend JavaScript to render product and dashboard data dynamically.
 
 ## Project overview
 
