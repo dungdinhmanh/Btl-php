@@ -19,6 +19,7 @@ try {
         jsonResponse(['ok' => false, 'message' => 'This email is already registered.'], 409);
     }
     $id = $users->create($name, $email, $password);
+    session_regenerate_id(true);
     $_SESSION['user'] = ['id' => $id, 'name' => $name, 'role' => 'customer'];
     jsonResponse(['ok' => true, 'data' => $_SESSION['user']], 201);
 } catch (Throwable $exception) {

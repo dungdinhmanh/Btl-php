@@ -1,5 +1,12 @@
 <?php
 require_once __DIR__ . '/backend/bootstrap.php';
+
+// Trang này chỉ dành cho người đã đăng nhập.
+if (empty($_SESSION['user'])) {
+	header('Location: login.php');
+	exit;
+}
+$sessionName = htmlspecialchars((string) $_SESSION['user']['name'], ENT_QUOTES);
 ?>
 <!doctype html>
 <html lang="vi">
@@ -19,17 +26,15 @@ require_once __DIR__ . '/backend/bootstrap.php';
 				</div>
 			</section>
 			<section class="section-space">
-				<div class="container">
+				<div class="container" id="profile-root">
 					<div class="row g-4">
 						<aside class="col-lg-3">
 							<div class="filter-panel">
 								<div class="d-flex align-items-center gap-3 mb-4">
 									<i class="bi bi-person-circle fs-1 text-primary"></i>
-									<div>
-										<strong>Nguyễn Văn A</strong>
-										<small class="d-block text-muted">
-											Khách hàng thân thiết
-										</small>
+									<div class="min-w-0">
+										<strong data-profile="side-name"><?= $sessionName ?></strong>
+										<small class="d-block text-muted text-break" data-profile="side-email"></small>
 									</div>
 								</div>
 								<nav class="nav flex-column gap-2">
@@ -37,54 +42,54 @@ require_once __DIR__ . '/backend/bootstrap.php';
 									<a class="nav-link" href="#profile-info">Thông tin cá nhân</a>
 									<a class="nav-link" href="#orders">Đơn hàng của tôi</a>
 									<a class="nav-link" href="#address">Địa chỉ giao hàng</a>
-									<a class="nav-link text-danger" href="index.php">Đăng xuất</a>
+									<form method="post" action="backend/auth/logout.php">
+										<button type="submit" class="nav-link text-danger border-0 bg-transparent text-start w-100">
+											Đăng xuất
+										</button>
+									</form>
 								</nav>
 							</div>
 						</aside>
 						<div class="col-lg-9">
+							<div class="alert alert-danger d-none" role="alert" data-profile-error></div>
 							<div id="overview" class="row g-3 mb-4">
 								<div class="col-md-4">
 									<div class="summary-card h-100">
 										<small class="text-muted">Tổng đơn hàng</small>
-										<h2 class="mt-2 mb-0">12</h2>
+										<p class="fs-3 fw-bold mt-2 mb-0" data-profile="stat-total">…</p>
 									</div>
 								</div>
 								<div class="col-md-4">
 									<div class="summary-card h-100">
 										<small class="text-muted">Đang xử lý</small>
-										<h2 class="mt-2 mb-0">2</h2>
+										<p class="fs-3 fw-bold mt-2 mb-0" data-profile="stat-processing">…</p>
 									</div>
 								</div>
 								<div class="col-md-4">
 									<div class="summary-card h-100">
-										<small class="text-muted">Điểm thành viên</small>
-										<h2 class="mt-2 mb-0">860</h2>
+										<small class="text-muted">Tổng chi tiêu</small>
+										<p class="fs-3 fw-bold mt-2 mb-0" data-profile="stat-spent">…</p>
 									</div>
 								</div>
 							</div>
 							<div id="profile-info" class="summary-card mb-4">
-								<div class="d-flex justify-content-between align-items-center mb-3">
-									<h2>Thông tin cá nhân</h2>
-									<button class="btn btn-outline-primary btn-sm" type="button">
-										Chỉnh sửa
-									</button>
-								</div>
+								<h2 class="mb-3">Thông tin cá nhân</h2>
 								<div class="row g-3">
 									<div class="col-md-6">
 										<small class="text-muted d-block">Họ và tên</small>
-										<strong>Nguyễn Văn A</strong>
+										<strong data-profile="name"><?= $sessionName ?></strong>
 									</div>
 									<div class="col-md-6">
 										<small class="text-muted d-block">Email</small>
-										<strong>nguyenvana@example.com</strong>
+										<strong class="text-break" data-profile="email">…</strong>
 									</div>
 									<div class="col-md-6">
 										<small class="text-muted d-block">Số điện thoại</small>
-										<strong>090 123 4567</strong>
+										<strong data-profile="phone">…</strong>
 									</div>
 									<div class="col-md-6">
 										<small class="text-muted d-block">Ngày tham gia</small>
-										<strong>12/03/2025</strong>
+										<strong data-profile="joined">…</strong>
 									</div>
 								</div>
 							</div>
@@ -100,26 +105,9 @@ require_once __DIR__ . '/backend/bootstrap.php';
 												<th class="text-end">Tổng tiền</th>
 											</tr>
 										</thead>
-										<tbody>
+										<tbody id="orders-body">
 											<tr>
-												<td>#TNC-1024</td>
-												<td>15/09/2026</td>
-												<td>
-													<span class="badge text-bg-warning">
-														Đang giao
-													</span>
-												</td>
-												<td class="text-end">12.490.000đ</td>
-											</tr>
-											<tr>
-												<td>#TNC-1018</td>
-												<td>02/09/2026</td>
-												<td>
-													<span class="badge text-bg-success">
-														Hoàn tất
-													</span>
-												</td>
-												<td class="text-end">4.500.000đ</td>
+												<td colspan="4" class="text-center text-muted py-4">Đang tải...</td>
 											</tr>
 										</tbody>
 									</table>
@@ -127,12 +115,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 							</div>
 							<div id="address" class="summary-card">
 								<h2 class="mb-3">Địa chỉ mặc định</h2>
-								<strong>Nguyễn Văn A</strong>
-								<p class="text-muted mb-0">
-									090 123 4567
-									<br />
-									12 Nguyễn Huệ, phường Bến Nghé, Quận 1, TP. Hồ Chí Minh
-								</p>
+								<div data-profile="address">Đang tải...</div>
 							</div>
 						</div>
 					</div>
@@ -140,5 +123,6 @@ require_once __DIR__ . '/backend/bootstrap.php';
 			</section>
 		</main>
 		<?php require 'partial/footer.php' ?>
+		<script src="js/profile.js"></script>
 	</body>
 </html>

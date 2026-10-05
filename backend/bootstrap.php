@@ -29,6 +29,11 @@ loadEnvironment(BACKEND_PATH . '/config/.env');
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_name('tnc_store_session');
+    session_set_cookie_params([
+        'httponly' => true, // JS (và XSS) không đọc được cookie phiên
+        'samesite' => 'Lax', // trình duyệt không gửi cookie kèm form POST từ trang web khác
+        'secure' => !empty($_SERVER['HTTPS']),
+    ]);
     session_start();
 }
 
@@ -38,3 +43,4 @@ require_once BACKEND_PATH . '/src/Repositories/ProductRepository.php';
 require_once BACKEND_PATH . '/src/Repositories/NewsRepository.php';
 require_once BACKEND_PATH . '/src/Repositories/DashboardRepository.php';
 require_once BACKEND_PATH . '/src/Repositories/UserRepository.php';
+require_once BACKEND_PATH . '/src/Repositories/ProfileRepository.php';

@@ -122,10 +122,8 @@
 
 		setTimeout(() => {
 			if (isPanelForm($root)) {
-				$root.find(":input[name]").val("");
-				setNote($root, "", null);
-				setBusy($root, false);
-				closePanel();
+				// Header được PHP dựng theo phiên đăng nhập, nên tải lại để "Tài khoản" đổi thành tên người dùng.
+				window.location.reload();
 			} else {
 				window.location.href = "index.php";
 			}

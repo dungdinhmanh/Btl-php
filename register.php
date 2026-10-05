@@ -1,5 +1,9 @@
 <?php
 require_once __DIR__ . '/backend/bootstrap.php';
+if (!empty($_SESSION['user'])) {
+	header('Location: profile.php');
+	exit;
+}
 ?>
 <!doctype html>
 <html lang="vi">

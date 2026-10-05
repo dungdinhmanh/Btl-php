@@ -3214,3 +3214,12 @@ padding-top: 1rem;
 		--per-view: 1.15;
 	}
 }
+/* Tên người dùng thay cho chữ "Tài khoản" ở header: cắt bớt nếu quá dài */
+.header-user-name {
+	display: inline-block;
+	max-width: 9rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	vertical-align: bottom;
+}

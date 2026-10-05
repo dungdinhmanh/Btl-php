@@ -86,7 +86,7 @@
 			})
 			.fail((xhr) => {
 				if (xhr.status === 401) {
-					window.location.href = "index.php#accountModal";
+					window.location.href = "login.php";
 					return;
 				}
 				showError(xhr.status === 503 ? "Chưa kết nối được cơ sở dữ liệu." : "Có lỗi xảy ra, vui lòng thử lại.");

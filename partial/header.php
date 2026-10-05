@@ -421,14 +421,26 @@ $headerQuickLinks = [
 					</button>
 				</form>
 				<div class="header-actions ms-lg-auto">
-					<a
-						class="header-action header-button"
-						href="#accountModal"
-						data-account-toggle
-					>
-						<i class="bi bi-person-circle" aria-hidden="true"></i>
-						<span class="hover">Tài khoản</span>
-					</a>
+					<?php $currentUser = $_SESSION['user'] ?? null; ?>
+					<?php if ($currentUser): ?>
+						<a
+							class="header-action header-button"
+							href="profile.php"
+							title="Xem tài khoản của <?= htmlspecialchars($currentUser['name'], ENT_QUOTES) ?>"
+						>
+							<i class="bi bi-person-circle" aria-hidden="true"></i>
+							<span class="hover header-user-name"><?= htmlspecialchars($currentUser['name'], ENT_QUOTES) ?></span>
+						</a>
+					<?php else: ?>
+						<a
+							class="header-action header-button"
+							href="#accountModal"
+							data-account-toggle
+						>
+							<i class="bi bi-person-circle" aria-hidden="true"></i>
+							<span class="hover">Tài khoản</span>
+						</a>
+					<?php endif; ?>
 					<div class="header-cart-dropdown">
 						<a class="header-action cart-action" href="cart.php">
 							<span class="cart-icon">
