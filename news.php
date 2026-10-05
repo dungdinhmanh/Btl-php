@@ -12,10 +12,9 @@ try {
     $categories = $repository->categories();
     $posts = $repository->all(12, 0, $activeCategory !== '' ? $activeCategory : null);
 } catch (Throwable $exception) {
-	error_log($exception->getMessage()); // ghi log để còn debug
-    http_response_code(404);
-    require __DIR__ . '/404.php';        // sửa đường dẫn cho đúng file 404 của bạn
-    exit;
+    error_log($exception->getMessage());
+    http_response_code(500);
+    $loadError = true;
 }
 if ($activeCategory !== '' && !in_array($activeCategory, array_column($categories, 'slug'), true)) {
     http_response_code(404);
