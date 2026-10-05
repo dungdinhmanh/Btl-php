@@ -2,11 +2,26 @@
 require_once __DIR__ . '/backend/bootstrap.php';
 require_once __DIR__ . '/partial/news-cards.php';
 
+$homeColumns = [
+	['heading' => 'TNC Channel', 'more' => 'news.php?category=tnc-channel', 'play' => true, 'category' => 'tnc-channel', 'posts' => []],
+	['heading' => 'Tin tức', 'more' => 'news.php', 'play' => false, 'category' => null, 'posts' => []],
+];
+
 try {
-	$homeNews = (new NewsRepository(database()))->latest(4);
+	$newsRepository = new NewsRepository(database());
+	foreach ($homeColumns as &$column) {
+		$column['posts'] = $newsRepository->all(4, 0, $column['category']);
+	}
+	unset($column);
 } catch (Throwable $exception) {
-	$homeNews = [];
+	error_log($exception->getMessage());
 }
+
+$homeNewsAvailable = array_reduce(
+	$homeColumns,
+	static fn (bool $available, array $column): bool => $available || $column['posts'] !== [],
+	false,
+);
 ?>
 <!doctype html>
 <html>
@@ -389,32 +404,13 @@ try {
 					</div>
 				</div>
 			</div>
-			<?php if ($homeNews): ?>
+			<?php if ($homeNewsAvailable): ?>
 			<section
 				class="section-space section-muted home-news-section"
 				aria-labelledby="home-news-title"
 			>
 				<div class="container my-4">
-			    <?php
-			// Mỗi cột: tiêu đề, link "Xem tất cả", có icon Play hay không, lấy chuyên mục nào.
-			$homeColumns = [
-			    ['heading' => 'TNC Channel', 'more' => 'news.php?category=tnc-channel', 'play' => true,  'category' => 'tnc-channel'],
-			    ['heading' => 'Tin tức',     'more' => 'news.php',                      'play' => false, 'category' => null],
-			];
-
-			try {
-			    $newsRepository = new NewsRepository(database());
-			    foreach ($homeColumns as &$column) {
-			        $column['posts'] = $newsRepository->all(4, 0, $column['category']);
-			    }
-			    unset($column);
-			} catch (Throwable $exception) {
-			    foreach ($homeColumns as &$column) {
-			        $column['posts'] = [];   // DB lỗi thì cột để trống, trang vẫn chạy
-			    }
-			    unset($column);
-			}
-			?>
+			    
 			<link rel="stylesheet" href="css/home-news.css">
 			<div class="row g-5">
 			    <?php foreach ($homeColumns as $column): ?>
