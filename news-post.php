@@ -13,15 +13,21 @@ if ($slug !== '') {
         $repository = new NewsRepository(database());
         $post = $repository->findBySlug($slug);
         if ($post !== null) {
+            if (empty($_SESSION['news_viewed'][$post['id']])) {
+                $repository->recordView($post['id']);
+                $_SESSION['news_viewed'][$post['id']] = true;
+            }
             $related = $repository->related($post['id'], 6);
         }
     } catch (Throwable $exception) {
+        error_log($exception->getMessage());
+        http_response_code(500);
         $loadError = true;
     }
 }
 
 // 3) No such row -> real 404 (search engines need the status code).
-if ($post === null) {
+if ($post === null && !$loadError) {
     http_response_code(404);
     require __DIR__ . '/404.php';
     exit;
