@@ -125,3 +125,9 @@
 		font-size: 1rem;
 	}
 }
+/* Khung tin tức rộng 1600px như trang mẫu (màn hình từ 1400px trở lên) */
+@media (min-width: 1400px) {
+	.home-news-section .container {
+		max-width: 1600px !important;
+	}
+}
