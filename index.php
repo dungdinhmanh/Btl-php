@@ -1,5 +1,27 @@
 <?php
 require_once __DIR__ . '/backend/bootstrap.php';
+require_once __DIR__ . '/partial/news-cards.php';
+
+$homeColumns = [
+	['heading' => 'TNC Channel', 'more' => 'news.php?category=tnc-channel', 'play' => true, 'category' => 'tnc-channel', 'posts' => []],
+	['heading' => 'Tin tức', 'more' => 'news.php', 'play' => false, 'category' => null, 'posts' => []],
+];
+
+try {
+	$newsRepository = new NewsRepository(database());
+	foreach ($homeColumns as &$column) {
+		$column['posts'] = $newsRepository->all(4, 0, $column['category']);
+	}
+	unset($column);
+} catch (Throwable $exception) {
+	error_log($exception->getMessage());
+}
+
+$homeNewsAvailable = array_reduce(
+	$homeColumns,
+	static fn (bool $available, array $column): bool => $available || $column['posts'] !== [],
+	false,
+);
 ?>
 <!doctype html>
 <html>
@@ -245,116 +267,50 @@ require_once __DIR__ . '/backend/bootstrap.php';
 					</div>
 				</div>
 			</div>
+			<?php if ($homeNewsAvailable): ?>
 			<section
 				class="section-space section-muted home-news-section"
 				aria-labelledby="home-news-title"
 			>
-				<div class="container">
-					<div class="section-heading">
-						<div>
-							<h2 id="home-news-title">Tin tức mới nhất</h2>
-						</div>
-						<a href="news.php" class="text-link">
-							Xem tất cả
-							<i class="bi bi-arrow-up-right"></i>
-						</a>
-					</div>
-					<div class="row g-4">
-						<div class="col-lg-6">
-							<article class="news-feature-card h-100">
-								<a href="news-post.php?post=pc-gaming" class="news-image-wrap">
-									<img
-										src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=1200&q=85"
-										alt="Bộ máy tính gaming với màn hình hiển thị"
-									/>
-								</a>
-								<div class="news-card-body">
-									<div class="news-meta">
-										<span>Hướng dẫn</span>
-										<time datetime="2026-09-16">16.09.2026</time>
-									</div>
-									<h3>
-										<a href="news-post.php?post=pc-gaming">
-											Hướng dẫn chọn cấu hình PC Gaming phù hợp từng nhu cầu
-										</a>
-									</h3>
-									<p>
-										Từ CPU, card đồ họa đến ngân sách: các điểm cần cân nhắc
-										trước khi bắt đầu build PC.
-									</p>
-									<a class="news-read-link" href="news-post.php?post=pc-gaming">
-										Đọc bài viết
-										<i class="bi bi-arrow-right"></i>
-									</a>
-								</div>
-							</article>
-						</div>
-						<div class="col-lg-6">
-							<div class="news-list-card">
-								<article class="news-list-item">
-									<a href="news-post.php?post=monitor" class="news-thumb">
-										<img
-											src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=600&q=80"
-											alt="Không gian làm việc với nhiều màn hình"
-										/>
-									</a>
-									<div>
-										<div class="news-meta">
-											<span>Thủ thuật</span>
-											<time datetime="2026-09-14">14.09.2026</time>
-										</div>
-										<h3>
-											<a href="news-post.php?post=monitor">
-												Chọn màn hình cho công việc và giải trí: đừng bỏ qua
-												4 thông số này
-											</a>
-										</h3>
-									</div>
-								</article>
-								<article class="news-list-item">
-									<a href="news-post.php?post=setup" class="news-thumb">
-										<img
-											src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80"
-											alt="Góc máy tính với phụ kiện gaming"
-										/>
-									</a>
-									<div>
-										<div class="news-meta">
-											<span>Gaming gear</span>
-											<time datetime="2026-09-12">12.09.2026</time>
-										</div>
-										<h3>
-											<a href="news-post.php?post=setup">
-												5 nâng cấp nhỏ giúp góc máy gọn gàng và hiệu quả hơn
-											</a>
-										</h3>
-									</div>
-								</article>
-								<article class="news-list-item">
-									<a href="news-post.php?post=laptop" class="news-thumb">
-										<img
-											src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80"
-											alt="Laptop trên bàn làm việc"
-										/>
-									</a>
-									<div>
-										<div class="news-meta">
-											<span>Tư vấn mua hàng</span>
-											<time datetime="2026-09-10">10.09.2026</time>
-										</div>
-										<h3>
-											<a href="news-post.php?post=laptop">
-												Laptop cho sinh viên: ưu tiên hiệu năng, pin hay
-												tính cơ động?
-											</a>
-										</h3>
-									</div>
-								</article>
-							</div>
-						</div>
-					</div>
-				</div>
+				<div class="container my-4">
+			    
+			<link rel="stylesheet" href="css/home-news.css">
+			<div class="row g-5">
+			    <?php foreach ($homeColumns as $column): ?>
+			        <div class="col-lg-6">
+			            <div class="home-news-col">
+			                <div class="home-news-head">
+			                    <h2><span><?= e($column['heading']) ?></span></h2>
+			                    <a href="<?= e($column['more']) ?>" class="home-news-more">Xem tất cả <i class="bi bi-arrow-right"></i></a>
+			                </div>
+			                <div class="home-news-list">
+			                    <?php foreach ($column['posts'] as $post): ?>
+			                        <article class="home-news-item">
+			                            <a href="<?= e(newsPostUrl($post)) ?>" class="home-news-thumb">
+			                                <img src="<?= e(newsCover($post)) ?>" alt="<?= e($post['title']) ?>" loading="lazy" onerror="this.onerror=null;this.src='assets/img/branding/tnc.png'">
+			                                <?php if ($column['play']): ?>
+			                                    <span class="home-news-play"><i class="bi bi-play-fill"></i></span>
+			                                <?php endif; ?>
+			                            </a>
+			                            <div class="home-news-body">
+			                                <h3><a href="<?= e(newsPostUrl($post)) ?>"><?= e($post['title']) ?></a></h3>
+			                                <?php if (!empty($post['excerpt'])): ?>
+			                                    <p><?= e($post['excerpt']) ?></p>
+			                                <?php endif; ?>
+			                                <div class="home-news-meta">
+			                                    <span><i class="bi bi-clock"></i><?= e($post['dateTime']) ?></span>
+			                                    <span><i class="bi bi-eye"></i><?= number_format($post['views'], 0, ',', '.') ?></span>
+			                                </div>
+			                            </div>
+			                        </article>
+			                    <?php endforeach; ?>
+			                </div>
+			            </div>
+			        </div>
+			    <?php endforeach; ?>
+			</div>
 			</section>
+			<?php endif; ?>
 			<div class="feedback-customer">
 				<div class="container">
 					<div class="content-feedback d-flex">

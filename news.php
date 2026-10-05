@@ -1,5 +1,32 @@
 <?php
 require_once __DIR__ . '/backend/bootstrap.php';
+require_once __DIR__ . '/partial/news-cards.php';
+
+$activeCategory = trim((string) ($_GET['category'] ?? ''));
+$posts = [];
+$categories = [];
+$loadError = false;
+
+try {
+    $repository = new NewsRepository(database());
+    $categories = $repository->categories();
+    $posts = $repository->all(12, 0, $activeCategory !== '' ? $activeCategory : null);
+} catch (Throwable $exception) {
+    error_log($exception->getMessage());
+    http_response_code(500);
+    $loadError = true;
+}
+if ($activeCategory !== '' && !in_array($activeCategory, array_column($categories, 'slug'), true)) {
+    http_response_code(404);
+    require __DIR__ . '/404.php';
+    exit;
+}
+
+// With a category filter, show a plain grid; otherwise feature + list + grid.
+$filtered = $activeCategory !== '';
+$feature = $filtered ? null : ($posts[0] ?? null);
+$sideList = $filtered ? [] : array_slice($posts, 1, 3);
+$gridPosts = $filtered ? $posts : array_slice($posts, 4);
 ?>
 <!doctype html>
 <html lang="vi">
@@ -21,187 +48,60 @@ require_once __DIR__ . '/backend/bootstrap.php';
 						đúng thiết bị.
 					</p>
 				</header>
-				<nav class="news-category-nav" aria-label="Chuyên mục">
-					<a class="active" href="#latest">Mới nhất</a>
-					<a href="#guides">Hướng dẫn</a>
-					<a href="#hardware">Phần cứng</a>
-					<a href="#gaming">Gaming</a>
-					<a href="#reviews">Review</a>
-				</nav>
-				<section id="latest" aria-labelledby="latest-title">
-					<div class="section-heading"><h2 id="latest-title">Bài viết mới nhất</h2></div>
-					<div class="row g-4 mb-5">
-						<div class="col-lg-7">
-							<article class="news-feature-card h-100">
-								<a class="news-image-wrap" href="news-post.php?post=pc-gaming">
-									<img
-										src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=1200&q=85"
-										alt="Bộ máy tính gaming với màn hình hiển thị"
-									/>
-								</a>
-								<div class="news-card-body">
-									<div class="news-meta">
-										<span>Hướng dẫn</span>
-										<time datetime="2026-09-16">16.09.2026</time>
-									</div>
-									<h3>
-										<a href="news-post.php?post=pc-gaming">
-											Hướng dẫn chọn cấu hình PC Gaming phù hợp từng nhu cầu
-										</a>
-									</h3>
-									<p>
-										Đặt mục tiêu sử dụng và ngân sách trước, sau đó cân bằng
-										CPU, VGA và khả năng nâng cấp cho bộ máy.
-									</p>
-									<a class="news-read-link" href="news-post.php?post=pc-gaming">
-										Đọc bài viết
-										<i class="bi bi-arrow-right"></i>
-									</a>
-								</div>
-							</article>
-						</div>
-						<div class="col-lg-5">
-							<div class="news-list-card">
-								<article class="news-list-item">
-									<a class="news-thumb" href="news-post.php?post=monitor">
-										<img
-											src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=600&q=80"
-											alt="Góc làm việc với nhiều màn hình"
-										/>
-									</a>
-									<div>
-										<div class="news-meta">
-											<span>Thủ thuật</span>
-											<time datetime="2026-09-14">14.09.2026</time>
+
+				<?php if ($loadError): ?>
+					<p class="text-center text-muted py-5">Không tải được bài viết. Vui lòng thử lại sau.</p>
+				<?php else: ?>
+					<nav class="news-category-nav" aria-label="Chuyên mục">
+						<a class="<?= $filtered ? '' : 'active' ?>" href="news.php">Mới nhất</a>
+						<?php foreach ($categories as $category): ?>
+							<a
+								class="<?= $activeCategory === $category['slug'] ? 'active' : '' ?>"
+								href="news.php?category=<?= e(rawurlencode($category['slug'])) ?>"
+							>
+								<?= e($category['name']) ?>
+							</a>
+						<?php endforeach; ?>
+					</nav>
+
+					<?php if (!$posts): ?>
+						<p class="text-center text-muted py-5">Chưa có bài viết nào.</p>
+					<?php else: ?>
+						<?php if ($feature): ?>
+							<section id="latest" aria-labelledby="latest-title">
+								<div class="section-heading"><h2 id="latest-title">Bài viết mới nhất</h2></div>
+								<div class="row g-4 mb-5">
+									<div class="col-lg-7"><?= newsFeatureCard($feature) ?></div>
+									<div class="col-lg-5">
+										<div class="news-list-card">
+											<?php foreach ($sideList as $post): ?>
+												<?= newsListItem($post) ?>
+											<?php endforeach; ?>
 										</div>
-										<h3>
-											<a href="news-post.php?post=monitor">
-												4 thông số cần biết trước khi mua màn hình mới
-											</a>
-										</h3>
 									</div>
-								</article>
-								<article class="news-list-item">
-									<a class="news-thumb" href="news-post.php?post=setup">
-										<img
-											src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80"
-											alt="Góc máy tính với phụ kiện gaming"
-										/>
-									</a>
+								</div>
+							</section>
+						<?php endif; ?>
+
+						<?php if ($gridPosts): ?>
+							<section id="more" aria-labelledby="more-title">
+								<div class="section-heading">
 									<div>
-										<div class="news-meta">
-											<span>Gaming gear</span>
-											<time datetime="2026-09-12">12.09.2026</time>
-										</div>
-										<h3>
-											<a href="news-post.php?post=setup">
-												5 nâng cấp nhỏ giúp góc máy gọn hơn
-											</a>
-										</h3>
+										<p class="eyebrow">Chọn đúng, dùng tốt</p>
+										<h2 id="more-title"><?= $filtered ? 'Bài viết trong chuyên mục' : 'Bài viết khác' ?></h2>
 									</div>
-								</article>
-								<article class="news-list-item">
-									<a class="news-thumb" href="news-post.php?post=laptop">
-										<img
-											src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80"
-											alt="Laptop trên bàn làm việc"
-										/>
-									</a>
-									<div>
-										<div class="news-meta">
-											<span>Tư vấn mua hàng</span>
-											<time datetime="2026-09-10">10.09.2026</time>
-										</div>
-										<h3>
-											<a href="news-post.php?post=laptop">
-												Laptop cho sinh viên: chọn gì là đủ?
-											</a>
-										</h3>
-									</div>
-								</article>
-							</div>
-						</div>
-					</div>
-				</section>
-				<section id="guides" aria-labelledby="guides-title">
-					<div class="section-heading">
-						<div>
-							<p class="eyebrow">Chọn đúng, dùng tốt</p>
-							<h2 id="guides-title">Hướng dẫn &amp; tư vấn</h2>
-						</div>
-					</div>
-					<div class="row g-4">
-						<div class="col-md-4">
-							<article class="news-grid-card">
-								<a href="news-post.php?post=pc-gaming">
-									<img
-										src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=700&q=80"
-										alt="Linh kiện máy tính"
-									/>
-								</a>
-								<div class="news-card-body">
-									<div class="news-meta">
-										<span>Phần cứng</span>
-										<time datetime="2026-09-08">08.09.2026</time>
-									</div>
-									<h3>
-										<a href="news-post.php?post=pc-gaming">
-											CPU và VGA: phân bổ ngân sách sao cho hợp lý?
-										</a>
-									</h3>
-									<p>Điểm xuất phát đơn giản để tránh cấu hình mất cân bằng.</p>
 								</div>
-							</article>
-						</div>
-						<div class="col-md-4">
-							<article class="news-grid-card">
-								<a href="news-post.php?post=monitor">
-									<img
-										src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=700&q=80"
-										alt="Laptop và màn hình trên bàn"
-									/>
-								</a>
-								<div class="news-card-body">
-									<div class="news-meta">
-										<span>Thủ thuật</span>
-										<time datetime="2026-09-06">06.09.2026</time>
-									</div>
-									<h3>
-										<a href="news-post.php?post=monitor">
-											Tần số quét, độ phân giải và màu sắc: hiểu nhanh
-										</a>
-									</h3>
-									<p>Ba tiêu chí quan trọng khi chọn màn hình.</p>
+								<div class="row g-4">
+									<?php foreach ($gridPosts as $post): ?>
+										<div class="col-md-4"><?= newsGridCard($post) ?></div>
+									<?php endforeach; ?>
 								</div>
-							</article>
-						</div>
-						<div class="col-md-4">
-							<article class="news-grid-card">
-								<a href="news-post.php?post=setup">
-									<img
-										src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=700&q=80"
-										alt="Bàn phím và thiết bị gaming"
-									/>
-								</a>
-								<div class="news-card-body">
-									<div class="news-meta">
-										<span>Gaming</span>
-										<time datetime="2026-09-04">04.09.2026</time>
-									</div>
-									<h3>
-										<a href="news-post.php?post=setup">
-											Hoàn thiện gaming setup không cần mua mọi thứ cùng lúc
-										</a>
-									</h3>
-									<p>Ưu tiên các món nâng trải nghiệm sử dụng mỗi ngày.</p>
-								</div>
-							</article>
-						</div>
-					</div>
-				</section>
+							</section>
+						<?php endif; ?>
+					<?php endif; ?>
+				<?php endif; ?>
 			</div>
 		</main>
-		<script src="js/news.js"></script>
-		<?php require 'partial/footer.php' ?>	
+		<?php require 'partial/footer.php' ?>
 	</body>
 </html>

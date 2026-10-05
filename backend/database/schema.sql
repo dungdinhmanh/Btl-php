@@ -230,6 +230,7 @@ CREATE TABLE news_posts (
   excerpt TEXT NULL,
   content LONGTEXT NOT NULL,
   cover_image_path VARCHAR(500) NULL,
+  view_count BIGINT UNSIGNED NOT NULL DEFAULT 0,
   post_status ENUM('draft', 'published', 'archived') NOT NULL DEFAULT 'draft',
   published_at DATETIME NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

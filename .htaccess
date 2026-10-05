@@ -2,5 +2,4 @@ Options -Indexes
 DirectoryIndex index.php
 
 RewriteEngine On
-RewriteCond %{THE_REQUEST} \s/+(.+)\.html[?\s] [NC]
-RewriteRule ^(.+)\.html$ /$1.php [R=302,L,NE]
+RewriteRule ^(.+)\.html$ news-post.php?slug=$1 [END,QSA,NE]
