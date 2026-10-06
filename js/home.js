@@ -59,6 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				item.style.position = "";
 				item.style.inset = "";
 				item.style.zIndex = "";
+				item.style.display = "";
 			});
 			inner.style.height = "";
 			carousel.classList.remove("is-dragging");
