@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 			? products
 					.map((product) =>
 						TNC.productCard(product, {
-							columnClass: "col-sm-6 col-lg-3",
+							columnClass: "col-sm-4 col-lg-3",
 							tag: "Bán chạy",
 							imageHeight: 160,
 						}),
@@ -249,7 +249,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 					? items
 							.map((product) =>
 								TNC.productCard(product, {
-									columnClass: "col-sm-6 col-lg-3",
+									columnClass: "col-sm-4 col-lg-3",
 									tag: "",
 									imageHeight: 130,
 								}),

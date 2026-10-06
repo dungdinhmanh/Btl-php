@@ -194,30 +194,7 @@ $homeNewsAvailable = array_reduce(
 							<i class="bi bi-arrow-up-right"></i>
 						</a>
 					</div>
-					<div class="row g-4" id="featured-products-list">
-						<div class="col-sm-6 col-lg-3 d-flex">
-							<article class="product-card d-flex w-100 flex-column">
-								<div class="product-image">
-									<i class="bi bi-cpu"></i>
-									<span class="product-tag">Bán chạy</span>
-								</div>
-								<p class="product-brand">Intel · Socket LGA1700</p>
-								<h3>
-									<a
-										href="product-detail.php?model=Core%20i5-12400F"
-										class="text-decoration-none text-dark"
-									>
-										CPU Intel Core i5-12400F
-									</a>
-								</h3>
-								<strong class="product-price">3.200.000 đ</strong>
-								<button class="btn btn-outline-primary w-100 mt-3">
-									<i class="bi bi-cart-plus me-2"></i>
-									Thêm vào giỏ
-								</button>
-							</article>
-						</div>
-					</div>
+					<div class="row g-4" id="featured-products-list"></div>
 				</div>
 			</section>
 			<div class="container my-5">
