@@ -3354,3 +3354,139 @@ padding-top: 1rem;
     padding-left: 0;
     padding-right: 0;
 }
+main {
+    background: #f3f3f3;
+    min-height: 100vh;
+}
+
+.section-space {
+    padding: 24px 0 40px;
+}
+
+/* Khung bộ lọc bên trái */
+.filter-panel {
+    background: #fff;
+    padding: 24px;
+    border: 1px solid #eeeeee;
+}
+
+/* Khung danh sách sản phẩm bên phải */
+.product-list-panel {
+    background: #fff;
+    padding: 24px;
+    border: 1px solid #eeeeee;
+}
+.filter-panel h2 {
+    margin: 0 0 24px;
+    padding-bottom: 0;
+    border-bottom: none;
+    font-size: 20px;
+    font-weight: 700;
+    color: #111;
+}
+/* Danh mục bộ lọc */
+.category-filter-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #111;
+}
+
+.category-filter-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.category-filter-item {
+    display: block;
+    color: #333;
+    text-decoration: none;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.category-filter-item:hover {
+    color: #1769d1;
+}
+/* Tiêu đề danh sách sản phẩm */
+.product-list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.product-list-header h2 {
+    position: relative;
+    margin: 0;
+    padding-bottom: 7px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #111;
+}
+
+.product-list-header h2::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 200px;
+    height: 3px;
+    background: #1769e0;
+}
+
+.product-list-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: #8b9bb5;
+}
+
+.product-list-divider {
+    color: #ccc;
+}
+
+.product-list-info select {
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: #111;
+    font-weight: 600;
+    cursor: pointer;
+}
+/* Banner linh kiện trong trang sản phẩm */
+.product-banner {
+    width: 100%;
+    margin-bottom: 30px;
+    overflow: hidden;
+}
+.products-page-banner {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.product-banner .carousel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+.product-banner .carousel-control-prev,
+.product-banner .carousel-control-next {
+    width: 45px;
+    height: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.35);
+    opacity: 1;
+}
+
+.product-banner .carousel-control-prev {
+    left: 0;
+}
+
+.product-banner .carousel-control-next {
+    right: 0;
+}

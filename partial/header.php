@@ -328,9 +328,9 @@ $headerQuickLinks = [
 ];
 ?>
 <div class="banner-top">
-	<a href="products.php">
-		<img src="assets/img/banner/banner-ad.png" alt="Banner top" />
-	</a>
+    <a href="products.php">
+        <img src="assets/img/banner/banner-ad.png" alt="Banner top" />
+    </a>
 </div>
 <div class="header">
 	<div class="header-top">

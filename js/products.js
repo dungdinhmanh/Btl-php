@@ -36,30 +36,42 @@ document.addEventListener("DOMContentLoaded", async () => {
 	}
 
 	function renderFilters(categories) {
-		if (!filterHolder) return;
+	if (!filterHolder) return;
 
-		filterHolder.innerHTML = categories
-			.map(
-				(category) => `
-					<label class="filter-check">
-						<input type="checkbox" value="${TNC.escapeHtml(category.slug)}" data-category-filter
-							${state.categories.includes(category.slug) ? "checked" : ""} />
-						${TNC.escapeHtml(category.name)}
-						<span data-category-count="${TNC.escapeHtml(category.slug)}">${category.productCount}</span>
-					</label>
-				`,
-			)
-			.join("");
+	filterHolder.innerHTML = `
+		<div class="category-filter-title">Danh mục</div>
+		<div class="category-filter-list">
+			${categories
+				.map(
+					(category) => `
+						<a href="#"
+							class="category-filter-item"
+							data-category-filter="${TNC.escapeHtml(category.slug)}">
+							» ${TNC.escapeHtml(category.name)}
+						</a>
+					`,
+				)
+				.join("")}
+		</div>
+	`;
 
-		filterHolder.querySelectorAll("[data-category-filter]").forEach((input) => {
-			input.addEventListener("change", () => {
-				state.categories = [...filterHolder.querySelectorAll("[data-category-filter]")]
-					.filter((box) => box.checked)
-					.map((box) => box.value);
+	filterHolder
+		.querySelectorAll("[data-category-filter]")
+		.forEach((item) => {
+			item.addEventListener("click", (event) => {
+				event.preventDefault();
+
+				const slug = item.dataset.categoryFilter;
+
+				state.categories =
+					state.categories.includes(slug)
+						? []
+						: [slug];
+
 				loadProducts();
 			});
 		});
-	}
+}
 	function renderBrandFilters(brands) {
 	if (!brandHolder) return;
 
