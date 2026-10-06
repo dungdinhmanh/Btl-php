@@ -17,16 +17,17 @@ require_once __DIR__ . '/backend/bootstrap.php';
 					<div class="row g-4">
 						<aside class="col-lg-3">
 							<div class="filter-panel">
-								<h2>Bộ lọc</h2>
-								<div id="category-filters"></div>
-								<hr />
-								<label for="sort-price" class="filter-label">Sắp xếp theo</label>
-								<select id="sort-price" class="form-select">
-									<option value="newest">Nổi bật nhất</option>
-									<option value="price-asc">Giá thấp đến cao</option>
-									<option value="price-desc">Giá cao đến thấp</option>
-								</select>
-							</div>
+    						<h2>Bộ lọc</h2>
+    						<div id="category-filters"></div>
+   							 <hr />
+   							 <div class="brand-filter-section">
+     					   <div class="brand-filter-title">
+          					  <span>HÃNG SẢN XUẤT</span>
+          					  <span class="brand-filter-toggle">⌄</span>
+       						 </div>
+        					<div id="brand-filters" class="brand-filter-list"></div>
+  						  </div>
+					</div>
 						</aside>
 						<div class="col-lg-9">
 							<div class="row g-4" id="product-grid">

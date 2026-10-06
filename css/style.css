@@ -13,7 +13,12 @@
 
 body {
 	color: var(--header-ink);
+<<<<<<< HEAD
 	background-color: #f3f3f3 !important;
+=======
+	background: #f3f3f3;
+	min-width: 1200px;
+>>>>>>> b319193 (Cap nhap va sua products.php,js va css)
 }
 
 main {
@@ -3221,4 +3226,131 @@ padding-top: 1rem;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	vertical-align: bottom;
+}
+
+/* ================================
+   BRAND FILTER
+================================ */
+
+.brand-filter-section {
+    margin-top: 10px;
+    padding: 4px 0 8px;
+}
+
+.brand-filter-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    color: #777;
+    font-size: 13px;
+    font-weight: 500;
+
+    margin-bottom: 12px;
+    cursor: pointer;
+}
+
+.brand-filter-toggle {
+    font-size: 16px;
+    color: #888;
+}
+
+.brand-filter-list {
+    max-height: 330px;
+    overflow-y: auto;
+
+    padding: 0 8px 0 2px;
+}
+
+.brand-filter-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+    min-height: 30px;
+
+    margin: 0;
+    padding: 4px 0;
+
+    font-size: 14px;
+    line-height: 1.4;
+    color: #374151;
+
+    cursor: pointer;
+}
+
+.brand-filter-left {
+    display: flex;
+    align-items: center;
+
+    flex: 1;
+    min-width: 0;
+
+    white-space: nowrap;
+}
+
+.brand-filter-item input[type="checkbox"] {
+    flex: 0 0 auto;
+
+    width: 15px;
+    height: 15px;
+
+    margin: 0 8px 0 0;
+
+    cursor: pointer;
+}
+/* Product grid - 5 sản phẩm mỗi hàng */
+#product-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 16px;
+}
+
+/* Bỏ kích thước cột Bootstrap để CSS Grid tự chia */
+#product-grid > [class*="col-"] {
+    width: auto;
+    max-width: none;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.brand-product-count {
+    flex-shrink: 0;
+
+    margin-left: auto;
+    padding-left: 10px;
+
+    color: #9ca3af;
+    font-size: 12px;
+
+    white-space: nowrap;
+}
+
+/* Thanh cuộn danh sách hãng */
+.brand-filter-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+.brand-filter-list::-webkit-scrollbar-thumb {
+    background: #9ca3af;
+    border-radius: 10px;
+}
+
+.brand-filter-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+/* Product grid - 5 sản phẩm mỗi hàng */
+#product-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 16px;
+}
+
+/* Bỏ kích thước cột Bootstrap để CSS Grid tự chia */
+#product-grid > [class*="col-"] {
+    width: auto;
+    max-width: none;
+    padding-left: 0;
+    padding-right: 0;
 }

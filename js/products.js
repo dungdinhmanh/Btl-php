@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 	const countEl = document.querySelector("#product-count");
 	const sortSelect = document.querySelector("#sort-price");
 	const filterHolder = document.querySelector("#category-filters");
+	const brandHolder = document.querySelector("#brand-filters");
 	const searchParams = new URLSearchParams(window.location.search);
 
 	const state = {
@@ -18,6 +19,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 			.split(",")
 			.map((slug) => slug.trim())
 			.filter(Boolean),
+    	brand: searchParams.get("brand") || "",
 		sort: searchParams.get("sort") || "newest",
 	};
 
@@ -27,6 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 		const params = new URLSearchParams();
 		if (state.q) params.set("q", state.q);
 		if (state.categories.length) params.set("category", state.categories.join(","));
+		if (state.brand) params.set("brand", state.brand);
 		if (state.sort !== "newest") params.set("sort", state.sort);
 		const query = params.toString();
 		window.history.replaceState({}, "", query ? `?${query}` : window.location.pathname);
@@ -57,6 +60,40 @@ document.addEventListener("DOMContentLoaded", async () => {
 			});
 		});
 	}
+	function renderBrandFilters(brands) {
+	if (!brandHolder) return;
+
+	brandHolder.innerHTML = brands
+		.map(
+			(brand) => `
+				<label class="brand-filter-item">
+					<span class="brand-filter-left">
+						<input
+							type="checkbox"
+							value="${TNC.escapeHtml(brand.slug)}"
+							data-brand-filter
+							${state.brand === brand.slug ? "checked" : ""}
+						/>
+						<span>${TNC.escapeHtml(brand.name)}</span>
+					</span>
+
+					<span class="brand-product-count">
+						[${brand.productCount}]
+					</span>
+				</label>
+			`,
+		)
+		.join("");
+
+	brandHolder
+		.querySelectorAll("[data-brand-filter]")
+		.forEach((input) => {
+			input.addEventListener("change", () => {
+				state.brand = input.checked ? input.value : "";
+				loadProducts();
+			});
+		});
+}
 
 	async function loadProducts() {
 		syncUrl();
@@ -66,6 +103,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 			const payload = await TNC.api.products({
 				q: state.q,
 				category: state.categories.join(","),
+				brand: state.brand,
 				sort: state.sort,
 				limit: 60,
 			});
@@ -96,6 +134,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 	try {
 		const meta = await TNC.api.meta();
 		renderFilters(meta.categories || []);
+		renderBrandFilters(meta.brands || []);
 	} catch {
 		if (filterHolder) {
 			filterHolder.innerHTML =

@@ -69,7 +69,7 @@ const TNC = (() => {
 	 */
 	function productCard(product, options = {}) {
 		const {
-			columnClass = "col-sm-6 col-xl-4",
+			columnClass = "col-sm-6 col-xl-3",
 			tag = "Chính hãng",
 			imageHeight = 150,
 		} = options;
