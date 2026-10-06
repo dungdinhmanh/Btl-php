@@ -135,7 +135,10 @@ document.addEventListener("DOMContentLoaded", () => {
 			if (pointerId === null) return;
 			cancelled = true;
 			if (dragging) finish(false);
-			else clearDragStyles();
+			else {
+				clearDragStyles();
+				bootstrap.Carousel.getOrCreateInstance(carousel).cycle();
+			}
 			pointerId = null;
 			dragging = false;
 		};
@@ -195,7 +198,10 @@ document.addEventListener("DOMContentLoaded", () => {
 			const commit = wasDragging && Math.abs(deltaX) >= dragThreshold;
 
 			if (wasDragging) finish(commit);
-			else clearDragStyles();
+			else {
+				clearDragStyles();
+				bootstrap.Carousel.getOrCreateInstance(carousel).cycle();
+			}
 
 			if (carousel.hasPointerCapture?.(pointerId)) {
 				carousel.releasePointerCapture(pointerId);
