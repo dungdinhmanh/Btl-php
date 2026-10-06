@@ -13,7 +13,7 @@
 
 body {
 	color: var(--header-ink);
-	background: #fff;
+	background-color: #f3f3f3 !important;
 	min-width: 1200px;
 }
 
