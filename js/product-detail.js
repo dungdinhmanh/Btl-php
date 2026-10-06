@@ -56,8 +56,10 @@ function renderProductDetail(product) {
 	const brandEl = document.querySelector("#product-brand");
 	if (brandEl) {
 		brandEl.textContent = product.brand || product.categoryName;
-		brandEl.className = "badge bg-dark text-uppercase mb-2 align-self-start px-2 py-1";
 	}
+
+	const skuEl = document.querySelector("#product-sku");
+	if (skuEl) skuEl.textContent = product.slug;
 
 	const nameEl = document.querySelector("#product-name");
 	if (nameEl) nameEl.textContent = product.name;
@@ -69,6 +71,7 @@ function renderProductDetail(product) {
 	if (priceEl) priceEl.textContent = product.priceText;
 
 	renderStock(product);
+	renderHighlights(product);
 	renderGallery(product);
 	renderSpecs(product);
 	wireAddToCart(product);
@@ -86,8 +89,34 @@ function renderStock(product) {
 	const holder = document.querySelector("#product-stock");
 	if (!holder) return;
 
-	holder.className = "product-stock";
-	holder.textContent = `Tồn kho: ${Number(product.stock) || 0}`;
+	const stock = Number(product.stock) || 0;
+	holder.className = `product-stock ${stock > 0 ? "is-in" : "is-out"}`;
+	holder.textContent = stock > 0 ? `Còn hàng (${stock})` : "Hết hàng";
+}
+
+/** Hiển thị tối đa 6 thông số đầu tiên trong khung "Cấu hình nổi bật". */
+function renderHighlights(product) {
+	const box = document.querySelector("#product-highlights");
+	const list = document.querySelector("#highlight-list");
+	if (!box || !list) return;
+
+	const specs = (product.specs || []).slice(0, 6);
+	if (specs.length === 0) {
+		box.hidden = true;
+		return;
+	}
+
+	list.innerHTML = specs
+		.map(
+			(spec) => `
+				<div class="pd-highlight-item">
+					<span class="label">${TNC.escapeHtml(spec.label)}:</span>
+					<span class="value">${TNC.escapeHtml(spec.unit ? `${spec.value} ${spec.unit}` : spec.value)}</span>
+				</div>
+			`,
+		)
+		.join("");
+	box.hidden = false;
 }
 
 function renderGallery(product) {
@@ -197,11 +226,11 @@ function wireAddToCart(product) {
 		}
 
 		const originalHtml = button.innerHTML;
-		button.innerHTML = '<i class="bi bi-check2 me-2"></i>Đã thêm vào giỏ';
-		button.classList.replace("btn-primary", "btn-success");
+		button.innerHTML = '<i class="bi bi-check2"></i> Đã thêm vào giỏ';
+		button.classList.add("is-added");
 		setTimeout(() => {
 			button.innerHTML = originalHtml;
-			button.classList.replace("btn-success", "btn-primary");
+			button.classList.remove("is-added");
 		}, 1500);
 	};
 }
