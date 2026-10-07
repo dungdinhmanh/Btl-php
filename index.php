@@ -335,6 +335,9 @@ $homeNewsAvailable = array_reduce(
 							<button type="button" class="feedback-nav feedback-next" aria-label="Ảnh tiếp theo">
 								<i class="bi bi-chevron-right" aria-hidden="true"></i>
 							</button>
+							<button type="button" class="feedback-pause" aria-pressed="false" aria-label="Tạm dừng tự động chuyển ảnh">
+								<i class="bi bi-pause-fill" aria-hidden="true"></i>
+							</button>
 						</div>
 					</div>
 				</div>
