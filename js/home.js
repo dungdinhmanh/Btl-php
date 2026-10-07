@@ -272,16 +272,15 @@ document.addEventListener("DOMContentLoaded", () => {
 	const items = [...track.querySelectorAll(".item")];
 	const prev = root.querySelector(".feedback-prev");
 	const next = root.querySelector(".feedback-next");
-	if (!viewport || !track || items.length < 2) return;
+	const pause = root.querySelector(".feedback-pause");
+	if (!viewport || !track || !prev || !next || items.length < 2) return;
 
-	const getVisible = () => {
-		if (window.innerWidth <= 575.98) return 1;
-		if (window.innerWidth <= 991.98) return 2;
-		return 3;
-	};
+	const itemWidth = () => track.querySelector(".item")?.getBoundingClientRect().width || 285;
+	const getVisible = () => Math.max(1, Math.min(items.length, Math.floor(viewport.clientWidth / itemWidth())));
+	const prefersReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 	let visible = getVisible();
-	let current = visible;
+	let current = items.length;
 	let startX = 0;
 	let startTranslate = 0;
 	let currentTranslate = 0;
@@ -289,98 +288,156 @@ document.addEventListener("DOMContentLoaded", () => {
 	let moved = false;
 	let pointerId = null;
 	let autoplayId = null;
+	let transitionActive = false;
+	let paused = prefersReducedMotion();
 
-	items.forEach((item) => track.appendChild(item.cloneNode(true)));
-	items.forEach((item) => track.insertBefore(item.cloneNode(true), track.firstChild));
+	const cloneItem = (item) => {
+		const clone = item.cloneNode(true);
+		clone.inert = true;
+		clone.setAttribute("aria-hidden", "true");
+		clone.querySelectorAll("a, button, input, select, textarea, [tabindex]").forEach((element) => {
+			element.tabIndex = -1;
+		});
+		return clone;
+	};
 
-	const allItems = () => [...track.querySelectorAll(".item")];
-	const itemWidth = () => allItems()[0]?.getBoundingClientRect().width || 285;
+	items.forEach((item) => track.appendChild(cloneItem(item)));
+	items.forEach((item) => track.insertBefore(cloneItem(item), track.firstChild));
 
 	const setTransition = (enabled) => {
-		track.classList.toggle("is-animating", enabled);
+		track.classList.toggle("is-animating", enabled && !prefersReducedMotion());
+	};
+
+	const updateFocusability = () => {
+		const start = current % items.length;
+		items.forEach((item, index) => {
+			const relative = (index - start + items.length) % items.length;
+			const visibleItem = relative < visible;
+			item.tabIndex = visibleItem ? 0 : -1;
+			item.setAttribute("aria-hidden", visibleItem ? "false" : "true");
+		});
 	};
 
 	const render = (translate, animate = true) => {
 		setTransition(animate);
 		currentTranslate = translate;
 		track.style.transform = `translate3d(${translate}px, 0, 0)`;
-	};
-
-	const baseOffset = () => -(items.length * itemWidth());
-	const snap = (index, animate = true) => {
-		current = index;
-		render(-(current * itemWidth()), animate);
+		updateFocusability();
 	};
 
 	const normalize = () => {
 		const count = items.length;
-		if (current >= count * 2) {
-			current -= count;
-			render(-(current * itemWidth()), false);
-		} else if (current < count) {
-			current += count;
-			render(-(current * itemWidth()), false);
-		}
+		if (current >= count * 2) current -= count;
+		if (current < count) current += count;
+		render(-(current * itemWidth()), false);
+		transitionActive = false;
+	};
+
+	const snap = (index, animate = true) => {
+		if (transitionActive && animate) return false;
+		const count = items.length;
+		while (index >= count * 2) index -= count;
+		while (index < count) index += count;
+		current = index;
+		transitionActive = animate && !prefersReducedMotion();
+		render(-(current * itemWidth()), animate);
+		if (!transitionActive) normalize();
+		return true;
+	};
+
+	const stopAutoplay = () => {
+		clearInterval(autoplayId);
+		autoplayId = null;
+	};
+
+	const updatePauseButton = () => {
+		if (!pause) return;
+		const isPaused = paused || prefersReducedMotion();
+		pause.setAttribute("aria-pressed", String(isPaused));
+		pause.setAttribute("aria-label", isPaused ? "Tiếp tục tự động chuyển ảnh" : "Tạm dừng tự động chuyển ảnh");
+		const icon = pause.querySelector("i");
+		icon?.classList.toggle("bi-play-fill", isPaused);
+		icon?.classList.toggle("bi-pause-fill", !isPaused);
 	};
 
 	const resetAutoplay = () => {
-		clearInterval(autoplayId);
+		stopAutoplay();
+		if (paused || prefersReducedMotion()) {
+			updatePauseButton();
+			return;
+		}
 		autoplayId = setInterval(() => {
 			snap(current + 1);
 		}, 5000);
+		updatePauseButton();
 	};
 
 	const rebuild = () => {
 		const nextVisible = getVisible();
-		if (nextVisible === visible) return;
+		if (nextVisible === visible) {
+			updateFocusability();
+			return;
+		}
 		visible = nextVisible;
 		current = items.length;
+		transitionActive = false;
 		render(-(current * itemWidth()), false);
+	};
+
+	const confirmDrag = () => {
+		dragging = true;
+		moved = true;
+		viewport.classList.add("is-dragging");
+		viewport.setPointerCapture?.(pointerId);
+		setTransition(false);
+		stopAutoplay();
 	};
 
 	const startDrag = (event) => {
 		if (event.pointerType === "mouse" && event.button !== 0) return;
-		dragging = true;
-		moved = false;
+		if (transitionActive) return;
 		pointerId = event.pointerId;
 		startX = event.clientX;
 		startTranslate = currentTranslate;
-		viewport.classList.add("is-dragging");
-		viewport.setPointerCapture?.(pointerId);
-		setTransition(false);
-		clearInterval(autoplayId);
+		moved = false;
+		dragging = false;
 	};
 
 	const moveDrag = (event) => {
-		if (!dragging || event.pointerId !== pointerId) return;
+		if (event.pointerId !== pointerId) return;
 		const delta = event.clientX - startX;
-		if (Math.abs(delta) > 6) moved = true;
+		if (!dragging && Math.abs(delta) < 6) return;
+		if (!dragging) confirmDrag();
+
 		const width = itemWidth();
-		const min = -((items.length * 2 - visible) * width);
-		const max = -((items.length - 1) * width);
+		const count = items.length;
+		const min = -((count * 2 - 1) * width);
+		const max = -(count * width);
 		let nextTranslate = startTranslate + delta;
 
 		if (nextTranslate > max) nextTranslate = max + (nextTranslate - max) * 0.25;
 		if (nextTranslate < min) nextTranslate = min + (nextTranslate - min) * 0.25;
-
 		render(nextTranslate, false);
 	};
 
 	const endDrag = (event) => {
-		if (!dragging || event.pointerId !== pointerId) return;
-		dragging = false;
-		viewport.classList.remove("is-dragging");
-		viewport.releasePointerCapture?.(pointerId);
-		pointerId = null;
-
+		if (event.pointerId !== pointerId) return;
+		const wasDragging = dragging;
 		const delta = event.clientX - startX;
-		const threshold = Math.min(100, itemWidth() * 0.18);
-		if (Math.abs(delta) >= threshold) {
-			snap(current + (delta < 0 ? 1 : -1));
-		} else {
-			snap(current);
+
+		if (wasDragging) {
+			viewport.classList.remove("is-dragging");
+			if (viewport.hasPointerCapture?.(pointerId)) viewport.releasePointerCapture(pointerId);
+			dragging = false;
+			pointerId = null;
+			const threshold = Math.min(100, itemWidth() * 0.18);
+			if (Math.abs(delta) >= threshold) snap(current + (delta < 0 ? 1 : -1));
+			else snap(current);
+			if (!paused) resetAutoplay();
+			return;
 		}
-		resetAutoplay();
+
+		pointerId = null;
 	};
 
 	prev.addEventListener("click", () => {
@@ -388,8 +445,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			moved = false;
 			return;
 		}
-		snap(current - 1);
-		resetAutoplay();
+		if (snap(current - 1)) resetAutoplay();
 	});
 
 	next.addEventListener("click", () => {
@@ -397,7 +453,11 @@ document.addEventListener("DOMContentLoaded", () => {
 			moved = false;
 			return;
 		}
-		snap(current + 1);
+		if (snap(current + 1)) resetAutoplay();
+	});
+
+	pause?.addEventListener("click", () => {
+		paused = !paused;
 		resetAutoplay();
 	});
 
@@ -412,14 +472,29 @@ document.addEventListener("DOMContentLoaded", () => {
 		moved = false;
 	}, true);
 
-	track.addEventListener("transitionend", () => {
-		if (!dragging) normalize();
+	track.addEventListener("transitionend", (event) => {
+		if (event.propertyName === "transform" && !dragging) normalize();
 	});
 
+	const resizeObserver = typeof ResizeObserver === "undefined"
+		? null
+		: new ResizeObserver(rebuild);
+	resizeObserver?.observe(viewport);
 	window.addEventListener("resize", rebuild);
 
-	visible = getVisible();
+	window.matchMedia("(prefers-reduced-motion: reduce)").addEventListener?.("change", (event) => {
+		if (event.matches) {
+			paused = true;
+			stopAutoplay();
+		} else {
+			resetAutoplay();
+		}
+		updatePauseButton();
+	});
+
 	current = items.length;
+	visible = getVisible();
 	render(-(current * itemWidth()), false);
+	updatePauseButton();
 	resetAutoplay();
 });
