@@ -254,6 +254,10 @@ document.addEventListener("DOMContentLoaded", () => {
 		moved = false;
 	}, true);
 
+	track.addEventListener("transitionend", () => {
+		if (!dragging) normalize();
+	});
+
 	window.addEventListener("resize", rebuild);
 
 	visible = getVisible();
