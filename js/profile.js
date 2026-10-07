@@ -42,7 +42,11 @@
 			const $badge = $("<span>").addClass(`badge text-bg-${color}`).text(label);
 
 			return $("<tr>").append(
-				$("<td>").text(order.number),
+				$("<td>").append(
+					$("<a>")
+						.attr({ href: `invoice.php?order=${encodeURIComponent(order.number)}`, title: "Xem hóa đơn" })
+						.text(order.number),
+				),
 				$("<td>").text(order.date),
 				$("<td>").append($badge),
 				$("<td>").addClass("text-end").text(money(order.total)),

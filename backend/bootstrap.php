@@ -44,3 +44,4 @@ require_once BACKEND_PATH . '/src/Repositories/NewsRepository.php';
 require_once BACKEND_PATH . '/src/Repositories/DashboardRepository.php';
 require_once BACKEND_PATH . '/src/Repositories/UserRepository.php';
 require_once BACKEND_PATH . '/src/Repositories/ProfileRepository.php';
+require_once BACKEND_PATH . '/src/Repositories/InvoiceRepository.php';

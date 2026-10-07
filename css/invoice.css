@@ -1,0 +1,95 @@
+/* CSS riêng cho trang hóa đơn (invoice.php): chỉ trang đó nạp file này, nên không đụng style.css. */
+.invoice {
+	max-width: 860px;
+	margin: 0 auto;
+	padding: 2rem;
+	background: #fff;
+	border: 1px solid #d9dee3;
+	border-radius: 6px;
+}
+.invoice-head {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	flex-wrap: wrap;
+	gap: 1rem;
+	padding-bottom: 1rem;
+	border-bottom: 2px solid var(--header-accent);
+}
+.invoice-logo {
+	height: 40px;
+	width: auto;
+}
+.invoice-title {
+	margin: 0 0 0.5rem;
+	font-size: 1.75rem;
+	font-weight: 700;
+	color: var(--header-accent);
+}
+.invoice-label {
+	margin: 0 0 0.35rem;
+	font-size: 0.75rem;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: #6c757d;
+}
+.invoice-table thead th {
+	border-bottom: 2px solid var(--header-accent);
+	white-space: nowrap;
+}
+.invoice-totals {
+	max-width: 340px;
+	margin: 1rem 0 0 auto;
+}
+.invoice-totals > div {
+	display: flex;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: 0.3rem 0;
+}
+.invoice-totals dt,
+.invoice-totals dd {
+	margin: 0;
+	font-weight: 400;
+}
+.invoice-totals .invoice-grand {
+	margin-top: 0.25rem;
+	padding-top: 0.6rem;
+	border-top: 2px solid var(--header-accent);
+	font-size: 1.15rem;
+	font-weight: 700;
+}
+.invoice-totals .invoice-grand dt,
+.invoice-totals .invoice-grand dd {
+	font-weight: 700;
+}
+.invoice-actions {
+	display: flex;
+	justify-content: center;
+	gap: 0.75rem;
+	margin-top: 1.5rem;
+}
+
+@media print {
+	.banner-top,
+	.header,
+	.site-footer,
+	.no-print {
+		display: none !important;
+	}
+	body {
+		min-width: 0 !important;
+	}
+	main {
+		padding: 0 !important;
+	}
+	.section-space {
+		padding: 0 !important;
+	}
+	.invoice {
+		max-width: none;
+		padding: 0;
+		border: 0;
+	}
+}
