@@ -294,7 +294,7 @@ $homeNewsAvailable = array_reduce(
 						<div class="left-content-feedback">
 							<b>Cảm ơn</b>
 							<b class="red">1.000.000+</b>
-							<b>KHÁCH HÀNG ĐÃ VÀ ĐANG CHỌN</b>0
+							<b>KHÁCH HÀNG ĐÃ VÀ ĐANG CHỌN</b>
 							<div class="list-star d-flex align-items">
 								<i class="bi bi-star-fill" aria-hidden="true"></i>
 								<i class="bi bi-star-fill" aria-hidden="true"></i>
@@ -309,95 +309,32 @@ $homeNewsAvailable = array_reduce(
 								alt="TNC Store"
 							/>
 						</div>
-						<div
-							class="list-feedback carousel slide"
-							id="js-slider-feedback"
-							data-bs-ride="carousel"
-						>
-							<div class="carousel-inner">
-								<div class="carousel-item active">
+						<div class="list-feedback" id="js-slider-feedback" data-feedback-carousel>
+							<div class="feedback-viewport">
+								<div class="feedback-track">
 									<a href="products.php" class="item">
-										<img
-											src="assets/img/feedback/anh-khach-hang-18-12.jpg"
-											alt="Khách hàng TNC Store"
-										/>
+										<img src="assets/img/feedback/11_01-cead646c48b7b3e9c83eeb98bdb47e101.jpg" width="2047" height="1358" alt="Khách hàng TNC Store" loading="lazy" />
 									</a>
 									<a href="products.php" class="item">
-										<img
-											src="assets/img/feedback/anh-khach-hang-19-12-2.jpg"
-											alt="Khách hàng TNC Store"
-										/>
-									</a>
-								</div>
-								<div class="carousel-item">
-									<a href="products.php" class="item">
-										<img
-											src="assets/img/feedback/anh-khach-hang-19-12-2.jpg"
-											alt="Khách hàng TNC Store"
-										/>
+										<img src="assets/img/feedback/anh-khach-hang-19-12-2.jpg" width="2047" height="1358" alt="Khách hàng TNC Store" loading="lazy" />
 									</a>
 									<a href="products.php" class="item">
-										<img
-											src="assets/img/feedback/11_01-cead646c48b7b3e9c83eeb98bdb47e101.jpg"
-											alt="Khách hàng TNC Store"
-										/>
-									</a>
-								</div>
-								<div class="carousel-item">
-									<a href="products.php" class="item">
-										<img
-											src="assets/img/feedback/11_01-cead646c48b7b3e9c83eeb98bdb47e101.jpg"
-											alt="Khách hàng TNC Store"
-										/>
+										<img src="assets/img/feedback/anh-khach-hang-18-12.jpg" width="2047" height="1358" alt="Khách hàng TNC Store" loading="lazy" />
 									</a>
 									<a href="products.php" class="item">
-										<img
-											src="assets/img/feedback/anh-khach-hang-18-12.jpg"
-											alt="Khách hàng TNC Store"
-										/>
+										<img src="assets/img/feedback/anh-khach-hang-19-12.jpg" width="2047" height="1358" alt="Khách hàng TNC Store" loading="lazy" />
+									</a>
+									<a href="products.php" class="item">
+										<img src="assets/img/feedback/anh-khach-hang-18-12-1.jpg" width="2047" height="1358" alt="Khách hàng TNC Store" loading="lazy" />
 									</a>
 								</div>
 							</div>
-							<button
-								class="carousel-control-prev"
-								type="button"
-								data-bs-target="#js-slider-feedback"
-								data-bs-slide="prev"
-							>
-								<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-								<span class="visually-hidden">Trước</span>
+							<button type="button" class="feedback-nav feedback-prev" aria-label="Ảnh trước">
+								<i class="bi bi-chevron-left" aria-hidden="true"></i>
 							</button>
-							<button
-								class="carousel-control-next"
-								type="button"
-								data-bs-target="#js-slider-feedback"
-								data-bs-slide="next"
-							>
-								<span class="carousel-control-next-icon" aria-hidden="true"></span>
-								<span class="visually-hidden">Sau</span>
+							<button type="button" class="feedback-nav feedback-next" aria-label="Ảnh tiếp theo">
+								<i class="bi bi-chevron-right" aria-hidden="true"></i>
 							</button>
-							<div class="carousel-indicators">
-								<button
-									type="button"
-									data-bs-target="#js-slider-feedback"
-									data-bs-slide-to="0"
-									class="active"
-									aria-current="true"
-									aria-label="Nhóm ảnh 1"
-								></button>
-								<button
-									type="button"
-									data-bs-target="#js-slider-feedback"
-									data-bs-slide-to="1"
-									aria-label="Nhóm ảnh 2"
-								></button>
-								<button
-									type="button"
-									data-bs-target="#js-slider-feedback"
-									data-bs-slide-to="2"
-									aria-label="Nhóm ảnh 3"
-								></button>
-							</div>
 						</div>
 					</div>
 				</div>
