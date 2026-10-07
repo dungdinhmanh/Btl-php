@@ -13,14 +13,8 @@
 
 body {
 	color: var(--header-ink);
-<<<<<<< HEAD
 	background-color: #f3f3f3 !important;
-=======
-	background: #f3f3f3;
-	min-width: 1200px;
->>>>>>> b319193 (Cap nhap va sua products.php,js va css)
 }
-
 main {
 	padding: 10% 0 5% 0;
 }
