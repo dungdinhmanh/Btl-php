@@ -31,6 +31,56 @@ final class ProfileRepository
         ];
     }
 
+    public function updateDetails(int $userId, string $name, string $email, string $phone, string $currentPassword): bool
+    {
+        $statement = $this->db->prepare(
+            'SELECT password_hash FROM users WHERE user_id = :id AND account_status = :status',
+        );
+        $statement->execute([':id' => $userId, ':status' => 'active']);
+        $passwordHash = $statement->fetchColumn();
+        if (!is_string($passwordHash) || !password_verify($currentPassword, $passwordHash)) {
+            return false;
+        }
+
+        $statement = $this->db->prepare(
+            'UPDATE users SET full_name = :name, email = :email, phone = :phone
+             WHERE user_id = :id AND account_status = :status',
+        );
+        $statement->execute([
+            ':name' => $name,
+            ':email' => $email,
+            ':phone' => $phone !== '' ? $phone : null,
+            ':id' => $userId,
+            ':status' => 'active',
+        ]);
+
+        return true;
+    }
+
+    public function updatePassword(int $userId, string $currentPassword, string $newPassword): bool
+    {
+        $statement = $this->db->prepare(
+            'SELECT password_hash FROM users WHERE user_id = :id AND account_status = :status',
+        );
+        $statement->execute([':id' => $userId, ':status' => 'active']);
+        $passwordHash = $statement->fetchColumn();
+        if (!is_string($passwordHash) || !password_verify($currentPassword, $passwordHash)) {
+            return false;
+        }
+
+        $statement = $this->db->prepare(
+            'UPDATE users SET password_hash = :password_hash
+             WHERE user_id = :id AND account_status = :status',
+        );
+        $statement->execute([
+            ':password_hash' => password_hash($newPassword, PASSWORD_DEFAULT),
+            ':id' => $userId,
+            ':status' => 'active',
+        ]);
+
+        return true;
+    }
+
     /** @return array{total: int, processing: int, spent: float} */
     public function stats(int $userId): array
     {

@@ -15,10 +15,10 @@
 	function renderUser(user) {
 		setText("side-name", user.name);
 		setText("side-email", user.email);
-		setText("name", user.name);
-		setText("email", user.email);
-		setText("phone", user.phone || "Chưa cập nhật");
 		setText("joined", user.joinedAt);
+		$('[data-profile-form="details"] [name="name"]').val(user.name);
+		$('[data-profile-form="details"] [name="email"]').val(user.email);
+		$('[data-profile-form="details"] [name="phone"]').val(user.phone || "");
 	}
 
 	function renderStats(stats) {
@@ -77,8 +77,40 @@
 		$('[data-profile="address"]').text("Không tải được dữ liệu.");
 	}
 
+	function submitForm($form, data) {
+		$("[data-profile-error], [data-profile-success]").addClass("d-none");
+		const $button = $form.find('button[type="submit"]').prop("disabled", true);
+		$.ajax({ url: "backend/api/profile.php", method: "POST", data, dataType: "json" })
+			.done((response) => {
+				$form[0].reset();
+				if (data.action === "update-details") {
+					renderUser({
+						name: data.name,
+						email: data.email,
+						phone: data.phone,
+						joinedAt: $('[data-profile="joined"]').text(),
+					});
+				}
+				$('[data-profile-success]').text(response.message).removeClass("d-none");
+			})
+			.fail((xhr) => {
+				const message = xhr.responseJSON?.message || "Có lỗi xảy ra, vui lòng thử lại.";
+				$('[data-profile-error]').text(message).removeClass("d-none");
+			})
+			.always(() => $button.prop("disabled", false));
+	}
+
 	$(function () {
 		if (!$("#profile-root").length) return;
+
+		$('[data-profile-form="details"]').on("submit", function (event) {
+			event.preventDefault();
+			submitForm($(this), { action: "update-details", ...Object.fromEntries(new FormData(this)) });
+		});
+		$('[data-profile-form="password"]').on("submit", function (event) {
+			event.preventDefault();
+			submitForm($(this), { action: "update-password", ...Object.fromEntries(new FormData(this)) });
+		});
 
 		$.ajax({ url: "backend/api/profile.php", dataType: "json" })
 			.done((res) => {

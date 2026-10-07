@@ -52,6 +52,7 @@ $sessionName = htmlspecialchars((string) $_SESSION['user']['name'], ENT_QUOTES);
 						</aside>
 						<div class="col-lg-9">
 							<div class="alert alert-danger d-none" role="alert" data-profile-error></div>
+							<div class="alert alert-success d-none" role="status" data-profile-success></div>
 							<div id="overview" class="row g-3 mb-4">
 								<div class="col-md-4">
 									<div class="summary-card h-100">
@@ -74,19 +75,48 @@ $sessionName = htmlspecialchars((string) $_SESSION['user']['name'], ENT_QUOTES);
 							</div>
 							<div id="profile-info" class="summary-card mb-4">
 								<h2 class="mb-3">Thông tin cá nhân</h2>
+								<form class="row g-3" data-profile-form="details">
+									<div class="col-md-6">
+										<label class="form-label" for="profile-name">Họ và tên</label>
+										<input class="form-control" id="profile-name" name="name" type="text" maxlength="150" autocomplete="name" required>
+									</div>
+									<div class="col-md-6">
+										<label class="form-label" for="profile-email">Email</label>
+										<input class="form-control" id="profile-email" name="email" type="email" maxlength="254" autocomplete="email" required>
+									</div>
+									<div class="col-md-6">
+										<label class="form-label" for="profile-phone">Số điện thoại</label>
+										<input class="form-control" id="profile-phone" name="phone" type="tel" maxlength="25" autocomplete="tel">
+									</div>
+									<div class="col-md-6">
+										<label class="form-label" for="profile-current-password">Mật khẩu hiện tại</label>
+										<input class="form-control" id="profile-current-password" name="currentPassword" type="password" autocomplete="current-password" required>
+									</div>
+									<div class="col-12">
+										<button class="btn btn-primary" type="submit">Lưu thông tin</button>
+									</div>
+								</form>
+								<hr class="my-4">
+								<h3 class="h5 mb-3">Đổi mật khẩu</h3>
+								<form class="row g-3" data-profile-form="password">
+									<div class="col-md-4">
+										<label class="form-label" for="password-current">Mật khẩu hiện tại</label>
+										<input class="form-control" id="password-current" name="currentPassword" type="password" autocomplete="current-password" required>
+									</div>
+									<div class="col-md-4">
+										<label class="form-label" for="password-new">Mật khẩu mới</label>
+										<input class="form-control" id="password-new" name="newPassword" type="password" minlength="8" autocomplete="new-password" required>
+									</div>
+									<div class="col-md-4">
+										<label class="form-label" for="password-confirm">Xác nhận mật khẩu mới</label>
+										<input class="form-control" id="password-confirm" name="confirmPassword" type="password" minlength="8" autocomplete="new-password" required>
+									</div>
+									<div class="col-12">
+										<button class="btn btn-outline-primary" type="submit">Đổi mật khẩu</button>
+									</div>
+								</form>
+								<hr class="my-4">
 								<div class="row g-3">
-									<div class="col-md-6">
-										<small class="text-muted d-block">Họ và tên</small>
-										<strong data-profile="name"><?= $sessionName ?></strong>
-									</div>
-									<div class="col-md-6">
-										<small class="text-muted d-block">Email</small>
-										<strong class="text-break" data-profile="email">…</strong>
-									</div>
-									<div class="col-md-6">
-										<small class="text-muted d-block">Số điện thoại</small>
-										<strong data-profile="phone">…</strong>
-									</div>
 									<div class="col-md-6">
 										<small class="text-muted d-block">Ngày tham gia</small>
 										<strong data-profile="joined">…</strong>
