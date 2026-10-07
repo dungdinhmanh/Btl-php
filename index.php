@@ -175,6 +175,7 @@ $homeNewsAvailable = array_reduce(
 					</div>
 				</div>
 			</section>
+			<?php require 'partial/sale.php'; ?>
 			<section class="section-space">
 				<div class="container">
 					<h2 class="category-featured-title">Danh mục nổi bật</h2>
