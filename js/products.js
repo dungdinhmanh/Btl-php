@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 	const filterHolder = document.querySelector("#category-filters");
 	const brandHolder = document.querySelector("#brand-filters");
 	const searchParams = new URLSearchParams(window.location.search);
+	const activeFilterHolder = document.querySelector("#active-filters");
 
 	const state = {
 		q: (searchParams.get("q") || "").trim(),
@@ -22,6 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     	brand: searchParams.get("brand") || "",
 		sort: searchParams.get("sort") || "newest",
 	};
+let brands = [];
 
 	if (sortSelect && state.sort) sortSelect.value = state.sort;
 
@@ -75,7 +77,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 	function renderBrandFilters(brands) {
 	if (!brandHolder) return;
 
-	brandHolder.innerHTML = brands
+	const visibleBrands = state.brand
+    ? brands.filter((brand) => brand.slug === state.brand)
+    : brands;
+
+	brandHolder.innerHTML = visibleBrands
 		.map(
 			(brand) => `
 				<label class="brand-filter-item">
@@ -98,14 +104,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 		.join("");
 
 	brandHolder
-		.querySelectorAll("[data-brand-filter]")
-		.forEach((input) => {
-			input.addEventListener("change", () => {
-				state.brand = input.checked ? input.value : "";
-				loadProducts();
-			});
-		});
-}
+    .querySelectorAll("[data-brand-filter]")
+    .forEach((input) => {
+        input.addEventListener("click", () => {
+            if (state.brand === input.value) {
+                state.brand = "";
+                input.checked = false;
+            } else {
+                state.brand = input.value;
+                input.checked = true;
+            }
+            renderBrandFilters(brands);
+            loadProducts();
+        });
+      });
+	}
 
 	async function loadProducts() {
 		syncUrl();
@@ -122,7 +135,50 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 			const items = payload.data || [];
 			if (countEl) countEl.textContent = `${payload.total ?? items.length} sản phẩm`;
+			const activeFilterHolder = document.querySelector("#active-filters");
 
+			if (activeFilterHolder) {
+			if (state.brand) {
+			const selectedBrand = brands.find(
+			(brand) => brand.slug === state.brand
+		);
+
+		activeFilterHolder.innerHTML = `
+			<span class="active-filter-label">Lọc theo:</span>
+
+			<button type="button" class="active-filter-item" id="remove-brand-filter">
+    			${TNC.escapeHtml(selectedBrand?.name || state.brand)}
+    			<span class="active-filter-x">×</span>
+			</button>
+
+			<button type="button" class="clear-all-filters" id="clear-all-filters">
+				Xóa tất cả
+			</button>
+		`;
+	} else {
+		activeFilterHolder.innerHTML = "";
+	}
+}
+
+if (activeFilterHolder) {
+	document
+		.querySelector("#remove-brand-filter")
+		?.addEventListener("click", () => {
+			state.brand = "";
+			renderBrandFilters(brands);
+			loadProducts();
+		});
+
+	document
+		.querySelector("#clear-all-filters")
+		?.addEventListener("click", () => {
+			state.brand = "";
+			state.categories = [];
+			state.q = "";
+			renderBrandFilters(brands);
+			loadProducts();
+		});
+}
 			grid.innerHTML = items.length
 				? items.map((product) => TNC.productCard(product)).join("")
 				: TNC.emptyState({
@@ -145,6 +201,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 	try {
 		const meta = await TNC.api.meta();
+		brands = meta.brands || [];
 		renderFilters(meta.categories || []);
 		renderBrandFilters(meta.brands || []);
 	} catch {

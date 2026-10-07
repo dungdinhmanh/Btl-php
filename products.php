@@ -12,6 +12,11 @@ require_once __DIR__ . '/backend/bootstrap.php';
 	<body>
 		<?php require 'partial/header.php' ?>
 		<main>
+            <div class="products-breadcrumb">
+               <a href="index.php">Trang chủ</a>
+               <span>›</span>
+               <span>Linh kiện máy tính</span>
+            </div>
 			<section class="products-page-banner">
 				<div class="container">
 					<div id="productBanner" class="carousel slide product-banner" data-bs-ride="carousel">
@@ -90,14 +95,15 @@ require_once __DIR__ . '/backend/bootstrap.php';
                 </select>
             </div>
         </div>
-        <div class="row g-4" id="product-grid">
+        <div id="active-filters"></div>
+    <div id="product-grid">
 								<div class="col-12 py-5 text-center text-muted">
 									<div
 										class="spinner-border spinner-border-sm me-2"
 										role="status"
 									></div>
 								</div>
-									Đan    <div class="row g-4" id="product-grid">g nạp danh sách sản phẩm...
+									 <div class="row g-4" id="product-grid">Đang nạp danh sách sản phẩm...
 								</div>
 							</div>
 						</div>
