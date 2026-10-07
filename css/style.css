@@ -15,9 +15,6 @@ body {
 	color: var(--header-ink);
 	background-color: #f3f3f3 !important;
 }
-main {
-	padding: 10% 0 5% 0;
-}
 /* Homepage carousel sits flush under the header */
 main:has(> .promo-carousel-section) {
 	padding-top: 0;
@@ -3137,6 +3134,11 @@ main {
 }
 
 .products-page-banner .container {
+    max-width: 1380px !important;
+    width: 100% !important;
+}
+
+.products-page-banner .container {
     width: 100%;
     max-width: 1380px;
     padding-left: 0;
@@ -3235,7 +3237,7 @@ main {
 .products-breadcrumb {
 	width: 100%;
 	max-width: 1380px;
-	margin: 0 auto 25px;
+	margin: 35px auto 25px;
 	display: flex;
 	align-items: center;
 	gap: 10px;
@@ -3244,16 +3246,27 @@ main {
 }
 
 .products-breadcrumb a {
-	color: #748092;
+	color: #111;
 	text-decoration: none;
 	font-weight: 600;
 }
 
 .products-breadcrumb a:hover {
-	color: #111;
+	color: #0d6efd;
 }
 
-.products-breadcrumb span:last-child {
-	color: #111;
-	font-weight: 600;
+.products-breadcrumb a.current {
+    color: #111;
+    font-weight: 700;
+}
+
+.products-breadcrumb a.current:hover {
+    color: #0d6efd;
+}
+.products-breadcrumb .breadcrumb-home {
+    color: #748092;
+}
+
+.products-breadcrumb .breadcrumb-home:hover {
+    color: #0d6efd;
 }

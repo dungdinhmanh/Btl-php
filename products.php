@@ -12,11 +12,11 @@ require_once __DIR__ . '/backend/bootstrap.php';
 	<body>
 		<?php require 'partial/header.php' ?>
 		<main>
-            <div class="products-breadcrumb">
-               <a href="index.php">Trang chủ</a>
-               <span>›</span>
-               <span>Linh kiện máy tính</span>
-            </div>
+              <div class="products-breadcrumb" id="products-breadcrumb">
+                <a href="index.php" class="breadcrumb-home">Trang chủ</a>
+             <span>›</span>
+              <a href="products.php" class="current">Linh kiện máy tính</a>
+                  </div>
 			<section class="products-page-banner">
 				<div class="container">
 					<div id="productBanner" class="carousel slide product-banner" data-bs-ride="carousel">
@@ -82,7 +82,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 						<div class="col-lg-9">
          				<div class="product-list-panel">
        					 <div class="product-list-header">
-           			 <h2>LINH KIỆN MÁY TÍNH</h2>
+           			 <h2 id="product-page-title">LINH KIỆN MÁY TÍNH</h2>
           		  <div class="product-list-info">
                 <span id="product-count">0 sản phẩm</span>
                 <span class="product-list-divider">|</span>

@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 	const sortSelect = document.querySelector("#sort-price");
 	const filterHolder = document.querySelector("#category-filters");
 	const brandHolder = document.querySelector("#brand-filters");
+	const breadcrumbHolder = document.querySelector("#products-breadcrumb");
+	const productTitle = document.querySelector("#product-page-title");
 	const searchParams = new URLSearchParams(window.location.search);
 	const activeFilterHolder = document.querySelector("#active-filters");
 
@@ -37,6 +39,44 @@ let brands = [];
 		window.history.replaceState({}, "", query ? `?${query}` : window.location.pathname);
 	}
 
+	function renderBreadcrumb(categories) {
+    if (!breadcrumbHolder) return;
+
+    if (!state.categories.length) {
+        breadcrumbHolder.innerHTML = `
+            <a href="index.php">Trang chủ</a>
+            <span>›</span>
+            <a href="products.php" class="current">Linh kiện máy tính</a>
+        `;
+        return;
+    }
+
+    const category = categories.find(
+        (item) => item.slug === state.categories[0]
+    );
+
+    if (productTitle) {
+    productTitle.textContent = category
+        ? category.name.toUpperCase()
+        : "LINH KIỆN MÁY TÍNH";
+}
+
+    if (!category) return;
+
+    breadcrumbHolder.innerHTML = `
+        <a href="index.php" class="breadcrumb-home">Trang chủ</a>
+        <span>›</span>
+        <a href="products.php">Linh kiện máy tính</a>
+        <span>›</span>
+        <a
+            href="products.php?category=${encodeURIComponent(category.slug)}"
+            class="current"
+        >
+            ${TNC.escapeHtml(category.name)}
+        </a>
+    `;
+}
+
 	function renderFilters(categories) {
 	if (!filterHolder) return;
 
@@ -61,16 +101,9 @@ let brands = [];
 		.querySelectorAll("[data-category-filter]")
 		.forEach((item) => {
 			item.addEventListener("click", (event) => {
-				event.preventDefault();
-
-				const slug = item.dataset.categoryFilter;
-
-				state.categories =
-					state.categories.includes(slug)
-						? []
-						: [slug];
-
-				loadProducts();
+    		event.preventDefault();
+   			 const slug = item.dataset.categoryFilter;
+    		window.location.href = `products.php?category=${encodeURIComponent(slug)}`;
 			});
 		});
 }
@@ -202,8 +235,10 @@ if (activeFilterHolder) {
 	try {
 		const meta = await TNC.api.meta();
 		brands = meta.brands || [];
-		renderFilters(meta.categories || []);
-		renderBrandFilters(meta.brands || []);
+		const categories = meta.categories || [];
+		renderFilters(categories);
+		renderBrandFilters(brands);
+		renderBreadcrumb(categories);
 	} catch {
 		if (filterHolder) {
 			filterHolder.innerHTML =
