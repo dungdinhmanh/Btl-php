@@ -23,6 +23,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
 					<div class="row g-5">
 						<div class="col-lg-7">
 							<form class="checkout-form" id="checkoutForm" action="success.php">
+								<div class="alert alert-danger d-none" data-checkout-error role="alert"></div>
 								<h2>Thông tin giao hàng</h2>
 								<div class="row g-3">
 									<div class="col-md-6">

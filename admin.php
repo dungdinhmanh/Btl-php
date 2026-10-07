@@ -28,7 +28,7 @@ $todayLabel = date('d/m/Y');
 					<i class="bi bi-box-seam"></i>
 					<span>Sản phẩm</span>
 				</a>
-				<a href="orders.php">
+				<a href="admin/orders.php">
 					<i class="bi bi-receipt"></i>
 					<span>Đơn hàng</span>
 				</a>
@@ -84,7 +84,7 @@ $todayLabel = date('d/m/Y');
 							<p class="eyebrow">Kho hàng</p>
 							<h2>Sắp hết hàng</h2>
 						</div>
-						<a class="text-link" href="products.php">Xem tất cả</a>
+						<a class="text-link" href="admin/products.php">Xem tất cả</a>
 					</div>
 					<div id="admin-low-stock"></div>
 				</div>
@@ -95,7 +95,7 @@ $todayLabel = date('d/m/Y');
 						<p class="eyebrow">Mới nhất</p>
 						<h2>Đơn hàng gần đây</h2>
 					</div>
-					<a class="text-link" href="cart.php">Xem tất cả</a>
+					<a class="text-link" href="admin/orders.php">Xem tất cả</a>
 				</div>
 				<div class="table-responsive">
 					<table class="table align-middle">

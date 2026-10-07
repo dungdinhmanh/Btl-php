@@ -186,6 +186,7 @@ function wireAddToCart(product) {
 
 		if (typeof addToCart === "function") {
 			addToCart({
+				productId: Number(product.id),
 				id: product.slug,
 				name: product.name,
 				brand: product.brand || "TNC STORE",

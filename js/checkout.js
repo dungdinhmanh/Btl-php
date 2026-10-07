@@ -3,6 +3,7 @@ const checkoutSubmitButton = document.querySelector("[data-checkout-submit]");
 const voucherInput = document.getElementById("voucher-code");
 const voucherButton = document.querySelector("[data-voucher-apply]");
 const voucherMessage = document.querySelector("[data-voucher-message]");
+const checkoutError = document.querySelector("[data-checkout-error]");
 const requiredCheckoutFields = ["customer-name", "customer-phone", "customer-address"];
 
 function markInvalid(field) {
@@ -17,8 +18,9 @@ function clearInvalid(field) {
 }
 
 if (checkoutForm && checkoutSubmitButton) {
-	checkoutSubmitButton.addEventListener("click", (event) => {
+	checkoutForm.addEventListener("submit", async (event) => {
 		event.preventDefault();
+		checkoutError?.classList.add("d-none");
 		let firstInvalid;
 
 		requiredCheckoutFields.forEach((id) => {
@@ -37,7 +39,48 @@ if (checkoutForm && checkoutSubmitButton) {
 			return;
 		}
 
-		checkoutForm.submit();
+		let cart;
+		try {
+			cart = JSON.parse(localStorage.getItem("tnc-cart") || "[]");
+		} catch {
+			cart = [];
+		}
+		if (!Array.isArray(cart) || cart.length === 0 || cart.some((item) => !Number(item.productId))) {
+			if (checkoutError) {
+				checkoutError.textContent = "Giỏ hàng trống hoặc sản phẩm đã cũ. Vui lòng quay lại thêm sản phẩm một lần nữa.";
+				checkoutError.classList.remove("d-none");
+			}
+			return;
+		}
+
+		checkoutSubmitButton.disabled = true;
+		try {
+			const response = await fetch("backend/api/checkout.php", {
+				method: "POST",
+				headers: { "Content-Type": "application/json", Accept: "application/json" },
+				body: JSON.stringify({
+					customer: {
+						name: document.getElementById("customer-name").value.trim(),
+						phone: document.getElementById("customer-phone").value.trim(),
+						address: document.getElementById("customer-address").value.trim(),
+						city: document.getElementById("customer-city").value.trim(),
+					},
+					items: cart.map((item) => ({ product_id: Number(item.productId), quantity: Number(item.quantity) })),
+				}),
+			});
+			const result = await response.json();
+			if (!response.ok || !result.ok) {
+				throw new Error(result.message || "Không thể tạo đơn hàng.");
+			}
+			localStorage.removeItem("tnc-cart");
+			window.location.assign("success.php");
+		} catch (error) {
+			if (checkoutError) {
+				checkoutError.textContent = error.message || "Có lỗi xảy ra, vui lòng thử lại.";
+				checkoutError.classList.remove("d-none");
+			}
+			checkoutSubmitButton.disabled = false;
+		}
 	});
 
 	requiredCheckoutFields.forEach((id) => {

@@ -1,11 +1,19 @@
-<link rel="stylesheet" href="css/style.css" />
-<link rel="icon" href="assets/favicon.png" />
+<?php
+$scriptPath = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '');
+$isAdminPage = basename($scriptPath) === 'admin.php' || str_contains($scriptPath, '/admin/');
+$assetPrefix = str_contains($scriptPath, '/admin/') ? '../' : '';
+?>
+<link rel="stylesheet" href="<?= $assetPrefix ?>css/style.css" />
+<link rel="icon" href="<?= $assetPrefix ?>assets/favicon.png" />
 <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
     rel="stylesheet"
     integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
     crossorigin="anonymous"
 />
+<?php if ($isAdminPage): ?>
+	<link rel="stylesheet" href="<?= $assetPrefix ?>css/admin.css" />
+<?php endif; ?>
 <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"

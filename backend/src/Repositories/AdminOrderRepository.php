@@ -13,12 +13,13 @@ final class AdminOrderRepository
     {
         $statement = $this->db->query(
             'SELECT o.order_id AS id, o.order_number AS number, o.placed_at AS placedAt,
-                    u.full_name AS customerName, u.email AS customerEmail,
+                    COALESCE(addr.recipient_name, u.full_name) AS customerName, u.email AS customerEmail,
                     s.status_code AS statusCode, s.status_name AS statusName,
                     (COALESCE(oi.total, 0) + o.shipping_amount - o.discount_amount) AS total
              FROM orders o
              INNER JOIN order_statuses s ON s.order_status_id = o.order_status_id
              LEFT JOIN users u ON u.user_id = o.user_id
+             LEFT JOIN order_addresses addr ON addr.order_id = o.order_id
              LEFT JOIN (
                  SELECT order_id, SUM(quantity * unit_price) AS total
                  FROM order_items

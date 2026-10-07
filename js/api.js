@@ -82,7 +82,7 @@ const TNC = (() => {
 
 		return `
 			<div class="${columnClass} d-flex">
-				<article class="product-card d-flex w-100 flex-column">
+				<article class="product-card d-flex w-100 flex-column" data-product-id="${escapeHtml(product.id)}">
 					<a href="${url}" class="product-image p-3 text-center bg-white d-block text-decoration-none">
 						<img src="${escapeHtml(product.image)}" alt="${name}" class="img-fluid" style="height: ${imageHeight}px; object-fit: contain;" loading="lazy">
 						${tag ? `<span class="product-tag">${escapeHtml(tag)}</span>` : ""}

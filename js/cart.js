@@ -38,6 +38,7 @@ function getProductFromCard(card) {
 	const priceText = card.querySelector(".product-price")?.textContent || "0";
 
 	return {
+		productId: Number(card.dataset.productId || 0),
 		id:
 			card.querySelector("h3")?.textContent.trim().toLowerCase().replace(/\s+/g, "-") ||
 			Date.now().toString(),

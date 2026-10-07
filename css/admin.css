@@ -1,0 +1,328 @@
+/* Admin */
+.admin-body {
+	display: flex;
+	min-height: 100vh;
+	background: #f5f7fa;
+}
+.admin-sidebar {
+	position: sticky;
+	top: 0;
+	display: flex;
+	width: 240px;
+	height: 100vh;
+	flex-direction: column;
+	flex-shrink: 0;
+	overflow-y: auto;
+	padding: 2rem 1.2rem;
+	background: var(--header-accent);
+	color: #fff;
+	transition:
+		width 0.2s ease,
+		padding 0.2s ease;
+}
+.admin-sidebar-toggle {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.6rem;
+	margin-top: auto;
+	padding: 0.65rem 0.8rem;
+	border: 1px solid #536080;
+	border-radius: 3px;
+	background: transparent;
+	color: #b8c4de;
+	font-size: 0.76rem;
+	text-align: left;
+}
+.admin-sidebar-toggle:hover {
+	border-color: #aebbd8;
+	color: #fff;
+}
+.admin-sidebar-toggle i {
+	font-size: 1rem;
+}
+.admin-label {
+	margin: 3rem 0 1rem;
+	color: #aebbd8;
+	font-size: 0.68rem;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+}
+.admin-sidebar nav a,
+.admin-back {
+	display: block;
+	margin: 0.3rem 0;
+	padding: 0.8rem;
+	border-radius: 3px;
+	color: #b8c4de;
+	font-size: 0.85rem;
+	text-decoration: none;
+}
+.admin-sidebar nav a i {
+	margin-right: 0.7rem;
+}
+.admin-sidebar nav a span,
+.admin-back span {
+	white-space: nowrap;
+}
+.admin-sidebar nav a.active,
+.admin-sidebar nav a:hover {
+	background: #3b496d;
+	color: #fff;
+}
+.admin-back {
+	margin-top: 0.3rem;
+	border-top: 1px solid #536080;
+	border-radius: 0;
+	padding-top: 1.5rem;
+}
+.admin-main {
+	width: 100%;
+	max-width: 1500px;
+	padding: 2.5rem clamp(1.2rem, 4vw, 4rem);
+}
+.admin-body.sidebar-collapsed .admin-sidebar {
+	width: 76px;
+	padding-right: 0.8rem;
+	padding-left: 0.8rem;
+}
+.admin-body.sidebar-collapsed .admin-sidebar .logo img {
+	width: 42px;
+	object-fit: cover;
+	object-position: left;
+}
+.admin-body.sidebar-collapsed .admin-label,
+.admin-body.sidebar-collapsed .admin-sidebar nav a span,
+.admin-body.sidebar-collapsed .admin-back span,
+.admin-body.sidebar-collapsed .admin-sidebar-toggle span {
+	display: none;
+}
+.admin-body.sidebar-collapsed .admin-sidebar-toggle {
+	justify-content: center;
+	padding-right: 0.65rem;
+	padding-left: 0.65rem;
+}
+.admin-body.sidebar-collapsed .admin-sidebar nav a,
+.admin-body.sidebar-collapsed .admin-back {
+	text-align: center;
+}
+.admin-body.sidebar-collapsed .admin-sidebar nav a i,
+.admin-body.sidebar-collapsed .admin-back i {
+	margin-right: 0;
+}
+.admin-topbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 2rem;
+}
+.admin-topbar h1 {
+	margin: 0;
+	font-size: 2rem;
+}
+.admin-user {
+	display: flex;
+	align-items: center;
+	gap: 0.7rem;
+}
+.admin-user strong,
+.admin-user small {
+	display: block;
+}
+.admin-user strong {
+	font-size: 0.8rem;
+}
+.admin-user small {
+	margin-top: 0.2rem;
+	color: #8b96a5;
+	font-size: 0.7rem;
+}
+.admin-avatar {
+	display: grid;
+	width: 38px;
+	height: 38px;
+	place-items: center;
+	border-radius: 50%;
+	background: #d9dfeb;
+	color: var(--header-accent);
+	font-size: 0.75rem;
+	font-weight: 800;
+}
+.admin-user > i {
+	margin-left: 0.5rem;
+	color: #8b96a5;
+}
+.admin-stats {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 1rem;
+	margin-bottom: 1.2rem;
+}
+.admin-stats > div,
+.admin-panel {
+	padding: 1.3rem;
+	border: 1px solid #e0e5eb;
+	background: #fff;
+}
+.admin-stat-icon {
+	display: grid;
+	width: 35px;
+	height: 35px;
+	place-items: center;
+	background: #e8ebf3;
+	color: var(--header-accent);
+}
+.admin-stats p {
+	margin: 1rem 0 0.4rem;
+	color: #7c8795;
+	font-size: 0.75rem;
+}
+.admin-stats strong {
+	display: block;
+	font-size: 1.35rem;
+}
+.admin-stats small {
+	display: block;
+	margin-top: 0.5rem;
+	font-size: 0.67rem;
+}
+.positive {
+	color: #398b6a;
+}
+.neutral {
+	color: #9aa3af;
+}
+.admin-grid {
+	display: grid;
+	grid-template-columns: 1.5fr 1fr;
+	gap: 1.2rem;
+	margin-bottom: 1.2rem;
+}
+.admin-panel-head {
+	display: flex;
+	align-items: end;
+	justify-content: space-between;
+	margin-bottom: 1.5rem;
+}
+.admin-panel-head .eyebrow {
+	margin-bottom: 0.45rem;
+}
+.admin-panel h2 {
+	margin: 0;
+	font-size: 1.1rem;
+}
+.admin-panel-head select {
+	width: auto;
+	font-size: 0.75rem;
+}
+.chart {
+	display: flex;
+	height: 260px;
+}
+.chart-y {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	padding-bottom: 23px;
+	color: #a0a9b5;
+	font-size: 0.65rem;
+}
+.chart-area {
+	position: relative;
+	flex: 1;
+	margin-left: 1rem;
+}
+.chart-grid-lines {
+	position: absolute;
+	inset: 0 0 25px;
+	background: repeating-linear-gradient(
+		to bottom,
+		transparent 0,
+		transparent 24.5%,
+		#edf0f4 25%,
+		#edf0f4 calc(25% + 1px)
+	);
+}
+.chart-area svg {
+	position: absolute;
+	inset: 0 0 25px;
+	width: 100%;
+	height: calc(100% - 25px);
+	overflow: visible;
+}
+.chart-x {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	display: flex;
+	justify-content: space-between;
+	color: #a0a9b5;
+	font-size: 0.65rem;
+}
+.stock-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 1rem 0;
+	border-top: 1px solid #edf0f4;
+}
+.stock-product {
+	display: flex;
+	align-items: center;
+	gap: 0.8rem;
+}
+.stock-product > i {
+	color: var(--header-accent);
+	font-size: 1.3rem;
+}
+.stock-product span,
+.stock-product small {
+	display: block;
+}
+.stock-product span {
+	font-size: 0.8rem;
+}
+.stock-product small {
+	margin-top: 0.2rem;
+	color: #9aa3af;
+	font-size: 0.68rem;
+}
+.stock-row > strong {
+	color: #bf7651;
+	font-size: 0.85rem;
+}
+.orders-panel .table {
+	margin: 0;
+	color: #68737d;
+	font-size: 0.78rem;
+}
+.orders-panel th {
+	color: #9aa3af;
+	font-size: 0.68rem;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+.status-pill {
+	display: inline-block;
+	padding: 0.35rem 0.55rem;
+	border-radius: 20px;
+	font-size: 0.66rem;
+}
+.status-success {
+	background: #e0f1e9;
+	color: #358464;
+}
+.status-pending {
+	background: #fff0dc;
+	color: #ae7534;
+}
+.status-shipping {
+	background: #e2e9f7;
+	color: #536d9d;
+}
+.admin-loading {
+	grid-column: 1 / -1;
+	padding: 2rem 1rem;
+	text-align: center;
+	color: #9aa3af;
+}
