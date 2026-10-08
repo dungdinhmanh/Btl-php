@@ -302,7 +302,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	};
 
 	items.forEach((item) => track.appendChild(cloneItem(item)));
-	items.forEach((item) => track.insertBefore(cloneItem(item), track.firstChild));
+	[...items].reverse().forEach((item) => track.insertBefore(cloneItem(item), track.firstChild));
 
 	const setTransition = (enabled) => {
 		track.classList.toggle("is-animating", enabled && !prefersReducedMotion());
@@ -335,9 +335,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	const snap = (index, animate = true) => {
 		if (transitionActive && animate) return false;
-		const count = items.length;
-		while (index >= count * 2) index -= count;
-		while (index < count) index += count;
 		current = index;
 		transitionActive = animate && !prefersReducedMotion();
 		render(-(current * itemWidth()), animate);
