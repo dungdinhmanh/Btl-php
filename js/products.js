@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 	const brandHolder = document.querySelector("#brand-filters");
 	const breadcrumbHolder = document.querySelector("#products-breadcrumb");
 	const productTitle = document.querySelector("#product-page-title");
+	const categoryFeatured = document.querySelector("#category-featured");
 	const searchParams = new URLSearchParams(window.location.search);
 	const activeFilterHolder = document.querySelector("#active-filters");
 
@@ -78,34 +79,57 @@ let brands = [];
 }
 
 	function renderFilters(categories) {
-	if (!filterHolder) return;
+    if (!filterHolder) return;
 
-	filterHolder.innerHTML = `
-		<div class="category-filter-title">Danh mục</div>
-		<div class="category-filter-list">
-			${categories
-				.map(
-					(category) => `
-						<a href="#"
-							class="category-filter-item"
-							data-category-filter="${TNC.escapeHtml(category.slug)}">
-							» ${TNC.escapeHtml(category.name)}
-						</a>
-					`,
-				)
-				.join("")}
-		</div>
-	`;
+    const order = [
+        "cpu",
+        "mainboard",
+        "ram",
+        "hdd",
+        "case",
+        "psu",
+        "ssd"
+    ];
 
-	filterHolder
-		.querySelectorAll("[data-category-filter]")
-		.forEach((item) => {
-			item.addEventListener("click", (event) => {
-    		event.preventDefault();
-   			 const slug = item.dataset.categoryFilter;
-    		window.location.href = `products.php?category=${encodeURIComponent(slug)}`;
-			});
-		});
+    const sortedCategories = [...categories].sort((a, b) => {
+        const indexA = order.indexOf(a.slug.toLowerCase());
+        const indexB = order.indexOf(b.slug.toLowerCase());
+
+        const positionA = indexA === -1 ? order.length : indexA;
+        const positionB = indexB === -1 ? order.length : indexB;
+
+        return positionA - positionB;
+    });
+
+    filterHolder.innerHTML = `
+        <div class="category-filter-title">Danh mục</div>
+        <div class="category-filter-list">
+            ${sortedCategories
+                .map(
+                    (category) => `
+                        <a href="#"
+                            class="category-filter-item"
+                            data-category-filter="${TNC.escapeHtml(category.slug)}">
+                            » ${TNC.escapeHtml(category.name)}
+                        </a>
+                    `
+                )
+                .join("")}
+        </div>
+    `;
+
+    filterHolder
+        .querySelectorAll("[data-category-filter]")
+        .forEach((item) => {
+            item.addEventListener("click", (event) => {
+                event.preventDefault();
+
+                const slug = item.dataset.categoryFilter;
+
+                window.location.href =
+                    `products.php?category=${encodeURIComponent(slug)}`;
+            });
+        });
 }
 	function renderBrandFilters(brands) {
 	if (!brandHolder) return;
@@ -153,6 +177,49 @@ let brands = [];
       });
 	}
 
+
+async function loadCategoryFeatured() {
+    const holder = document.querySelector("#category-featured");
+
+    if (!holder) return;
+
+    const category = state.categories[0];
+
+    if (category !== "cpu") {
+        holder.style.display = "none";
+        holder.innerHTML = "";
+        return;
+    }
+
+    try {
+        const payload = await TNC.api.products({
+            category: "cpu",
+            sort: "newest",
+            limit: 4,
+        });
+
+        const items = payload.data || [];
+
+        if (!items.length) {
+            holder.style.display = "none";
+            return;
+        }
+
+        holder.innerHTML = `
+            <section class="category-featured-section">
+                <h2>CPU BÁN CHẠY</h2>
+                <div class="category-featured-grid">
+                    ${items.map((product) => TNC.productCard(product)).join("")}
+                </div>
+            </section>
+        `;
+
+        holder.style.display = "block";
+    } catch (error) {
+        console.error("Không tải được CPU nổi bật:", error);
+        holder.style.display = "none";
+    }
+}
 	async function loadProducts() {
 		syncUrl();
 		TNC.showLoading(grid, "Đang tải sản phẩm...");
@@ -247,4 +314,5 @@ if (activeFilterHolder) {
 	}
 
 	await loadProducts();
+	await loadCategoryFeatured();
 });

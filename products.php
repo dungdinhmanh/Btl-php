@@ -17,6 +17,8 @@ require_once __DIR__ . '/backend/bootstrap.php';
              <span>›</span>
               <a href="products.php" class="current">Linh kiện máy tính</a>
                   </div>
+                  <!-- Khu vực sản phẩm nổi bật theo danh mục -->
+                  <div id="category-featured" style="display: none;"></div>
 			<section class="products-page-banner">
 				<div class="container">
 					<div id="productBanner" class="carousel slide product-banner" data-bs-ride="carousel">
@@ -79,8 +81,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
   						  </div>
 					</div>
 						</aside>
-						<div class="col-lg-9">
-         				<div class="product-list-panel">
+         				<div class="col-lg-9 product-list-panel">
        					 <div class="product-list-header">
            			 <h2 id="product-page-title">LINH KIỆN MÁY TÍNH</h2>
           		  <div class="product-list-info">
