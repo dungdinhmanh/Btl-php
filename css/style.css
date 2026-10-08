@@ -832,64 +832,230 @@ padding-top: 1rem;
 .feedback-customer {
 	margin-top: 32px;
 }
+
 .content-feedback {
+	align-items: stretch;
+	min-height: 220px;
 	background: #29324e;
+	overflow: hidden;
 }
+
 .left-content-feedback {
-	flex: 0 0 auto;
+	flex: 0 0 275px;
 	width: 275px;
 	margin-right: 125px;
 	padding: 24px 50px;
 }
+
 .left-content-feedback b {
+	display: block;
 	color: #fff;
 	font-size: 20px;
 	line-height: 28px;
 	text-transform: uppercase;
 }
+
 .left-content-feedback .red {
 	color: var(--color-red);
 	font-size: 24px;
 	line-height: 40px;
 }
+
 .left-content-feedback .list-star {
 	margin: 8px 0;
 }
+
 .left-content-feedback .list-star i {
 	margin-right: 5px;
 	color: #f5bf02;
 	font-size: 20px;
 }
+
 .list-feedback {
+	position: relative;
 	display: flex;
 	align-items: center;
-	padding: 0 40px 24px;
-}
-.list-feedback .carousel-inner {
-	width: 100%;
-}
-.list-feedback .carousel-item.active {
-	display: flex;
-}
-.list-feedback .item {
-	flex: 1 1 0;
+	justify-content: center;
+	flex: 1 1 auto;
 	min-width: 0;
+	padding: 0 24px;
+	overflow: hidden;
+	touch-action: pan-y;
 }
-.list-feedback .item img {
-	max-height: 800px;
+
+.feedback-viewport {
+	width: min(855px, 100%);
+	overflow: hidden;
+	cursor: grab;
+	user-select: none;
 }
-.list-feedback .carousel-control-prev,
-.list-feedback .carousel-control-next {
-	width: 40px;
+
+.feedback-viewport.is-dragging {
+	cursor: grabbing;
 }
-.list-feedback .carousel-control-prev-icon,
-.list-feedback .carousel-control-next-icon {
-	width: 1.2rem;
-	height: 1.2rem;
+
+.feedback-track {
+	display: flex;
+	width: max-content;
+	transform: translate3d(0, 0, 0);
+	will-change: transform;
 }
-.list-feedback .carousel-indicators {
-	margin: 0;
+
+.feedback-track.is-animating {
+	transition: transform 320ms ease;
 }
+
+.feedback-pause {
+	position: absolute;
+	right: 24px;
+	top: 12px;
+	z-index: 3;
+	display: grid;
+	width: 36px;
+	height: 36px;
+	place-items: center;
+	padding: 0;
+	border: 0;
+	border-radius: 4px;
+	background: rgba(0, 0, 0, 0.38);
+	color: #fff;
+	font-size: 16px;
+	transition: background 0.2s ease;
+}
+
+.feedback-pause:hover,
+.feedback-pause:focus-visible {
+	background: rgba(0, 0, 0, 0.62);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.feedback-track.is-animating {
+		transition: none;
+	}
+}
+
+.feedback-track .item {
+	flex: 0 0 285px;
+	width: 285px;
+	display: block;
+	padding: 0;
+	text-decoration: none;
+}
+
+.feedback-track .item img {
+	display: block;
+	width: 285px;
+	height: 190px;
+	object-fit: cover;
+	pointer-events: none;
+}
+
+.feedback-nav {
+	position: absolute;
+	top: 50%;
+	z-index: 2;
+	display: grid;
+	width: 36px;
+	height: 50px;
+	place-items: center;
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	background: rgba(0, 0, 0, 0.38);
+	color: #fff;
+	font-size: 20px;
+	transform: translateY(-50%);
+	opacity: 0;
+	transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+.list-feedback:hover .feedback-nav,
+.list-feedback:focus-within .feedback-nav {
+	opacity: 1;
+}
+
+.feedback-nav:hover {
+	background: rgba(0, 0, 0, 0.62);
+}
+
+.feedback-prev {
+	left: 24px;
+}
+
+.feedback-next {
+	right: 24px;
+}
+
+.feedback-viewport.is-dragging .item {
+	cursor: grabbing;
+}
+
+@media (max-width: 991.98px) {
+	.content-feedback {
+		flex-direction: column;
+	}
+
+	.left-content-feedback {
+		width: 100%;
+		flex: 0 0 auto;
+		margin-right: 0;
+		padding: 24px 32px;
+	}
+
+	.list-feedback {
+		padding: 0 24px 24px;
+	}
+
+	.feedback-viewport {
+		width: 570px;
+		max-width: 100%;
+	}
+
+	.feedback-track .item {
+		flex-basis: 285px;
+		width: 285px;
+	}
+
+	.feedback-track .item img {
+		width: 285px;
+		height: 190px;
+	}
+}
+
+@media (max-width: 575.98px) {
+	.feedback-viewport {
+		width: 285px;
+	}
+
+	.feedback-track .item,
+	.feedback-track .item img {
+		width: 285px;
+	}
+
+	.feedback-track .item img {
+		height: 190px;
+	}
+
+	.feedback-nav {
+		opacity: 1;
+		width: 32px;
+		height: 44px;
+	}
+
+	.feedback-prev {
+		left: 8px;
+	}
+
+	.feedback-next {
+		right: 8px;
+	}
+
+	.feedback-pause {
+		right: 8px;
+		top: 8px;
+	}
+}
+
 .site-footer {
 	padding: 4rem 0 1.5rem;
 	background: #172033;

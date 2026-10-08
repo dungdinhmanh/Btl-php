@@ -262,3 +262,236 @@ document.addEventListener("DOMContentLoaded", async () => {
 		}),
 	);
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+	const root = document.querySelector("[data-feedback-carousel]");
+	if (!root) return;
+
+	const viewport = root.querySelector(".feedback-viewport");
+	const track = root.querySelector(".feedback-track");
+	const items = [...track.querySelectorAll(".item")];
+	const prev = root.querySelector(".feedback-prev");
+	const next = root.querySelector(".feedback-next");
+	const pause = root.querySelector(".feedback-pause");
+	if (!viewport || !track || !prev || !next || items.length < 2) return;
+
+	const itemWidth = () => track.querySelector(".item")?.getBoundingClientRect().width || 285;
+	const getVisible = () => Math.max(1, Math.min(items.length, Math.floor(viewport.clientWidth / itemWidth())));
+	const prefersReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+	let visible = getVisible();
+	let current = items.length;
+	let startX = 0;
+	let startTranslate = 0;
+	let currentTranslate = 0;
+	let dragging = false;
+	let moved = false;
+	let pointerId = null;
+	let autoplayId = null;
+	let transitionActive = false;
+	let paused = prefersReducedMotion();
+
+	const cloneItem = (item) => {
+		const clone = item.cloneNode(true);
+		clone.inert = true;
+		clone.setAttribute("aria-hidden", "true");
+		clone.querySelectorAll("a, button, input, select, textarea, [tabindex]").forEach((element) => {
+			element.tabIndex = -1;
+		});
+		return clone;
+	};
+
+	items.forEach((item) => track.appendChild(cloneItem(item)));
+	[...items].reverse().forEach((item) => track.insertBefore(cloneItem(item), track.firstChild));
+
+	const setTransition = (enabled) => {
+		track.classList.toggle("is-animating", enabled && !prefersReducedMotion());
+	};
+
+	const updateFocusability = () => {
+		const start = current % items.length;
+		items.forEach((item, index) => {
+			const relative = (index - start + items.length) % items.length;
+			const visibleItem = relative < visible;
+			item.tabIndex = visibleItem ? 0 : -1;
+			item.setAttribute("aria-hidden", visibleItem ? "false" : "true");
+		});
+	};
+
+	const render = (translate, animate = true) => {
+		setTransition(animate);
+		currentTranslate = translate;
+		track.style.transform = `translate3d(${translate}px, 0, 0)`;
+		updateFocusability();
+	};
+
+	const normalize = () => {
+		const count = items.length;
+		if (current >= count * 2) current -= count;
+		if (current < count) current += count;
+		render(-(current * itemWidth()), false);
+		transitionActive = false;
+	};
+
+	const snap = (index, animate = true) => {
+		if (transitionActive && animate) return false;
+		current = index;
+		transitionActive = animate && !prefersReducedMotion();
+		render(-(current * itemWidth()), animate);
+		if (!transitionActive) normalize();
+		return true;
+	};
+
+	const stopAutoplay = () => {
+		clearInterval(autoplayId);
+		autoplayId = null;
+	};
+
+	const updatePauseButton = () => {
+		if (!pause) return;
+		const isPaused = paused || prefersReducedMotion();
+		pause.setAttribute("aria-pressed", String(isPaused));
+		pause.setAttribute("aria-label", isPaused ? "Tiếp tục tự động chuyển ảnh" : "Tạm dừng tự động chuyển ảnh");
+		const icon = pause.querySelector("i");
+		icon?.classList.toggle("bi-play-fill", isPaused);
+		icon?.classList.toggle("bi-pause-fill", !isPaused);
+	};
+
+	const resetAutoplay = () => {
+		stopAutoplay();
+		if (paused || prefersReducedMotion()) {
+			updatePauseButton();
+			return;
+		}
+		autoplayId = setInterval(() => {
+			snap(current + 1);
+		}, 5000);
+		updatePauseButton();
+	};
+
+	const rebuild = () => {
+		const nextVisible = getVisible();
+		if (nextVisible === visible) {
+			updateFocusability();
+			return;
+		}
+		visible = nextVisible;
+		current = items.length;
+		transitionActive = false;
+		render(-(current * itemWidth()), false);
+	};
+
+	const confirmDrag = () => {
+		dragging = true;
+		moved = true;
+		viewport.classList.add("is-dragging");
+		viewport.setPointerCapture?.(pointerId);
+		setTransition(false);
+		stopAutoplay();
+	};
+
+	const startDrag = (event) => {
+		if (event.pointerType === "mouse" && event.button !== 0) return;
+		if (transitionActive) return;
+		pointerId = event.pointerId;
+		startX = event.clientX;
+		startTranslate = currentTranslate;
+		moved = false;
+		dragging = false;
+	};
+
+	const moveDrag = (event) => {
+		if (event.pointerId !== pointerId) return;
+		const delta = event.clientX - startX;
+		if (!dragging && Math.abs(delta) < 6) return;
+		if (!dragging) confirmDrag();
+
+		const width = itemWidth();
+		const count = items.length;
+		const min = -((count * 2 - 1) * width);
+		const max = -(count * width);
+		let nextTranslate = startTranslate + delta;
+
+		if (nextTranslate > max) nextTranslate = max + (nextTranslate - max) * 0.25;
+		if (nextTranslate < min) nextTranslate = min + (nextTranslate - min) * 0.25;
+		render(nextTranslate, false);
+	};
+
+	const endDrag = (event) => {
+		if (event.pointerId !== pointerId) return;
+		const wasDragging = dragging;
+		const delta = event.clientX - startX;
+
+		if (wasDragging) {
+			viewport.classList.remove("is-dragging");
+			if (viewport.hasPointerCapture?.(pointerId)) viewport.releasePointerCapture(pointerId);
+			dragging = false;
+			pointerId = null;
+			const threshold = Math.min(100, itemWidth() * 0.18);
+			if (Math.abs(delta) >= threshold) snap(current + (delta < 0 ? 1 : -1));
+			else snap(current);
+			if (!paused) resetAutoplay();
+			return;
+		}
+
+		pointerId = null;
+	};
+
+	prev.addEventListener("click", () => {
+		if (moved) {
+			moved = false;
+			return;
+		}
+		if (snap(current - 1)) resetAutoplay();
+	});
+
+	next.addEventListener("click", () => {
+		if (moved) {
+			moved = false;
+			return;
+		}
+		if (snap(current + 1)) resetAutoplay();
+	});
+
+	pause?.addEventListener("click", () => {
+		paused = !paused;
+		resetAutoplay();
+	});
+
+	viewport.addEventListener("pointerdown", startDrag);
+	viewport.addEventListener("pointermove", moveDrag);
+	viewport.addEventListener("pointerup", endDrag);
+	viewport.addEventListener("pointercancel", endDrag);
+	viewport.addEventListener("click", (event) => {
+		if (!moved) return;
+		event.preventDefault();
+		event.stopPropagation();
+		moved = false;
+	}, true);
+
+	track.addEventListener("transitionend", (event) => {
+		if (event.propertyName === "transform" && !dragging) normalize();
+	});
+
+	const resizeObserver = typeof ResizeObserver === "undefined"
+		? null
+		: new ResizeObserver(rebuild);
+	resizeObserver?.observe(viewport);
+	window.addEventListener("resize", rebuild);
+
+	window.matchMedia("(prefers-reduced-motion: reduce)").addEventListener?.("change", (event) => {
+		if (event.matches) {
+			paused = true;
+			stopAutoplay();
+		} else {
+			resetAutoplay();
+		}
+		updatePauseButton();
+	});
+
+	current = items.length;
+	visible = getVisible();
+	render(-(current * itemWidth()), false);
+	updatePauseButton();
+	resetAutoplay();
+});
