@@ -18,7 +18,7 @@ CREATE TABLE users (
   email VARCHAR(254) NOT NULL,
   password_hash VARCHAR(255) NOT NULL,
   phone VARCHAR(25) NULL,
-  account_status ENUM('active', 'disabled') NOT NULL DEFAULT 'active',
+  account_status ENUM('active', 'disabled', 'deleted') NOT NULL DEFAULT 'active',
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT uq_users_email UNIQUE (email),

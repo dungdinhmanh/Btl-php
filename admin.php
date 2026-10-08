@@ -32,7 +32,7 @@ $todayLabel = date('d/m/Y');
 					<i class="bi bi-receipt"></i>
 					<span>Đơn hàng</span>
 				</a>
-				<a href="contact.php">
+				<a href="admin/customer.php">
 					<i class="bi bi-chat-left-text"></i>
 					<span>Khách hàng</span>
 				</a>

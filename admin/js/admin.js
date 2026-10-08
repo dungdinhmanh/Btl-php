@@ -192,4 +192,6 @@ function renderOrders(orders) {
 		.join("");
 }
 
-document.addEventListener("DOMContentLoaded", loadDashboard);
+if (document.querySelector("#admin-stats")) {
+	document.addEventListener("DOMContentLoaded", loadDashboard);
+}

@@ -229,6 +229,38 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", async () => {
 	const lists = [...document.querySelectorAll("[data-product-list]")];
 	if (!lists.length) return;
+	const updateCarouselControls = (carousel) => {
+		const list = carousel.querySelector("[data-product-list]");
+		const previous = carousel.querySelector(".product-carousel-prev");
+		const next = carousel.querySelector(".product-carousel-next");
+		if (!list || !previous || !next) return;
+
+		const maxScroll = list.scrollWidth - list.clientWidth;
+		const canScroll = maxScroll > 1;
+		previous.hidden = !canScroll;
+		next.hidden = !canScroll;
+		previous.disabled = list.scrollLeft <= 1;
+		next.disabled = list.scrollLeft >= maxScroll - 1;
+	};
+
+	document.querySelectorAll("[data-product-carousel]").forEach((carousel) => {
+		const list = carousel.querySelector("[data-product-list]");
+		list?.addEventListener("scroll", () => updateCarouselControls(carousel), { passive: true });
+		new ResizeObserver(() => updateCarouselControls(carousel)).observe(carousel);
+	});
+
+	document.addEventListener("click", (event) => {
+		const button = event.target.closest("[data-product-scroll]");
+		if (!button) return;
+		const carousel = button.closest("[data-product-carousel]");
+		const list = carousel?.querySelector("[data-product-list]");
+		const item = list?.querySelector(".home-category-product");
+		if (!list || !item) return;
+		list.scrollBy({
+			left: Number(button.dataset.productScroll) * item.getBoundingClientRect().width,
+			behavior: "smooth",
+		});
+	});
 
 	await Promise.all(
 		lists.map(async (list) => {
@@ -242,20 +274,34 @@ document.addEventListener("DOMContentLoaded", async () => {
 			TNC.showLoading(list, "Đang tải sản phẩm...");
 
 			try {
-				const groups = await TNC.api.productGroups(slugs, 4);
-				const items = groups.flatMap((group) => group.items || []).slice(0, 4);
+				const groups = await TNC.api.productGroups(slugs, 8);
+				const productGroups = groups.map((group) => group.items || []);
+				const items = [];
+				for (let index = 0; index < 8 && items.length < 8; index += 1) {
+					let foundItem = false;
+					for (const products of productGroups) {
+						if (items.length === 8) break;
+						if (products[index]) {
+							items.push(products[index]);
+							foundItem = true;
+						}
+						if (items.length === 8) break;
+					}
+					if (!foundItem) break;
+				}
 
 				list.innerHTML = items.length
 					? items
 							.map((product) =>
 								TNC.productCard(product, {
-									columnClass: "col-sm-4 col-lg-3",
+									columnClass: "home-category-product",
 									tag: "",
-									imageHeight: 130,
+									imageHeight: 205,
 								}),
 							)
 							.join("")
 					: TNC.emptyState({ icon: "bi-box-seam", title: "Chưa có sản phẩm" });
+				updateCarouselControls(list.closest("[data-product-carousel]"));
 			} catch (error) {
 				TNC.renderError(list, error);
 			}
@@ -272,7 +318,6 @@ document.addEventListener("DOMContentLoaded", () => {
 	const items = [...track.querySelectorAll(".item")];
 	const prev = root.querySelector(".feedback-prev");
 	const next = root.querySelector(".feedback-next");
-	const pause = root.querySelector(".feedback-pause");
 	if (!viewport || !track || !prev || !next || items.length < 2) return;
 
 	const itemWidth = () => track.querySelector(".item")?.getBoundingClientRect().width || 285;
@@ -289,7 +334,6 @@ document.addEventListener("DOMContentLoaded", () => {
 	let pointerId = null;
 	let autoplayId = null;
 	let transitionActive = false;
-	let paused = prefersReducedMotion();
 
 	const cloneItem = (item) => {
 		const clone = item.cloneNode(true);
@@ -347,27 +391,20 @@ document.addEventListener("DOMContentLoaded", () => {
 		autoplayId = null;
 	};
 
-	const updatePauseButton = () => {
-		if (!pause) return;
-		const isPaused = paused || prefersReducedMotion();
-		pause.setAttribute("aria-pressed", String(isPaused));
-		pause.setAttribute("aria-label", isPaused ? "Tiếp tục tự động chuyển ảnh" : "Tạm dừng tự động chuyển ảnh");
-		const icon = pause.querySelector("i");
-		icon?.classList.toggle("bi-play-fill", isPaused);
-		icon?.classList.toggle("bi-pause-fill", !isPaused);
-	};
-
 	const resetAutoplay = () => {
 		stopAutoplay();
-		if (paused || prefersReducedMotion()) {
-			updatePauseButton();
-			return;
-		}
+		if (prefersReducedMotion() || root.matches(":hover") || root.contains(document.activeElement)) return;
 		autoplayId = setInterval(() => {
 			snap(current + 1);
 		}, 5000);
-		updatePauseButton();
 	};
+
+	root.addEventListener("pointerenter", stopAutoplay);
+	root.addEventListener("pointerleave", resetAutoplay);
+	root.addEventListener("focusin", stopAutoplay);
+	root.addEventListener("focusout", (event) => {
+		if (!root.contains(event.relatedTarget)) resetAutoplay();
+	});
 
 	const rebuild = () => {
 		const nextVisible = getVisible();
@@ -430,7 +467,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			const threshold = Math.min(100, itemWidth() * 0.18);
 			if (Math.abs(delta) >= threshold) snap(current + (delta < 0 ? 1 : -1));
 			else snap(current);
-			if (!paused) resetAutoplay();
+			resetAutoplay();
 			return;
 		}
 
@@ -451,11 +488,6 @@ document.addEventListener("DOMContentLoaded", () => {
 			return;
 		}
 		if (snap(current + 1)) resetAutoplay();
-	});
-
-	pause?.addEventListener("click", () => {
-		paused = !paused;
-		resetAutoplay();
 	});
 
 	viewport.addEventListener("pointerdown", startDrag);
@@ -481,17 +513,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	window.matchMedia("(prefers-reduced-motion: reduce)").addEventListener?.("change", (event) => {
 		if (event.matches) {
-			paused = true;
 			stopAutoplay();
 		} else {
 			resetAutoplay();
 		}
-		updatePauseButton();
 	});
 
 	current = items.length;
 	visible = getVisible();
 	render(-(current * itemWidth()), false);
-	updatePauseButton();
 	resetAutoplay();
 });

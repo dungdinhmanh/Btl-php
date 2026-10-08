@@ -81,6 +81,30 @@ final class ProfileRepository
         return true;
     }
 
+    public function deleteAccount(int $userId, string $currentPassword): bool
+    {
+        $statement = $this->db->prepare(
+            'SELECT password_hash FROM users WHERE user_id = :id AND account_status = :status',
+        );
+        $statement->execute([':id' => $userId, ':status' => 'active']);
+        $passwordHash = $statement->fetchColumn();
+        if (!is_string($passwordHash) || !password_verify($currentPassword, $passwordHash)) {
+            return false;
+        }
+
+        $statement = $this->db->prepare(
+            'UPDATE users SET account_status = :new_status
+             WHERE user_id = :id AND account_status = :current_status',
+        );
+        $statement->execute([
+            ':new_status' => 'deleted',
+            ':id' => $userId,
+            ':current_status' => 'active',
+        ]);
+
+        return $statement->rowCount() > 0;
+    }
+
     /** @return array{total: int, processing: int, spent: float} */
     public function stats(int $userId): array
     {

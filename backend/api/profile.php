@@ -17,6 +17,15 @@ try {
             throw new InvalidArgumentException('Vui lòng nhập mật khẩu hiện tại.');
         }
 
+        if ($action === 'delete-account') {
+            if (!$profile->deleteAccount($userId, $currentPassword)) {
+                jsonResponse(['ok' => false, 'message' => 'Mật khẩu hiện tại không chính xác.'], 403);
+            }
+            $_SESSION = [];
+            session_regenerate_id(true);
+            jsonResponse(['ok' => true, 'message' => 'Tài khoản đã được vô hiệu hóa.']);
+        }
+
         if ($action === 'update-details') {
             $name = trim((string) ($input['name'] ?? ''));
             $email = filter_var(trim((string) ($input['email'] ?? '')), FILTER_VALIDATE_EMAIL);

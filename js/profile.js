@@ -83,6 +83,10 @@
 		$.ajax({ url: "backend/api/profile.php", method: "POST", data, dataType: "json" })
 			.done((response) => {
 				$form[0].reset();
+				if (data.action === "delete-account") {
+					window.location.assign("index.php");
+					return;
+				}
 				if (data.action === "update-details") {
 					renderUser({
 						name: data.name,
@@ -110,6 +114,11 @@
 		$('[data-profile-form="password"]').on("submit", function (event) {
 			event.preventDefault();
 			submitForm($(this), { action: "update-password", ...Object.fromEntries(new FormData(this)) });
+		});
+		$('[data-profile-form="delete"]').on("submit", function (event) {
+			event.preventDefault();
+			if (!window.confirm("Tài khoản sẽ bị vô hiệu hóa. Bạn có chắc chắn muốn tiếp tục?")) return;
+			submitForm($(this), { action: "delete-account", ...Object.fromEntries(new FormData(this)) });
 		});
 
 		$.ajax({ url: "backend/api/profile.php", dataType: "json" })

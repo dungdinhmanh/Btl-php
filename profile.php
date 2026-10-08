@@ -122,6 +122,20 @@ $sessionName = htmlspecialchars((string) $_SESSION['user']['name'], ENT_QUOTES);
 										<strong data-profile="joined">…</strong>
 									</div>
 								</div>
+								<hr class="my-4">
+								<div class="row g-3 align-items-end">
+									<div class="col-lg-7">
+										<h3 class="h5 text-danger mb-2">Xóa tài khoản</h3>
+										<p class="text-muted mb-0">Tài khoản sẽ được xóa mềm và bạn sẽ được đăng xuất. Dữ liệu đơn hàng được giữ lại.</p>
+									</div>
+									<div class="col-lg-5">
+										<form class="d-flex flex-column gap-2" data-profile-form="delete">
+											<label class="form-label mb-0" for="delete-current-password">Nhập mật khẩu để xác nhận</label>
+											<input class="form-control" id="delete-current-password" name="currentPassword" type="password" autocomplete="current-password" required>
+											<button class="btn btn-outline-danger align-self-start" type="submit">Vô hiệu hóa tài khoản</button>
+										</form>
+									</div>
+								</div>
 							</div>
 							<div id="orders" class="summary-card mb-4">
 								<h2 class="mb-3">Đơn hàng gần đây</h2>

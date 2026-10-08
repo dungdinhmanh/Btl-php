@@ -2,6 +2,14 @@
 require_once __DIR__ . '/backend/bootstrap.php';
 require_once __DIR__ . '/partial/news-cards.php';
 
+$brandingImages = array_values(array_filter(
+	glob(__DIR__ . '/assets/img/branding/*') ?: [],
+	static fn (string $path): bool => is_file($path)
+		&& in_array(strtolower(pathinfo($path, PATHINFO_EXTENSION)), ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'], true),
+));
+sort($brandingImages, SORT_NATURAL | SORT_FLAG_CASE);
+$brandScrollDuration = max(30, count($brandingImages) * 3);
+
 $homeColumns = [
 	['heading' => 'TNC Channel', 'more' => 'news.php?category=tnc-channel', 'play' => true, 'category' => 'tnc-channel', 'posts' => []],
 	['heading' => 'Tin tức', 'more' => 'news.php', 'play' => false, 'category' => null, 'posts' => []],
@@ -177,7 +185,15 @@ $homeNewsAvailable = array_reduce(
 									loading="lazy"
 								/>
 							</a>
-							<div class="product-list row g-4" data-product-list></div>
+							<div class="product-carousel" data-product-carousel>
+								<button class="product-carousel-nav product-carousel-prev" type="button" data-product-scroll="-1" aria-label="Sản phẩm trước" hidden>
+									<i class="bi bi-chevron-left" aria-hidden="true"></i>
+								</button>
+								<div class="product-list" data-product-list role="region" aria-label="Danh sách sản phẩm" tabindex="0"></div>
+								<button class="product-carousel-nav product-carousel-next" type="button" data-product-scroll="1" aria-label="Sản phẩm tiếp theo" hidden>
+									<i class="bi bi-chevron-right" aria-hidden="true"></i>
+								</button>
+							</div>
 						</div>
 					</div>
 					<?php endforeach; ?>
@@ -310,34 +326,33 @@ $homeNewsAvailable = array_reduce(
 							/>
 						</div>
 						<div class="list-feedback" id="js-slider-feedback" data-feedback-carousel>
-							<div class="feedback-viewport">
-								<div class="feedback-track">
-									<a href="products.php" class="item">
-										<img src="assets/img/feedback/11_01-cead646c48b7b3e9c83eeb98bdb47e101.jpg" width="2047" height="1358" alt="Khách hàng TNC Store" loading="lazy" />
-									</a>
-									<a href="products.php" class="item">
-										<img src="assets/img/feedback/anh-khach-hang-19-12-2.jpg" width="2047" height="1358" alt="Khách hàng TNC Store" loading="lazy" />
-									</a>
-									<a href="products.php" class="item">
-										<img src="assets/img/feedback/anh-khach-hang-18-12.jpg" width="2047" height="1358" alt="Khách hàng TNC Store" loading="lazy" />
-									</a>
-									<a href="products.php" class="item">
-										<img src="assets/img/feedback/anh-khach-hang-19-12.jpg" width="2047" height="1358" alt="Khách hàng TNC Store" loading="lazy" />
-									</a>
-									<a href="products.php" class="item">
-										<img src="assets/img/feedback/anh-khach-hang-18-12-1.jpg" width="2047" height="1358" alt="Khách hàng TNC Store" loading="lazy" />
-									</a>
+							<div class="feedback-carousel">
+								<div class="feedback-viewport">
+									<div class="feedback-track">
+										<a href="products.php" class="item">
+											<img src="assets/img/feedback/11_01-cead646c48b7b3e9c83eeb98bdb47e101.jpg" width="2047" height="1358" alt="Khách hàng TNC Store" loading="lazy" />
+										</a>
+										<a href="products.php" class="item">
+											<img src="assets/img/feedback/anh-khach-hang-19-12-2.jpg" width="2047" height="1358" alt="Khách hàng TNC Store" loading="lazy" />
+										</a>
+										<a href="products.php" class="item">
+											<img src="assets/img/feedback/anh-khach-hang-18-12.jpg" width="2047" height="1358" alt="Khách hàng TNC Store" loading="lazy" />
+										</a>
+										<a href="products.php" class="item">
+											<img src="assets/img/feedback/anh-khach-hang-19-12.jpg" width="2047" height="1358" alt="Khách hàng TNC Store" loading="lazy" />
+										</a>
+										<a href="products.php" class="item">
+											<img src="assets/img/feedback/anh-khach-hang-18-12-1.jpg" width="2047" height="1358" alt="Khách hàng TNC Store" loading="lazy" />
+										</a>
+									</div>
 								</div>
+								<button type="button" class="feedback-nav feedback-prev" aria-label="Ảnh trước">
+									<i class="bi bi-chevron-left" aria-hidden="true"></i>
+								</button>
+								<button type="button" class="feedback-nav feedback-next" aria-label="Ảnh tiếp theo">
+									<i class="bi bi-chevron-right" aria-hidden="true"></i>
+								</button>
 							</div>
-							<button type="button" class="feedback-nav feedback-prev" aria-label="Ảnh trước">
-								<i class="bi bi-chevron-left" aria-hidden="true"></i>
-							</button>
-							<button type="button" class="feedback-nav feedback-next" aria-label="Ảnh tiếp theo">
-								<i class="bi bi-chevron-right" aria-hidden="true"></i>
-							</button>
-							<button type="button" class="feedback-pause" aria-pressed="false" aria-label="Tạm dừng tự động chuyển ảnh">
-								<i class="bi bi-pause-fill" aria-hidden="true"></i>
-							</button>
 						</div>
 					</div>
 				</div>
@@ -346,63 +361,20 @@ $homeNewsAvailable = array_reduce(
 		<div class="brand-slider-container">
 			<div class="brand-slider-title">Thương hiệu đồng hành</div>
 			<div class="brand-slider">
-				<div class="brand-track">
-					<div class="brand-item">
-						<img src="assets/img/branding/intel.jpg" alt="Intel" />
-					</div>
-					<div class="brand-item">
-						<img src="assets/img/branding/amd.jpg" alt="AMD" />
-					</div>
-					<div class="brand-item">
-						<img src="assets/img/branding/gigabyte.png" alt="Gigabyte" />
-					</div>
-					<div class="brand-item">
-						<img src="assets/img/branding/lenovo.png" alt="Lenovo" />
-					</div>
-					<div class="brand-item">
-						<img src="assets/img/branding/asus.png" alt="Asus" />
-					</div>
-					<div class="brand-item">
-						<img src="assets/img/branding/acer.png" alt="Acer" />
-					</div>
-					<div class="brand-item">
-						<img src="assets/img/branding/msi.png" alt="MSI" />
-					</div>
-					<div class="brand-item"><img src="assets/img/branding/lg.png" alt="LG" /></div>
-					<div class="brand-item">
-						<img src="assets/img/branding/sony.png" alt="Sony" />
-					</div>
-					<div class="brand-item">
-						<img src="assets/img/branding/razer.png" alt="Razer" />
-					</div>
-					<div class="brand-item">
-						<img src="assets/img/branding/intel.jpg" alt="Intel" />
-					</div>
-					<div class="brand-item">
-						<img src="assets/img/branding/amd.jpg" alt="AMD" />
-					</div>
-					<div class="brand-item">
-						<img src="assets/img/branding/gigabyte.png" alt="Gigabyte" />
-					</div>
-					<div class="brand-item">
-						<img src="assets/img/branding/lenovo.png" alt="Lenovo" />
-					</div>
-					<div class="brand-item">
-						<img src="assets/img/branding/asus.png" alt="Asus" />
-					</div>
-					<div class="brand-item">
-						<img src="assets/img/branding/acer.png" alt="Acer" />
-					</div>
-					<div class="brand-item">
-						<img src="assets/img/branding/msi.png" alt="MSI" />
-					</div>
-					<div class="brand-item"><img src="assets/img/branding/lg.png" alt="LG" /></div>
-					<div class="brand-item">
-						<img src="assets/img/branding/sony.png" alt="Sony" />
-					</div>
-					<div class="brand-item">
-						<img src="assets/img/branding/razer.png" alt="Razer" />
-					</div>
+				<div class="brand-track" style="--brand-scroll-duration: <?= $brandScrollDuration ?>s">
+					<?php foreach ([false, true] as $isClone): ?>
+						<?php foreach ($brandingImages as $imagePath): ?>
+							<?php
+							$fileName = basename($imagePath);
+							?>
+							<div class="brand-item"<?= $isClone ? ' aria-hidden="true"' : '' ?>>
+								<img
+									src="<?= htmlspecialchars('assets/img/branding/' . $fileName, ENT_QUOTES, 'UTF-8') ?>"
+									loading="lazy"
+								/>
+							</div>
+						<?php endforeach; ?>
+					<?php endforeach; ?>
 				</div>
 			</div>
 		</div>
