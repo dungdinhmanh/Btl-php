@@ -46,41 +46,34 @@ require_once __DIR__ . '/backend/bootstrap.php';
 						<div class="pd-thumb-row" id="gallery-thumbs"></div>
 					</div>
 
-					<!-- Cột phải: thông tin chính -->
+					<!-- Cột giữa: thông tin chính -->
 					<div class="pd-info">
+						<div class="pd-brand-line">
+							<strong class="pd-brand" id="product-brand">---</strong>
+						</div>
 						<h1 class="pd-name" id="product-name">Đang tải sản phẩm...</h1>
 						<p class="pd-model" id="product-model"></p>
 
 						<div class="pd-meta-row">
-							<span>Mã SP: <strong id="product-sku">---</strong></span>
+							<span>MSP: <strong id="product-sku">---</strong></span>
 							<span>Tình trạng: <span id="product-stock" class="product-stock"></span></span>
-							<span>Thương hiệu: <strong class="pd-brand" id="product-brand">---</strong></span>
+						</div>
+
+						<!-- Cấu hình nổi bật dạng gạch đầu dòng (JS đổ từ thông số) -->
+						<div class="pd-highlights" id="product-highlights" hidden>
+							<ul class="pd-bullets" id="highlight-list"></ul>
+							<button class="pd-link-btn" id="highlight-toggle" type="button" hidden>
+								Xem thêm
+							</button>
 						</div>
 
 						<!-- Giá -->
-						<div class="pd-price-box">
+						<div class="pd-price-row">
 							<span class="pd-price" id="product-price">---</span>
+							<span class="pd-price-old" id="product-old-price" hidden></span>
+							<span class="pd-discount" id="product-discount" hidden></span>
 						</div>
-
-						<!-- Cấu hình nổi bật (JS đổ từ thông số sản phẩm) -->
-						<div class="pd-highlight-box" id="product-highlights" hidden>
-							<div class="pd-box-title">
-								<i class="bi bi-cpu"></i> Cấu hình nổi bật
-							</div>
-							<div id="highlight-list"></div>
-						</div>
-
-						<!-- Khuyến mãi -->
-						<div class="pd-promo">
-							<div class="pd-promo-header">
-								<i class="bi bi-gift"></i> Quà tặng &amp; ưu đãi kèm theo
-							</div>
-							<ul class="pd-promo-body">
-								<li>Tặng ngay Bàn phím cơ Gaming + Chuột Gaming RGB.</li>
-								<li>Tặng Lót chuột kích thước lớn TNC E-sports.</li>
-								<li>Giảm thêm 200.000đ khi mua kèm Màn hình Gaming từ 24 inch.</li>
-							</ul>
-						</div>
+						<span class="pd-warranty-tag">Bảo hành chính hãng theo linh kiện</span>
 
 						<!-- Số lượng -->
 						<div class="pd-qty">
@@ -94,16 +87,30 @@ require_once __DIR__ . '/backend/bootstrap.php';
 								<i class="bi bi-cart-plus"></i> Thêm vào giỏ
 							</button>
 							<a href="checkout.php" class="pd-btn pd-btn-buy">Mua ngay</a>
-						</div>
-
-						<!-- Cam kết dịch vụ -->
-						<div class="pd-commit">
-							<div><i class="bi bi-shield-check"></i> Bảo hành chính hãng 36 tháng</div>
-							<div><i class="bi bi-truck"></i> Giao hàng miễn phí toàn quốc</div>
-							<div><i class="bi bi-arrow-repeat"></i> Lỗi 1 đổi 1 trong 30 ngày</div>
-							<div><i class="bi bi-headset"></i> Hỗ trợ kỹ thuật trọn đời</div>
+							<a href="contact.php" class="pd-btn pd-btn-consult">
+								<i class="bi bi-chat-dots"></i> Nhận tư vấn ngay
+								<small>Nhận giá tốt nhất, không chờ đợi</small>
+							</a>
 						</div>
 					</div>
+
+					<!-- Cột phải: khuyến mãi + cam kết -->
+					<aside class="pd-aside">
+						<div class="pd-promo">
+							<div class="pd-promo-header">
+								<i class="bi bi-gift-fill"></i> Khuyến mãi khi mua sản phẩm
+							</div>
+							<ul class="pd-promo-body">
+								<li><i class="bi bi-piggy-bank"></i> Giảm thêm 4% cho toàn bộ linh kiện.</li>
+								<li><i class="bi bi-display"></i> Giảm thêm 2% khi mua kèm Màn hình.</li>
+								<li><i class="bi bi-keyboard"></i> Giảm thêm 3% khi mua kèm Gaming Gear.</li>
+								<li><i class="bi bi-mouse"></i> Tặng 01 bàn di chuột.</li>
+								<li><i class="bi bi-truck"></i> Miễn phí vận chuyển PC toàn quốc.</li>
+								<li><i class="bi bi-arrow-repeat"></i> Hỗ trợ 1 đổi 1.</li>
+								<li><i class="bi bi-headset"></i> Hỗ trợ kỹ thuật trọn đời.</li>
+							</ul>
+						</div>
+					</aside>
 				</section>
 
 				<!-- Tabs: thông số / chính sách -->
@@ -131,14 +138,19 @@ require_once __DIR__ . '/backend/bootstrap.php';
 
 					<div class="tab-content">
 						<div class="tab-pane fade show active" id="tab-specs" role="tabpanel">
-							<table class="table table-bordered mb-0 product-spec-table" id="spec-table">
-								<tbody>
-									<tr>
-										<td>Đang tải...</td>
-										<td>---</td>
-									</tr>
-								</tbody>
-							</table>
+							<div class="pd-spec-wrap" id="spec-wrap">
+								<table class="table table-bordered mb-0 product-spec-table" id="spec-table">
+									<tbody>
+										<tr>
+											<td>Đang tải...</td>
+											<td>---</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<button class="pd-more-btn" id="spec-toggle" type="button" hidden>
+								Xem thêm thông số
+							</button>
 						</div>
 						<div class="tab-pane fade pd-policy" id="tab-policy" role="tabpanel">
 							<p>Sản phẩm được bảo hành chính hãng 36 tháng tại TNC Store.</p>
@@ -146,6 +158,12 @@ require_once __DIR__ . '/backend/bootstrap.php';
 							<p>Đội ngũ kỹ thuật hỗ trợ cài đặt và xử lý sự cố trọn đời cho khách hàng.</p>
 						</div>
 					</div>
+				</section>
+
+				<!-- Sản phẩm tương tự (JS đổ cùng danh mục) -->
+				<section class="pd-similar" id="similar-section" hidden>
+					<h2 class="pd-section-title">Sản phẩm tương tự</h2>
+					<div class="row g-3" id="similar-products"></div>
 				</section>
 			</div>
 		</main>

@@ -70,11 +70,24 @@ function renderProductDetail(product) {
 	const priceEl = document.querySelector("#product-price");
 	if (priceEl) priceEl.textContent = product.priceText;
 
+	// Giá gốc + % giảm: chỉ hiện khi backend trả thêm trường oldPrice (lớn hơn price).
+	const oldPriceEl = document.querySelector("#product-old-price");
+	const discountEl = document.querySelector("#product-discount");
+	const oldPrice = Number(product.oldPrice) || 0;
+	const price = Number(product.price) || 0;
+	if (oldPriceEl && discountEl && oldPrice > price && price > 0) {
+		oldPriceEl.textContent = TNC.formatPrice(oldPrice);
+		discountEl.textContent = `-${Math.round((1 - price / oldPrice) * 100)}%`;
+		oldPriceEl.hidden = false;
+		discountEl.hidden = false;
+	}
+
 	renderStock(product);
 	renderHighlights(product);
 	renderGallery(product);
 	renderSpecs(product);
 	wireAddToCart(product);
+	renderSimilar(product);
 }
 
 function buildModelLine(product) {
@@ -94,29 +107,38 @@ function renderStock(product) {
 	holder.textContent = stock > 0 ? `Còn hàng (${stock})` : "Hết hàng";
 }
 
-/** Hiển thị tối đa 6 thông số đầu tiên trong khung "Cấu hình nổi bật". */
+/** Danh sách cấu hình dạng gạch đầu dòng: hiện 5 dòng đầu, bấm "Xem thêm" để mở hết. */
 function renderHighlights(product) {
 	const box = document.querySelector("#product-highlights");
 	const list = document.querySelector("#highlight-list");
+	const toggle = document.querySelector("#highlight-toggle");
 	if (!box || !list) return;
 
-	const specs = (product.specs || []).slice(0, 6);
+	const specs = product.specs || [];
 	if (specs.length === 0) {
 		box.hidden = true;
 		return;
 	}
 
+	const VISIBLE = 5;
 	list.innerHTML = specs
-		.map(
-			(spec) => `
-				<div class="pd-highlight-item">
-					<span class="label">${TNC.escapeHtml(spec.label)}:</span>
-					<span class="value">${TNC.escapeHtml(spec.unit ? `${spec.value} ${spec.unit}` : spec.value)}</span>
-				</div>
-			`,
-		)
+		.map((spec, index) => {
+			const value = spec.unit ? `${spec.value} ${spec.unit}` : spec.value;
+			const extra = index >= VISIBLE ? " is-extra" : "";
+			return `<li class="${extra.trim()}"><span class="lbl">${TNC.escapeHtml(spec.label)}</span> ${TNC.escapeHtml(value)}</li>`;
+		})
 		.join("");
 	box.hidden = false;
+
+	if (!toggle) return;
+	const hasMore = specs.length > VISIBLE;
+	toggle.hidden = !hasMore;
+	list.classList.toggle("is-collapsed", hasMore);
+	toggle.textContent = "Xem thêm";
+	toggle.onclick = () => {
+		const collapsed = list.classList.toggle("is-collapsed");
+		toggle.textContent = collapsed ? "Xem thêm" : "Thu gọn";
+	};
 }
 
 function renderGallery(product) {
@@ -203,6 +225,45 @@ function renderSpecs(product) {
 			`,
 		)
 		.join("");
+
+	setupSpecToggle(rows.length);
+}
+
+/** Thu gọn bảng thông số khi dài hơn 8 dòng, bấm nút để xem đầy đủ. */
+function setupSpecToggle(rowCount) {
+	const wrap = document.querySelector("#spec-wrap");
+	const button = document.querySelector("#spec-toggle");
+	if (!wrap || !button) return;
+
+	const collapsible = rowCount > 8;
+	wrap.classList.toggle("is-collapsed", collapsible);
+	button.hidden = !collapsible;
+	button.textContent = "Xem thêm thông số";
+
+	button.onclick = () => {
+		const collapsed = wrap.classList.toggle("is-collapsed");
+		button.textContent = collapsed ? "Xem thêm thông số" : "Thu gọn";
+	};
+}
+
+/** Hiển thị tối đa 4 sản phẩm cùng danh mục (bỏ sản phẩm đang xem). */
+async function renderSimilar(product) {
+	const section = document.querySelector("#similar-section");
+	const holder = document.querySelector("#similar-products");
+	if (!section || !holder || !product.category) return;
+
+	try {
+		const payload = await TNC.api.products({ category: product.category, limit: 5 });
+		const items = (payload.data || []).filter((item) => item.slug !== product.slug).slice(0, 4);
+		if (items.length === 0) return;
+
+		holder.innerHTML = items
+			.map((item) => TNC.productCard(item, { columnClass: "col-6 col-lg-3", imageHeight: 140 }))
+			.join("");
+		section.hidden = false;
+	} catch {
+		// Không có sản phẩm tương tự thì bỏ qua, không ảnh hưởng trang chính.
+	}
 }
 
 function wireAddToCart(product) {
