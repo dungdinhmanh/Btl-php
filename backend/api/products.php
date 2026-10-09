@@ -36,23 +36,32 @@ try {
     $brand = trim((string) ($_GET['brand'] ?? ''));
     $offset = (int) ($_GET['offset'] ?? 0);
 
-    $products = $repository->search(
-        $query,
-        count($categoryList) === 1 ? $categoryList[0] : null,
-        $limit,
-        $offset,
-        $brand !== '' ? $brand : null,
-        trim((string) ($_GET['sort'] ?? 'newest')),
-        count($categoryList) > 1 ? $categoryList : [],
-    );
+$products = $repository->search(
+    $query,
+    count($categoryList) === 1 ? $categoryList[0] : null,
+    $limit,
+    $offset,
+    $brand !== '' ? $brand : null,
+    trim((string) ($_GET['sort'] ?? 'newest')),
+    count($categoryList) > 1 ? $categoryList : [],
+    $price,
+    $socket,
+);
 
     jsonResponse([
         'ok' => true,
         'data' => $products,
-        'total' => $repository->count($query, null, $brand !== '' ? $brand : null, $categoryList),
+        
+    'total' => $repository->count(
+    $query,
+    null,
+    $brand !== '' ? $brand : null,
+    $categoryList,
+    $price,
+    $socket,
+),
         'limit' => max(1, min($limit, 100)),
         'offset' => max(0, $offset),
-    ]);
 } catch (Throwable $exception) {
     apiError($exception);
 }

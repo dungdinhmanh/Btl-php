@@ -17,15 +17,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 	const searchParams = new URLSearchParams(window.location.search);
 	const activeFilterHolder = document.querySelector("#active-filters");
 
-	const state = {
-		q: (searchParams.get("q") || "").trim(),
-		categories: (searchParams.get("category") || "")
-			.split(",")
-			.map((slug) => slug.trim())
-			.filter(Boolean),
-    	brand: searchParams.get("brand") || "",
-		sort: searchParams.get("sort") || "newest",
-	};
+	
+		const state = {
+    q: (searchParams.get("q") || "").trim(),
+    categories: (searchParams.get("category") || "")
+        .split(",")
+        .map((slug) => slug.trim())
+        .filter(Boolean),
+    brand: searchParams.get("brand") || "",
+    sort: searchParams.get("sort") || "newest",
+    price: searchParams.get("price") || "",
+    socket: searchParams.get("socket") || "",
+};
 let brands = [];
 
 	if (sortSelect && state.sort) sortSelect.value = state.sort;
@@ -35,6 +38,8 @@ let brands = [];
 		if (state.q) params.set("q", state.q);
 		if (state.categories.length) params.set("category", state.categories.join(","));
 		if (state.brand) params.set("brand", state.brand);
+		if (state.price) params.set("price", state.price);
+		if (state.socket) params.set("socket", state.socket);
 		if (state.sort !== "newest") params.set("sort", state.sort);
 		const query = params.toString();
 		window.history.replaceState({}, "", query ? `?${query}` : window.location.pathname);
@@ -178,6 +183,40 @@ let brands = [];
 	}
 
 
+function initCpuFilters() {
+    const priceInputs = document.querySelectorAll(
+        'input[name="cpu-price"]'
+    );
+
+    const socketHolder = document.querySelector("#cpu-socket-filters");
+
+    priceInputs.forEach((input) => {
+        input.checked = state.price === input.value;
+
+        input.addEventListener("change", () => {
+            state.price = input.value;
+            loadProducts();
+        });
+    });
+
+    if (socketHolder) {
+        const socketInputs = socketHolder.querySelectorAll(
+            'input[type="checkbox"]'
+        );
+
+        socketInputs.forEach((input) => {
+            input.checked = state.socket === input.value;
+
+            input.addEventListener("change", () => {
+                state.socket = input.checked ? input.value : "";
+                socketInputs.forEach((item) => {
+                    item.checked = item.value === state.socket;
+                });
+                loadProducts();
+            });
+        });
+    }
+}
 async function loadCategoryFeatured() {
     const holder = document.querySelector("#category-featured");
 
@@ -195,7 +234,7 @@ async function loadCategoryFeatured() {
         const payload = await TNC.api.products({
             category: "cpu",
             sort: "newest",
-            limit: 4,
+            limit: 10,
         });
 
         const items = payload.data || [];
@@ -206,15 +245,50 @@ async function loadCategoryFeatured() {
         }
 
         holder.innerHTML = `
-            <section class="category-featured-section">
-                <h2>CPU BÁN CHẠY</h2>
-                <div class="category-featured-grid">
-                    ${items.map((product) => TNC.productCard(product)).join("")}
-                </div>
-            </section>
-        `;
+    			<section class="category-featured-section">
+        			<h2>CPU BÁN CHẠY</h2>
+
+        <button type="button" class="category-carousel-btn prev"
+                id="cpu-carousel-prev" aria-label="Sản phẩm trước">
+            &#10094;
+        </button>
+
+        <div class="category-featured-grid" id="cpu-carousel-track">
+            ${items.map((product) =>
+                TNC.productCard(product, {
+                    columnClass: " col-3",
+                    imageHeight: 160,
+                })
+            ).join("")}
+        </div>
+
+        <button type="button" class="category-carousel-btn next"
+                id="cpu-carousel-next" aria-label="Sản phẩm tiếp theo">
+            &#10095;
+        </button>
+    </section>
+`;
 
         holder.style.display = "block";
+        const track = holder.querySelector("#cpu-carousel-track");
+const prevBtn = holder.querySelector("#cpu-carousel-prev");
+const nextBtn = holder.querySelector("#cpu-carousel-next");
+
+prevBtn?.addEventListener("click", () => {
+    track?.scrollBy({
+        left: -track.clientWidth,
+        behavior: "smooth"
+    });
+});
+
+nextBtn?.addEventListener("click", () => {
+    track?.scrollBy({
+        left: track.clientWidth,
+        behavior: "smooth"
+    });
+});
+// Chỉ cho phép di chuyển bằng hai nút mũi tên
+
     } catch (error) {
         console.error("Không tải được CPU nổi bật:", error);
         holder.style.display = "none";
@@ -228,6 +302,8 @@ async function loadCategoryFeatured() {
 			const payload = await TNC.api.products({
 				q: state.q,
 				category: state.categories.join(","),
+				price: state.price,
+    			socket: state.socket,
 				brand: state.brand,
 				sort: state.sort,
 				limit: 60,
@@ -312,7 +388,32 @@ if (activeFilterHolder) {
 				'<p class="text-muted small mb-0">Không tải được bộ lọc.</p>';
 		}
 	}
+	
+	// Chỉ thay ảnh banner khi đang ở danh mục CPU
+    const currentCategory = new URLSearchParams(window.location.search).get("category");
 
+    if (currentCategory === "cpu") {
+        const banner = document.querySelector("#productBanner .carousel-inner");
+
+        if (banner) {
+            banner.innerHTML = `
+                <div class="carousel-item active">
+                    <img
+                        src="assets/img/Products.php-category/CPU-Bộ vi xử lí.jpg"
+                        class="d-block w-100"
+                        alt="Banner CPU - Bộ vi xử lý"
+                    >
+                </div>
+            `;
+
+            // Ẩn nút chuyển ảnh của banner cũ
+            document.querySelectorAll(
+                "#productBanner .carousel-control-prev, #productBanner .carousel-control-next"
+            ).forEach(button => {
+                button.style.display = "none";
+            });
+        }
+    }
 	await loadProducts();
 	await loadCategoryFeatured();
 });

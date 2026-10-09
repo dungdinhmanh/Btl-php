@@ -19,7 +19,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
                   </div>
                   <!-- Khu vực sản phẩm nổi bật theo danh mục -->
                   <div id="category-featured" style="display: none;"></div>
-			<section class="products-page-banner">
+			<section class="products-page-banner" id="products-page-banner"> 
 				<div class="container">
 					<div id="productBanner" class="carousel slide product-banner" data-bs-ride="carousel">
     <div class="carousel-inner">
@@ -67,20 +67,72 @@ require_once __DIR__ . '/backend/bootstrap.php';
     </button>
 </div>
 					<div class="row g-4">
-						<aside class="col-lg-3">
-							<div class="filter-panel">
-    						<h2>Bộ lọc sản phẩm</h2>
-    						<div id="category-filters"></div>
-   							 <hr />
-   							 <div class="brand-filter-section">
-     					   <div class="brand-filter-title">
-          					  <span>HÃNG SẢN XUẤT</span>
-          					  <span class="brand-filter-toggle">⌄</span>
-       						 </div>
-        					<div id="brand-filters" class="brand-filter-list"></div>
-  						  </div>
-					</div>
-						</aside>
+						<aside class="col-lg-3">		
+                     <div class="filter-panel">
+                  <h2>Bộ lọc sản phẩm</h2>
+              <div id="category-filters"></div>
+             <hr />
+         <div class="brand-filter-section">
+            <div class="brand-filter-title">
+              <span>HÃNG SẢN XUẤT</span>
+                  <span class="brand-filter-toggle">⌄</span>
+           </div>
+        <div id="brand-filters" class="brand-filter-list"></div>
+    </div>
+    <hr />
+    <div class="cpu-filter-section">
+        <div class="cpu-filter-title">
+            <span>GIÁ SẢN PHẨM</span>
+            <span class="cpu-filter-toggle">⌄</span>
+        </div>
+        <div class="cpu-filter-list">
+            <label class="cpu-filter-item">
+                <input type="radio" name="cpu-price" value="under-2m">
+                <span>Dưới 2 triệu</span>
+            </label>
+            <label class="cpu-filter-item">
+                <input type="radio" name="cpu-price" value="2m-5m">
+                <span>2 - 5 triệu</span>
+            </label>
+            <label class="cpu-filter-item">
+                <input type="radio" name="cpu-price" value="5m-10m">
+                <span>5 - 10 triệu</span>
+            </label>
+            <label class="cpu-filter-item">
+                <input type="radio" name="cpu-price" value="over-10m">
+                <span>Trên 10 triệu</span>
+            </label>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="cpu-filter-section">
+        <div class="cpu-filter-title">
+            <span>SOCKET CPU</span>
+            <span class="cpu-filter-toggle">⌄</span>
+        </div>
+        <div id="cpu-socket-filters" class="cpu-filter-list">
+            <label class="cpu-filter-item">
+                <input type="checkbox" value="AM4">
+                <span>AM4</span>
+            </label>
+            <label class="cpu-filter-item">
+                <input type="checkbox" value="AM5">
+                <span>AM5</span>
+            </label>
+            <label class="cpu-filter-item">
+                <input type="checkbox" value="LGA1700">
+                <span>LGA1700</span>
+            </label>
+            <label class="cpu-filter-item">
+                <input type="checkbox" value="LGA1851">
+                <span>LGA1851</span>
+            </label>
+        </div>
+    </div>
+</div>
+</aside>
          				<div class="col-lg-9 product-list-panel">
        					 <div class="product-list-header">
            			 <h2 id="product-page-title">LINH KIỆN MÁY TÍNH</h2>

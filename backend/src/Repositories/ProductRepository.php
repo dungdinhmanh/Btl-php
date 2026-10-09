@@ -42,16 +42,25 @@ final class ProductRepository
      *
      * @param string[] $categories additional category slugs, OR-ed together
      */
-    public function search(
-        string $query = '',
-        ?string $category = null,
-        int $limit = 24,
-        int $offset = 0,
-        ?string $brand = null,
-        string $sort = 'newest',
-        array $categories = [],
-    ): array {
-        [$where, $params] = $this->buildFilters($query, $category, $brand, $categories);
+   public function search(
+    string $query = '',
+    ?string $category = null,
+    int $limit = 24,
+    int $offset = 0,
+    ?string $brand = null,
+    string $sort = 'newest',
+    array $categories = [],
+    string $price = '',
+    string $socket = '',
+): array {
+        [$where, $params] = $this->buildFilters(
+          $query,
+          $category,
+          $brand,
+          $categories,
+        (string) ($filters['price'] ?? ''),
+       (string) ($filters['socket'] ?? ''),
+);
 
         $statement = $this->db->prepare(
             self::LIST_SELECT . ' ' . self::LIST_FROM . '
@@ -70,13 +79,21 @@ final class ProductRepository
     }
 
     public function count(
-        string $query = '',
-        ?string $category = null,
-        ?string $brand = null,
-        array $categories = [],
-    ): int {
-        [$where, $params] = $this->buildFilters($query, $category, $brand, $categories);
-
+    string $query = '',
+    ?string $category = null,
+    ?string $brand = null,
+    array $categories = [],
+    string $price = '',
+    string $socket = '',
+): int {
+[$where, $params] = $this->buildFilters(
+    $query,
+    $category,
+    $brand,
+    $categories,
+    $price,
+    $socket,
+);
         $statement = $this->db->prepare(
             'SELECT COUNT(*) FROM products p
              LEFT JOIN brands b ON b.brand_id = p.brand_id
@@ -218,43 +235,77 @@ final class ProductRepository
      * @param string[] $categories
      * @return array{0: string[], 1: array<string, string>}
      */
-    private function buildFilters(string $query, ?string $category, ?string $brand, array $categories): array
-    {
-        $where = ['p.product_status = :status'];
-        $params = [':status' => 'active'];
+    
+private function buildFilters(
+    string $query,
+    ?string $category,
+    ?string $brand,
+    array $categories,
+    string $price = '',
+    string $socket = '',
+): array {
+    [$where, $params] = $this->buildFilters(
+    $query,
+    $category,
+    $brand,
+    $categories,
+    $price,
+    $socket,
+);
 
-        $categories = array_values(array_filter(array_map('trim', $categories)));
-        if ($categories !== []) {
-            $placeholders = [];
-            foreach ($categories as $index => $slug) {
-                $key = ':category' . $index;
-                $placeholders[] = $key;
-                $params[$key] = $slug;
-            }
-            $where[] = 'c.category_slug IN (' . implode(', ', $placeholders) . ')';
-        } elseif ($category !== null && $category !== '') {
-            $where[] = 'c.category_slug = :category';
-            $params[':category'] = $category;
+    $categories = array_values(array_filter(array_map('trim', $categories)));
+    if ($categories !== []) {
+        $placeholders = [];
+        foreach ($categories as $index => $slug) {
+            $key = ':category' . $index;
+            $placeholders[] = $key;
+            $params[$key] = $slug;
         }
-
-        if ($brand !== null && $brand !== '') {
-            $where[] = 'b.brand_slug = :brand';
-            $params[':brand'] = $brand;
-        }
-
-        if ($query !== '') {
-            // Separate placeholders: native prepares reject the same named parameter twice.
-            $where[] = '(p.product_name LIKE :queryName OR b.brand_name LIKE :queryBrand
-                         OR c.category_name LIKE :queryCategory OR p.sku LIKE :querySku)';
-            $term = '%' . $query . '%';
-            $params[':queryName'] = $term;
-            $params[':queryBrand'] = $term;
-            $params[':queryCategory'] = $term;
-            $params[':querySku'] = $term;
-        }
-
-        return [$where, $params];
+        $where[] = 'c.category_slug IN (' . implode(', ', $placeholders) . ')';
+    } elseif ($category !== null && $category !== '') {
+        $where[] = 'c.category_slug = :category';
+        $params[':category'] = $category;
     }
+
+    if ($brand !== null && $brand !== '') {
+        $where[] = 'b.brand_slug = :brand';
+        $params[':brand'] = $brand;
+    }
+
+    if ($price === 'under-2m') {
+        $where[] = 'p.unit_price < :priceMax';
+        $params[':priceMax'] = 2000000;
+    } elseif ($price === '2m-5m') {
+        $where[] = 'p.unit_price >= :priceMin AND p.unit_price < :priceMax';
+        $params[':priceMin'] = 2000000;
+        $params[':priceMax'] = 5000000;
+    } elseif ($price === '5m-10m') {
+        $where[] = 'p.unit_price >= :priceMin AND p.unit_price <= :priceMax';
+        $params[':priceMin'] = 5000000;
+        $params[':priceMax'] = 10000000;
+    } elseif ($price === 'over-10m') {
+        $where[] = 'p.unit_price > :priceMin';
+        $params[':priceMin'] = 10000000;
+    }
+
+    if ($socket !== '') {
+        $where[] = 'p.socket = :socket';
+        $params[':socket'] = $socket;
+    }
+
+    if ($query !== '') {
+        // Separate placeholders: native prepares reject the same named parameter twice.
+        $where[] = '(p.product_name LIKE :queryName OR b.brand_name LIKE :queryBrand
+                     OR c.category_name LIKE :queryCategory OR p.sku LIKE :querySku)';
+        $term = '%' . $query . '%';
+        $params[':queryName'] = $term;
+        $params[':queryBrand'] = $term;
+        $params[':queryCategory'] = $term;
+        $params[':querySku'] = $term;
+    }
+
+    return [$where, $params];
+}
 
     private function slugForId(int $id): string
     {
