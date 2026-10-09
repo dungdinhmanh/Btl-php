@@ -1701,7 +1701,6 @@ padding-top: 1rem;
 	margin-top: 32px;
 }
 .group-category-home {
-	margin-top: 32px;
 	padding: 24px;
 }
 .group-category-home .group-title {
@@ -3532,103 +3531,7 @@ main {
 
 /* Khu vực sản phẩm nổi bật theo danh mục */
 #category-featured {
-    display: none;
-    width: 100%;
-    margin: 16px auto 24px;
-}
-
-.category-featured-section {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 0 18px;
-    background: #fff;
-}
-
-.category-featured-section h2 {
-    margin: 0;
-    padding: 10px 16px;
-    background: #29334f;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 700;
-    text-transform: none;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.category-featured-grid {
-    display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    gap: 0;
-    width: 100%;
-    padding: 18px;
-}
-
-.category-featured-grid .product-card {
-    width: 100%;
-    min-width: 0;
-    max-width: none;
-}
-
-@media (max-width: 900px) {
-    .category-featured-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-}
-
-@media (max-width: 576px) {
-    .category-featured-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
-/* Chỉnh thẻ sản phẩm trong khu vực CPU Bán Chạy */
-.category-featured-grid > .product-card {
-    box-sizing: border-box;
-    width: 100%;
-    min-width: 0;
-    height: auto;
-    padding: 10px;
-    border: 1px solid #e4e8ee;
-    background: #fff;
-    overflow: hidden;
-}
-
-.category-featured-grid > .product-card .product-image {
-    width: 100%;
-    height: 180px;
-    min-width: 0;
-    background: #fff;
-    font-size: 2rem;
-}
-
-.category-featured-grid > .product-card .product-image img {
     display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
-.category-featured-grid > .product-card .product-brand,
-.category-featured-grid > .product-card h3 {
-    overflow-wrap: anywhere;
-}
-
-.category-featured-grid > .product-card h3 {
-    min-height: 48px;
-    font-size: 14px;
-    line-height: 1.4;
-}
-
-.category-featured-grid > .product-card .btn {
-    width: 100%;
-    margin-top: 10px !important;
-    white-space: normal;
-}
-
-/* ===== CPU BÁN CHẠY: GIAO DIỆN NGANG ===== */
-
-#category-featured {
     width: 100%;
     margin: 16px auto 24px;
 }
@@ -3640,138 +3543,10 @@ main {
     padding: 0 16px 16px;
     background: #fff;
     border: 1px solid #e5e8ee;
-}
-
-.category-featured-section h2 {
-    display: block;
-    width: 100%;
-    margin: 0;
-    padding: 12px 16px;
-    background: #29334f;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 700;
-}
-
-.category-featured-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0;
-    width: 100%;
-    padding-top: 16px;
-}
-
-.category-featured-grid > .product-card {
-    box-sizing: border-box;
-    width: 100%;
-    min-width: 0;
-    max-width: none;
-    height: 100%;
-    padding: 10px;
-    border: 1px solid #e4e8ee;
-    background: #fff;
-    overflow: hidden;
-}
-
-.category-featured-grid > .product-card .product-image {
-    display: grid;
-    width: 100%;
-    height: 180px;
-    place-items: center;
-    background: #fff;
-}
-
-.category-featured-grid > .product-card .product-image img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
-.category-featured-grid > .product-card h3 {
-    min-height: 42px;
-    font-size: 13px;
-    line-height: 1.4;
-    overflow-wrap: anywhere;
-}
-
-.category-featured-grid > .product-card .btn {
-    width: 100%;
-    margin-top: auto !important;
-}
-
-@media (min-widt
-
-/* Sửa chiều rộng thẻ CPU bán chạy */
-#category-featured .category-featured-grid {
-    display: grid !important;
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-    gap: 0 !important;
-    align-items: stretch;
-}
-
-#category-featured .category-featured-grid > * {
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
-    box-sizing: border-box;
-}
-
-#category-featured .category-featured-grid .product-card {
-    display: flex;
-    flex-direction: column;
-    padding: 12px !important;
-    overflow: hidden;
-}
-
-#category-featured .category-featured-grid .product-image {
-    width: 100% !important;
-    height: 180px !important;
-    min-width: 0 !important;
-    background: #fff !important;
-}
-
-#category-featured .category-featured-grid .product-image img {
-    width: 100% !important;
-    height: 100% !important;
-    max-width: 100% !important;
-    object-fit: contain !important;
-}
-
-#category-featured .category-featured-grid .product-brand,
-#category-featured .category-featured-grid .product-card h3,
-#category-featured .category-featured-grid .product-card .price,
-#category-featured .category-featured-grid .product-card .btn {
-    width: 100%;
-    overflow-wrap: break-word;
-}
-
-#category-featured .category-featured-grid .product-card .btn {
-    min-width: 0;
-    white-space: normal;
-}
-
-/* Thanh tiêu đề CPU Bán Chạy */
-#category-featured .category-featured-section h2 {
-    display: inline-block !important;
-    width: auto !important;
-    margin: 0 !important;
-    background: #3478f6 !important;
-    color: #fff !important;
-    font-size: 16px !important;
-    font-weight: 700 !important;
-    line-height: 1.4;
-}
-
-/* Thanh xanh đậm phía sau tiêu đề */
-#category-featured .category-featured-section {
-    padding: 0 16px 16px !important;
-    border: none !important;
-    background: #fff !important;
     position: relative;
 }
 
-#category-featured .category-featured-section::before {
+.category-featured-section::before {
     content: "";
     display: block;
     position: absolute;
@@ -3783,13 +3558,79 @@ main {
     z-index: 0;
 }
 
-#category-featured .category-featured-section h2 {
+.category-featured-section h2 {
     position: relative;
     z-index: 1;
-}h: 1200px) {
-    .category-featured-section {
-        max-width: 1200px;
-    }
+    display: inline-block;
+    width: auto;
+    margin: 0;
+    padding: 12px 16px;
+    background: #3478f6;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.category-featured-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0;
+    width: 100%;
+    padding-top: 16px;
+    align-items: stretch;
+}
+
+.category-featured-grid > * {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.category-featured-grid .product-card {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #e4e8ee;
+}
+
+.category-featured-grid .product-image {
+    width: 100%;
+    height: 180px;
+    min-width: 0;
+    background: #fff;
+}
+
+.category-featured-grid .product-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+.category-featured-grid .product-brand,
+.category-featured-grid .product-card h3,
+.category-featured-grid .product-card .price,
+.category-featured-grid .product-card .btn {
+    width: 100%;
+    overflow-wrap: break-word;
+}
+
+.category-featured-grid > .product-card h3 {
+    min-height: 42px;
+    font-size: 13px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.category-featured-grid .product-card .btn {
+    min-width: 0;
+    margin-top: auto;
+    white-space: normal;
 }
 
 @media (max-width: 900px) {
@@ -3804,90 +3645,9 @@ main {
     }
 }
 
-/* Sửa chiều rộng thẻ CPU bán chạy */
-#category-featured .category-featured-grid {
-    display: grid !important;
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-    gap: 0 !important;
-    align-items: stretch;
-}
-
-#category-featured .category-featured-grid > * {
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
-    box-sizing: border-box;
-}
-
-#category-featured .category-featured-grid .product-card {
-    display: flex;
-    flex-direction: column;
-    padding: 12px !important;
-    overflow: hidden;
-}
-
-#category-featured .category-featured-grid .product-image {
-    width: 100% !important;
-    height: 180px !important;
-    min-width: 0 !important;
-    background: #fff !important;
-}
-
-#category-featured .category-featured-grid .product-image img {
-    width: 100% !important;
-    height: 100% !important;
-    max-width: 100% !important;
-    object-fit: contain !important;
-}
-
-#category-featured .category-featured-grid .product-brand,
-#category-featured .category-featured-grid .product-card h3,
-#category-featured .category-featured-grid .product-card .price,
-#category-featured .category-featured-grid .product-card .btn {
-    width: 100%;
-    overflow-wrap: break-word;
-}
-
-#category-featured .category-featured-grid .product-card .btn {
-    min-width: 0;
-    white-space: normal;
-}
-
-/* Thanh tiêu đề CPU Bán Chạy */
-#category-featured .category-featured-section h2 {
-    display: inline-block !important;
-    width: auto !important;
-    margin: 0 !important;
-    padding: 14px 24px !important;
-    background: #3478f6 !important;
-    color: #fff !important;
-    font-size: 16px !important;
-    font-weight: 700 !important;
-    line-height: 1.4;
-}
-
-/* Thanh xanh đậm phía sau tiêu đề */
-#category-featured .category-featured-section {
-    padding: 0 16px 16px !important;
-    border: none !important;
-    background: #fff !important;
-    position: relative;
-}
-
-#category-featured .category-featured-section::before {
-    content: "";
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 48px;
-    background: #29334f;
-    z-index: 0;
-}
-
-#category-featured .category-featured-section h2 {
-    position: relative;
-    z-index: 1;
+@media (min-width: 1200px) {
+    .category-featured-section {
+        max-width: 1200px;
+    }
 }
 
