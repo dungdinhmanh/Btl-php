@@ -334,23 +334,25 @@ $headerQuickLinks = [
 </div>
 <div class="header">
 	<div class="header-top">
-		<div class="container right">
-			<a href="sitemap" class="item">
-				<i class="bi bi-telephone"></i>
-				<span class="hover">Tất cả sản phẩm</span>
-			</a>
-			<a href="tel:0868302123" class="item">
-				<i class="bi bi-telephone"></i>
-				<span class="hover">0868 302 123</span>
-			</a>
-			<a href="mailto:cskh@tncstore.vn" class="item">
-				<i class="bi bi-envelope"></i>
-				<span class="hover">cskh@tncstore.vn</span>
-			</a>
+		<div class="container">
+			<div class="right">
+				<a href="sitemap" class="item">
+					<i class="bi bi-telephone"></i>
+					<span class="hover">Tất cả sản phẩm</span>
+				</a>
+				<a href="tel:0868302123" class="item">
+					<i class="bi bi-telephone"></i>
+					<span class="hover">086 830 2123</span>
+				</a>
+				<a href="mailto:cskh@tncstore.vn" class="item">
+					<i class="bi bi-envelope"></i>
+					<span class="hover">cskh@tncstore.vn</span>
+				</a>
+			</div>
 		</div>
 	</div>
 	<div class="header-mid container">
-		<nav class="navbar navbar-expand-lg py-3" aria-label="Main navigation">
+		<nav class="navbar navbar-expand-lg" aria-label="Main navigation">
 			<a class="navbar-brand logo" href="index.php" aria-label="TNC Store">
 				<img src="assets/img/branding/tnc.png" alt="TNC Store" />
 			</a>
@@ -367,7 +369,7 @@ $headerQuickLinks = [
 			</button>
 			<div class="collapse navbar-collapse" id="storeNavigation">
 				<form
-					class="search-form mx-lg-4 my-3 my-lg-0"
+					class="search-form"
 					role="search"
 					action="products.php"
 					method="get"
@@ -420,7 +422,7 @@ $headerQuickLinks = [
 						<i class="bi bi-search" aria-hidden="true"></i>
 					</button>
 				</form>
-				<div class="header-actions ms-lg-auto">
+				<div class="header-actions">
 					<?php $currentUser = $_SESSION['user'] ?? null; ?>
 					<?php if ($currentUser): ?>
 						<a

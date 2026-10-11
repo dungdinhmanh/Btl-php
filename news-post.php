@@ -37,7 +37,6 @@ if ($post === null && !$loadError) {
 $canonical = $post ? absoluteUrl(newsPostUrl($post)) : '';
 $cover = $post && $post['coverImage'] ? absoluteUrl($post['coverImage']) : '';
 
-// Phân biệt bài viết thuộc TNC Channel
 $isTncChannel = $post
     && strtolower(trim($post['category'])) === 'tnc channel';
 ?>

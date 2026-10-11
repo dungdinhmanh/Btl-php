@@ -358,23 +358,25 @@ $homeNewsAvailable = array_reduce(
 				</div>
 			</div>
 		</main>
-		<div class="brand-slider-container">
-			<div class="brand-slider-title">Thương hiệu đồng hành</div>
-			<div class="brand-slider">
-				<div class="brand-track" style="--brand-scroll-duration: <?= $brandScrollDuration ?>s">
-					<?php foreach ([false, true] as $isClone): ?>
-						<?php foreach ($brandingImages as $imagePath): ?>
-							<?php
-							$fileName = basename($imagePath);
-							?>
-							<div class="brand-item"<?= $isClone ? ' aria-hidden="true"' : '' ?>>
-								<img
-									src="<?= htmlspecialchars('assets/img/branding/' . $fileName, ENT_QUOTES, 'UTF-8') ?>"
-									loading="lazy"
-								/>
-							</div>
+		<div class="list-brand">
+			<div class="container background-white">
+				<h2 class="title">Thương hiệu đồng hành</h2>
+				<div class="brand-slider">
+					<div class="brand-track" style="--brand-scroll-duration: <?= $brandScrollDuration ?>s">
+						<?php foreach ([false, true] as $isClone): ?>
+							<?php foreach ($brandingImages as $imagePath): ?>
+								<?php
+								$fileName = basename($imagePath);
+								?>
+								<div class="brand-item"<?= $isClone ? ' aria-hidden="true"' : '' ?>>
+									<img
+										src="<?= htmlspecialchars('assets/img/branding/' . $fileName, ENT_QUOTES, 'UTF-8') ?>"
+										loading="lazy"
+									/>
+								</div>
+							<?php endforeach; ?>
 						<?php endforeach; ?>
-					<?php endforeach; ?>
+					</div>
 				</div>
 			</div>
 		</div>

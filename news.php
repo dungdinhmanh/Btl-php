@@ -22,7 +22,6 @@ if ($activeCategory !== '' && !in_array($activeCategory, array_column($categorie
     exit;
 }
 
-// With a category filter, show a plain grid; otherwise feature + list + grid.
 $filtered = $activeCategory !== '';
 $feature = $filtered ? null : ($posts[0] ?? null);
 $sideList = $filtered ? [] : array_slice($posts, 1, 3);
@@ -40,15 +39,6 @@ $gridPosts = $filtered ? $posts : array_slice($posts, 4);
 		<?php require 'partial/header.php' ?>
 		<main class="news-page">
 			<div class="container" id="news-list-root">
-				<header class="news-page-header">
-					<p class="eyebrow">TNC Store / News</p>
-					<h1>Tin tức công nghệ</h1>
-					<p>
-						Thông tin sản phẩm, hướng dẫn build PC và những gợi ý thiết thực để bạn chọn
-						đúng thiết bị.
-					</p>
-				</header>
-
 				<?php if ($loadError): ?>
 					<p class="text-center text-muted py-5">Không tải được bài viết. Vui lòng thử lại sau.</p>
 				<?php else: ?>
@@ -87,7 +77,6 @@ $gridPosts = $filtered ? $posts : array_slice($posts, 4);
 							<section id="more" aria-labelledby="more-title">
 								<div class="section-heading">
 									<div>
-										<p class="eyebrow">Chọn đúng, dùng tốt</p>
 										<h2 id="more-title"><?= $filtered ? 'Bài viết trong chuyên mục' : 'Bài viết khác' ?></h2>
 									</div>
 								</div>
