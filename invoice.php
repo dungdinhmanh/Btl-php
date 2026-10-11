@@ -1,11 +1,7 @@
 <?php
 require_once __DIR__ . '/backend/bootstrap.php';
 
-$user = $_SESSION['user'] ?? null;
-if (!$user) {
-	header('Location: login.php');
-	exit;
-}
+$user = requirePageRole(['customer', 'staff', 'admin']);
 
 $orderNumber = trim((string) ($_GET['order'] ?? ''));
 $invoice = null;
@@ -21,7 +17,7 @@ if (preg_match('/^[A-Za-z0-9-]{1,32}$/', $orderNumber)) {
 // Chủ đơn hoặc nhân viên/quản trị mới được xem. Người khác nhận 404 như khi mã đơn không tồn tại,
 // để không lộ việc mã đơn đó có thật hay không.
 $canView = $invoice !== null
-	&& ($invoice['ownerId'] === (int) $user['id'] || in_array($user['role'] ?? '', ['admin', 'staff'], true));
+	&& ($invoice['ownerId'] === (int) $user['id'] || in_array($user['role'], STAFF_ROLES, true));
 if (!$canView) {
 	http_response_code(404);
 	require __DIR__ . '/404.php';

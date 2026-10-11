@@ -34,34 +34,37 @@ try {
     $query = trim((string) ($_GET['q'] ?? ''));
     $categoryList = array_values(array_filter(array_map('trim', explode(',', (string) ($_GET['category'] ?? '')))));
     $brand = trim((string) ($_GET['brand'] ?? ''));
+    $price = trim((string) ($_GET['price'] ?? ''));
+    $socket = trim((string) ($_GET['socket'] ?? ''));
     $offset = (int) ($_GET['offset'] ?? 0);
 
-$products = $repository->search(
-    $query,
-    count($categoryList) === 1 ? $categoryList[0] : null,
-    $limit,
-    $offset,
-    $brand !== '' ? $brand : null,
-    trim((string) ($_GET['sort'] ?? 'newest')),
-    count($categoryList) > 1 ? $categoryList : [],
-    $price,
-    $socket,
-);
+    $products = $repository->search(
+        $query,
+        count($categoryList) === 1 ? $categoryList[0] : null,
+        $limit,
+        $offset,
+        $brand !== '' ? $brand : null,
+        trim((string) ($_GET['sort'] ?? 'newest')),
+        count($categoryList) > 1 ? $categoryList : [],
+        $price !== '' ? $price : null,
+        $socket !== '' ? $socket : null,
+    );
 
     jsonResponse([
         'ok' => true,
         'data' => $products,
-        
-    'total' => $repository->count(
-    $query,
-    null,
-    $brand !== '' ? $brand : null,
-    $categoryList,
-    $price,
-    $socket,
-),
+        'total' => $repository->count(
+            $query,
+            null,
+            $brand !== '' ? $brand : null,
+            $categoryList,
+            $price !== '' ? $price : null,
+            $socket !== '' ? $socket : null,
+        ),
         'limit' => max(1, min($limit, 100)),
         'offset' => max(0, $offset),
-} catch (Throwable $exception) {
+    ]);
+}
+catch (Throwable $exception) {
     apiError($exception);
 }

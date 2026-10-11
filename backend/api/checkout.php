@@ -38,7 +38,7 @@ try {
     $orderNumber = (new CheckoutRepository(database()))->createOrder(
         $customer,
         $items,
-        isset($_SESSION['user']['id']) ? (int) $_SESSION['user']['id'] : null,
+        currentUser()['id'] ?? null, // tài khoản bị khóa/xóa thì tính là khách vãng lai
     );
     $_SESSION['last_order_number'] = $orderNumber;
 

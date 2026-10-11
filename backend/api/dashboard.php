@@ -3,6 +3,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../bootstrap.php';
 
 try {
+    requireRole(STAFF_ROLES);
     $repository = new DashboardRepository(database());
 
     jsonResponse([

@@ -2,4 +2,9 @@ Options -Indexes
 DirectoryIndex index.php
 
 RewriteEngine On
+
+# Không cho tải trực tiếp file cấu hình (.env chứa mật khẩu DB), file SQL (schema, seed, tài khoản thử)
+# và mã nguồn nội bộ. Dùng RewriteRule để chỉ cần đúng quyền FileInfo mà rule .html bên dưới đã dùng.
+RewriteRule ^backend/(config|database|src)(/|$) - [NC,F]
+RewriteRule \.(env|sql|pem)$ - [NC,F]
 RewriteRule ^(.+)\.html$ news-post.php?slug=$1 [END,QSA,NE]

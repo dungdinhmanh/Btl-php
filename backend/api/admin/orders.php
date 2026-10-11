@@ -6,6 +6,7 @@ require_once __DIR__ . '/../../bootstrap.php';
 require_once __DIR__ . '/../../src/Repositories/AdminOrderRepository.php';
 
 try {
+    requireRole(STAFF_ROLES);
     $repository = new AdminOrderRepository(database());
     $requestMethod = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
     $rawBody = file_get_contents('php://input');
@@ -39,11 +40,10 @@ try {
             ]);
 
         default:
-            http_response_code(405);
             jsonResponse([
                 'ok' => false,
                 'message' => 'Phương thức không được hỗ trợ.',
-            ]);
+            ], 405);
     }
 } catch (Throwable $exception) {
     apiError($exception);

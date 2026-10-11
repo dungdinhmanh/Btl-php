@@ -1,4 +1,3 @@
-/* News article page: article on the left, "Tin liên quan" list on the right. */
 .article-layout {
 	display: grid;
 	grid-template-columns: minmax(0, 1fr) 340px;

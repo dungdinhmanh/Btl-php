@@ -1,14 +1,6 @@
 <?php
 declare(strict_types=1);
 
-/**
- * Applies a .sql file through the project's PDO connection, so remote/TLS
- * databases work without configuring the mysql CLI separately.
- *
- *   php backend/database/apply.php backend/database/schema.sql
- *   php backend/database/apply.php backend/database/seed.sql
- */
-
 require_once __DIR__ . '/../bootstrap.php';
 
 if (PHP_SAPI !== 'cli') {

@@ -6,8 +6,9 @@ require_once __DIR__ . '/../../bootstrap.php';
 require_once __DIR__ . '/../../src/Repositories/AdminProductRepository.php';
 
 try {
-    $repository = new AdminProductRepository(database());
     $requestMethod = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
+    requireRole($requestMethod === 'DELETE' ? ADMIN_ROLES : STAFF_ROLES);
+    $repository = new AdminProductRepository(database());
     $rawBody = file_get_contents('php://input');
     $payload = $rawBody !== false && trim($rawBody) !== '' ? json_decode($rawBody, true) : [];
     if (!is_array($payload)) {
@@ -56,11 +57,10 @@ try {
             ]);
 
         default:
-            http_response_code(405);
             jsonResponse([
                 'ok' => false,
                 'message' => 'Phương thức không được hỗ trợ.',
-            ]);
+            ], 405);
     }
 } catch (Throwable $exception) {
     apiError($exception);

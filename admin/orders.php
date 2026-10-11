@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../backend/bootstrap.php';
 
-$adminName = $_SESSION['user']['name'] ?? 'Administrator';
+$adminName = requirePageRole(STAFF_ROLES, '../login.php')['name'];
 $adminInitials = strtoupper(substr(preg_replace('/\s+/', '', (string) $adminName), 0, 2));
 ?>
 <!doctype html>
@@ -31,7 +31,7 @@ $adminInitials = strtoupper(substr(preg_replace('/\s+/', '', (string) $adminName
 					<i class="bi bi-receipt"></i>
 					<span>Đơn hàng</span>
 				</a>
-				<a href="customer.php">
+				<a href="../contact.php">
 					<i class="bi bi-chat-left-text"></i>
 					<span>Khách hàng</span>
 				</a>

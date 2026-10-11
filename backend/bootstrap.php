@@ -39,9 +39,12 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 
 require_once BACKEND_PATH . '/config/database.php';
 require_once BACKEND_PATH . '/src/Support/Http.php';
+require_once BACKEND_PATH . '/src/Support/Auth.php';
 require_once BACKEND_PATH . '/src/Repositories/ProductRepository.php';
 require_once BACKEND_PATH . '/src/Repositories/NewsRepository.php';
 require_once BACKEND_PATH . '/src/Repositories/DashboardRepository.php';
 require_once BACKEND_PATH . '/src/Repositories/UserRepository.php';
 require_once BACKEND_PATH . '/src/Repositories/ProfileRepository.php';
 require_once BACKEND_PATH . '/src/Repositories/InvoiceRepository.php';
+
+guardAdminArea();
