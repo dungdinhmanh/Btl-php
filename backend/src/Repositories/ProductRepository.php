@@ -50,8 +50,8 @@ final class ProductRepository
         ?string $brand = null,
         string $sort = 'newest',
         array $categories = [],
-        string $price = '',
-        string $socket = '',
+        ?string $price = null,
+        ?string $socket = null,
     ): array {
         [$where, $params] = $this->buildFilters(
             $query,
@@ -83,8 +83,8 @@ final class ProductRepository
     ?string $category = null,
     ?string $brand = null,
     array $categories = [],
-    string $price = '',
-    string $socket = '',
+    ?string $price = null,
+    ?string $socket = null,
 ): int {
 [$where, $params] = $this->buildFilters(
     $query,
@@ -240,8 +240,8 @@ final class ProductRepository
         ?string $category,
         ?string $brand,
         array $categories,
-        string $price = '',
-        string $socket = '',
+        ?string $price = null,
+        ?string $socket = null,
     ): array {
         $where = ['p.product_status = :status'];
         $params = [':status' => 'active'];
@@ -281,7 +281,7 @@ final class ProductRepository
             $params[':priceMin'] = 10000000;
         }
 
-        if ($socket !== '') {
+        if ($socket !== null && $socket !== '') {
             $where[] = 'p.socket = :socket';
             $params[':socket'] = $socket;
         }

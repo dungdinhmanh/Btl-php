@@ -24,8 +24,17 @@ function jsonResponse(array $payload, int $status = 200): never
 function apiError(Throwable $exception): never
 {
     $status = $exception instanceof InvalidArgumentException ? 422 : 503;
+    $message = $exception->getMessage();
+
+    if ($status === 503 && (
+        $exception instanceof PDOException ||
+        ($exception instanceof RuntimeException && str_contains(strtolower($exception->getMessage()), 'database'))
+    )) {
+        $message = 'The database is not connected yet.';
+    }
+
     jsonResponse([
         'ok' => false,
-        'message' => $status === 503 ? 'The database is not connected yet.' : $exception->getMessage(),
+        'message' => $message,
     ], $status);
 }
