@@ -30,6 +30,29 @@ $homeNewsAvailable = array_reduce(
 	static fn (bool $available, array $column): bool => $available || $column['posts'] !== [],
 	false,
 );
+
+$promoPosts = [];
+try {
+	$promoPosts = (new NewsRepository(database()))->all(4, 0, 'chuyen-trang-khuyen-mai');
+} catch (Throwable $exception) {
+	error_log($exception->getMessage());
+}
+
+if ($promoPosts === []) {
+	$promoPosts = [
+		[
+			'slug' => 'promo-placeholder',
+			'title' => 'Chuyên trang khuyến mãi',
+			'excerpt' => 'Nội dung khuyến mãi sắp được cập nhật.',
+			'coverImage' => 'assets/img/branding/tnc.png',
+			'publishedAt' => null,
+			'publishedAtIso' => '',
+			'views' => 0,
+			'date' => '',
+			'dateTime' => '',
+		],
+	];
+}
 ?>
 <!doctype html>
 <html>
@@ -40,6 +63,63 @@ $homeNewsAvailable = array_reduce(
 		<meta name="description" content="" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<?php require 'partial/link.php'?>
+		<style>
+			.promo-post-grid {
+				display: grid;
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+				gap: 1.5rem;
+			}
+			.promo-post-card {
+				overflow: hidden;
+				border-radius: 1rem;
+				background: #fff;
+				box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.06);
+				transition: transform 0.25s ease, box-shadow 0.25s ease;
+			}
+			.promo-post-card:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.12);
+			}
+			.promo-post-card a {
+				display: block;
+				text-decoration: none;
+			}
+			.promo-post-card img {
+				display: block;
+				width: 100%;
+				height: 260px;
+				object-fit: cover;
+				transition: transform 0.35s ease;
+			}
+			.promo-post-card:hover img {
+				transform: scale(1.05);
+			}
+			.promo-post-body {
+				padding: 1rem 1rem 1.25rem;
+			}
+			.promo-post-body h3 {
+				margin: 0 0 0.5rem;
+				font-size: 1.1rem;
+				line-height: 1.4;
+			}
+			.promo-post-body h3 a {
+				color: #111827;
+			}
+			.promo-post-body p {
+				margin: 0;
+				color: #4b5563;
+				font-size: 0.95rem;
+				line-height: 1.55;
+			}
+			@media (max-width: 767.98px) {
+				.promo-post-grid {
+					grid-template-columns: 1fr;
+				}
+				.promo-post-card img {
+					height: 220px;
+				}
+			}
+		</style>
 	</head>
 	<body>
 		<?php require 'partial/header.php'?>
@@ -215,49 +295,27 @@ $homeNewsAvailable = array_reduce(
 			</section>
 			<div class="container my-5">
 				<div class="d-flex align-items-center mb-4">
-					<h2>
-						Chuyên trang khuyến mãi
-					</h2>
+					<h2>Chuyên trang khuyến mãi</h2>
 				</div>
-				<div class="row g-4 mb-4">
-					<div class="col-lg-6 col-md-12">
-						<div class="overflow-hidden ratio ratio-21x9">
-							<img
-								src="assets/img/Banner KM/anh1.jpg"
-								class="card-img object-fit-cover"
-								alt="Khuyến mãi 1"
-							/>
-						</div>
-					</div>
-					<div class="col-lg-6 col-md-12">
-						<div class="overflow-hidden ratio ratio-21x9">
-							<img
-								src="assets/img/Banner KM/anh2.jpg"
-								class="card-img object-fit-cover"
-								alt="Khuyến mãi 2"
-							/>
-						</div>
-					</div>
-				</div>
-				<div class="row g-4">
-					<div class="col-lg-6 col-md-12">
-						<div class="overflow-hidden shadow-sm ratio ratio-21x9 hover-zoom">
-							<img
-								src="assets/img/Banner KM/anh3.jpg"
-								class="card-img object-fit-cover"
-								alt="Khuyến mãi 3"
-							/>
-						</div>
-					</div>
-					<div class="col-lg-6 col-md-12">
-						<div class="overflow-hidden shadow-sm ratio ratio-21x9 hover-zoom">
-							<img
-								src="assets/img/Banner KM/anh4.jpg"
-								class="card-img object-fit-cover"
-								alt="Khuyến mãi 4"
-							/>
-						</div>
-					</div>
+				<div class="promo-post-grid mb-4">
+					<?php foreach (array_slice($promoPosts, 0, 4) as $promo): ?>
+						<article class="promo-post-card">
+							<a href="<?= e(newsPostUrl($promo)) ?>" aria-label="<?= e($promo['title']) ?>">
+								<img
+									src="<?= e(newsCover($promo)) ?>"
+									alt="<?= e($promo['title']) ?>"
+									loading="lazy"
+									onerror="this.onerror=null;this.src='assets/img/branding/tnc.png'"
+								/>
+							</a>
+							<div class="promo-post-body">
+								<h3><a href="<?= e(newsPostUrl($promo)) ?>"><?= e($promo['title']) ?></a></h3>
+								<?php if (!empty($promo['excerpt'])): ?>
+									<p><?= e($promo['excerpt']) ?></p>
+								<?php endif; ?>
+							</div>
+						</article>
+					<?php endforeach; ?>
 				</div>
 			</div>
 			<?php if ($homeNewsAvailable): ?>
