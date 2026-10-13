@@ -37,6 +37,8 @@ try {
     $price = trim((string) ($_GET['price'] ?? ''));
     $socket = trim((string) ($_GET['socket'] ?? ''));
     $offset = (int) ($_GET['offset'] ?? 0);
+    $price = trim((string) ($_GET['price'] ?? ''));
+    $socket = trim((string) ($_GET['socket'] ?? ''));
 
     $products = $repository->search(
         $query,
@@ -64,7 +66,6 @@ try {
         'limit' => max(1, min($limit, 100)),
         'offset' => max(0, $offset),
     ]);
-}
-catch (Throwable $exception) {
+} catch (Throwable $exception) {
     apiError($exception);
 }

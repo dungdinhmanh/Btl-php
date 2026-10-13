@@ -37,7 +37,6 @@ require_once __DIR__ . '/backend/bootstrap.php';
                 alt="Banner linh kiện máy tính"
             />
         </div>
-
         <div class="carousel-item">
             <img
                 src="assets/img/banned product/banner-products3.png"
@@ -45,7 +44,6 @@ require_once __DIR__ . '/backend/bootstrap.php';
                 alt="Banner linh kiện máy tính"
             />
         </div>
-
     </div>
 
     <button
@@ -66,6 +64,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
         <span class="carousel-control-next-icon"></span>
     </button>
 </div>
+
 					<div class="row g-4">
 						<aside class="col-lg-3">		
                      <div class="filter-panel">

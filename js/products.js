@@ -14,10 +14,44 @@ document.addEventListener("DOMContentLoaded", async () => {
 	const breadcrumbHolder = document.querySelector("#products-breadcrumb");
 	const productTitle = document.querySelector("#product-page-title");
 	const categoryFeatured = document.querySelector("#category-featured");
-	const searchParams = new URLSearchParams(window.location.search);
 	const activeFilterHolder = document.querySelector("#active-filters");
+    const searchParams = new URLSearchParams(window.location.search);
+    const currentCategory = (
+    new URLSearchParams(window.location.search).get("category") || ""
+).split(",")[0].trim().toLowerCase();
 
-	
+    const categoryBannerImages = {
+    cpu: "assets/img/Products.php-category/CPU-Bộ vi xử lí.jpg",
+    mainboard: "assets/img/Products.php-category/Mainboard Bo mạch chủ.jpg",
+    ram: "assets/img/Products.php-category/Ram bộ nhớ trong.jpg",
+    hdd: "assets/img/Products.php-category/Ổ cứng HDD.jpg",
+};
+
+function updateProductBanner() {
+    const carousel = document.querySelector("#productBanner");
+    if (!carousel) return;
+
+    const imagePath = categoryBannerImages[currentCategory];
+
+    // Danh mục chưa có banner riêng thì giữ carousel 3 ảnh cũ.
+    if (!imagePath) return;
+
+    carousel.innerHTML = `
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img
+                    src="${imagePath}"
+                    class="d-block w-100"
+                    alt="Banner danh mục"
+                />
+            </div>
+        </div>
+    `;
+
+    // Tắt tự động chuyển slide vì danh mục này chỉ có một ảnh.
+    carousel.removeAttribute("data-bs-ride");
+}
+
 		const state = {
     q: (searchParams.get("q") || "").trim(),
     categories: (searchParams.get("category") || "")
@@ -83,7 +117,9 @@ let brands = [];
     `;
 }
 
-	function renderFilters(categories) {
+	
+function renderFilters(categories) {
+
     if (!filterHolder) return;
 
     const order = [
@@ -96,14 +132,15 @@ let brands = [];
         "ssd"
     ];
 
-    const sortedCategories = [...categories].sort((a, b) => {
-        const indexA = order.indexOf(a.slug.toLowerCase());
-        const indexB = order.indexOf(b.slug.toLowerCase());
+    const allowedCategories = categories.filter((category) =>
+        order.includes(category.slug.toLowerCase())
+    );
 
-        const positionA = indexA === -1 ? order.length : indexA;
-        const positionB = indexB === -1 ? order.length : indexB;
-
-        return positionA - positionB;
+    const sortedCategories = [...allowedCategories].sort((a, b) => {
+        return (
+            order.indexOf(a.slug.toLowerCase()) -
+            order.indexOf(b.slug.toLowerCase())
+        );
     });
 
     filterHolder.innerHTML = `
@@ -136,6 +173,7 @@ let brands = [];
             });
         });
 }
+
 	function renderBrandFilters(brands) {
 	if (!brandHolder) return;
 
@@ -388,32 +426,7 @@ if (activeFilterHolder) {
 				'<p class="text-muted small mb-0">Không tải được bộ lọc.</p>';
 		}
 	}
-	
-	// Chỉ thay ảnh banner khi đang ở danh mục CPU
-    const currentCategory = new URLSearchParams(window.location.search).get("category");
-
-    if (currentCategory === "cpu") {
-        const banner = document.querySelector("#productBanner .carousel-inner");
-
-        if (banner) {
-            banner.innerHTML = `
-                <div class="carousel-item active">
-                    <img
-                        src="assets/img/Products.php-category/CPU-Bộ vi xử lí.jpg"
-                        class="d-block w-100"
-                        alt="Banner CPU - Bộ vi xử lý"
-                    >
-                </div>
-            `;
-
-            // Ẩn nút chuyển ảnh của banner cũ
-            document.querySelectorAll(
-                "#productBanner .carousel-control-prev, #productBanner .carousel-control-next"
-            ).forEach(button => {
-                button.style.display = "none";
-            });
-        }
-    }
+	updateProductBanner();
 	await loadProducts();
 	await loadCategoryFeatured();
 });
