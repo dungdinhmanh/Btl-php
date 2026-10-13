@@ -190,24 +190,36 @@ final class ProductRepository
         return is_string($slug) ? $this->findBySlug($slug) : null;
     }
 
-    public function categories(): array
+    
+        public function categories(): array
     {
         $statement = $this->db->query(
-            "SELECT c.category_id AS id, c.category_slug AS slug, c.category_name AS name,
-                    COUNT(p.product_id) AS productCount
-             FROM categories c
-             LEFT JOIN products p ON p.category_id = c.category_id AND p.product_status = 'active'
-             GROUP BY c.category_id, c.category_slug, c.category_name
-             ORDER BY c.category_name ASC",
-        );
+        "SELECT c.category_id AS id, c.category_slug AS slug, c.category_name AS name,
+                COUNT(p.product_id) AS productCount
+         FROM categories c
+         LEFT JOIN products p ON p.category_id = c.category_id AND p.product_status = 'active'
+         WHERE c.category_slug IN ('cpu', 'mainboard', 'ram', 'hdd', 'case', 'psu', 'ssd')
+         GROUP BY c.category_id, c.category_slug, c.category_name
+         ORDER BY c.category_name ASC",
+    );
 
-        return array_map(static fn (array $row): array => [
-            'id' => (int) $row['id'],
-            'slug' => (string) $row['slug'],
-            'name' => (string) $row['name'],
-            'productCount' => (int) $row['productCount'],
-        ], $statement->fetchAll());
-    }
+        $categories = array_map(static fn (array $row): array => [
+        'id' => (int) $row['id'],
+        'slug' => (string) $row['slug'],
+        'name' => (string) $row['name'],
+        'productCount' => (int) $row['productCount'],
+    ], $statement->fetchAll());
+
+        $order = ['cpu', 'mainboard', 'ram', 'hdd', 'case', 'psu', 'ssd'];
+
+        usort($categories, static function (array $a, array $b) use ($order): int {
+        return array_search($a['slug'], $order, true)
+            <=> array_search($b['slug'], $order, true);
+    });
+
+    return $categories;
+}
+
 
     public function brands(): array
     {
@@ -240,8 +252,8 @@ final class ProductRepository
         ?string $category,
         ?string $brand,
         array $categories,
-        ?string $price = null,
-        ?string $socket = null,
+        string $price = '',
+        string $socket = '',
     ): array {
         $where = ['p.product_status = :status'];
         $params = [':status' => 'active'];
@@ -288,7 +300,7 @@ final class ProductRepository
 
         if ($query !== '') {
             $where[] = '(p.product_name LIKE :queryName OR b.brand_name LIKE :queryBrand
-                         OR c.category_name LIKE :queryCategory OR p.sku LIKE :querySku)';
+                OR c.category_name LIKE :queryCategory OR p.sku LIKE :querySku)';
             $term = '%' . $query . '%';
             $params[':queryName'] = $term;
             $params[':queryBrand'] = $term;
@@ -298,6 +310,7 @@ final class ProductRepository
 
         return [$where, $params];
     }
+
 
     private function slugForId(int $id): string
     {
