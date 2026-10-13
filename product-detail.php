@@ -113,57 +113,40 @@ require_once __DIR__ . '/backend/bootstrap.php';
 					</aside>
 				</section>
 
-				<!-- Tabs: thông số / chính sách -->
-				<section class="pd-tabs-card">
-					<div class="pd-tab-headers" role="tablist">
-						<button
-							class="pd-tab-btn active"
-							data-bs-toggle="tab"
-							data-bs-target="#tab-specs"
-							type="button"
-							role="tab"
-						>
-							Thông số chi tiết
-						</button>
-						<button
-							class="pd-tab-btn"
-							data-bs-toggle="tab"
-							data-bs-target="#tab-policy"
-							type="button"
-							role="tab"
-						>
-							Chính sách bán hàng
-						</button>
-					</div>
+				<!-- Mô tả sản phẩm -->
+				<section class="pd-section" id="pd-description">
+					<h2 class="pd-section-title">Mô tả sản phẩm</h2>
+					<div class="pd-desc" id="product-description">Đang tải...</div>
+				</section>
 
-					<div class="tab-content">
-						<div class="tab-pane fade show active" id="tab-specs" role="tabpanel">
-							<div class="pd-spec-wrap" id="spec-wrap">
-								<table class="table table-bordered mb-0 product-spec-table" id="spec-table">
-									<tbody>
-										<tr>
-											<td>Đang tải...</td>
-											<td>---</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-							<button class="pd-more-btn" id="spec-toggle" type="button" hidden>
-								Xem thêm thông số
-							</button>
-						</div>
-						<div class="tab-pane fade pd-policy" id="tab-policy" role="tabpanel">
-							<p>Sản phẩm được bảo hành chính hãng 36 tháng tại TNC Store.</p>
-							<p>Miễn phí giao hàng toàn quốc. Lỗi do nhà sản xuất được đổi mới 1 đổi 1 trong 30 ngày.</p>
-							<p>Đội ngũ kỹ thuật hỗ trợ cài đặt và xử lý sự cố trọn đời cho khách hàng.</p>
-						</div>
+				<!-- Thông số kỹ thuật -->
+				<section class="pd-section" id="pd-specs">
+					<h2 class="pd-section-title">Thông số kỹ thuật</h2>
+					<div class="pd-spec-wrap" id="spec-wrap">
+						<table class="table table-bordered mb-0 product-spec-table" id="spec-table">
+							<tbody>
+								<tr>
+									<td>Đang tải...</td>
+									<td>---</td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
+					<button class="pd-more-btn" id="spec-toggle" type="button" hidden>
+						Xem thêm thông số
+					</button>
 				</section>
 
 				<!-- Sản phẩm tương tự (JS đổ cùng danh mục) -->
 				<section class="pd-similar" id="similar-section" hidden>
-					<h2 class="pd-section-title">Sản phẩm tương tự</h2>
+					<h2 class="pd-section-title" id="similar-title">Sản phẩm tương tự</h2>
 					<div class="row g-3" id="similar-products"></div>
+				</section>
+
+				<!-- Tin tức liên quan (JS đổ bài mới nhất) -->
+				<section class="pd-similar" id="news-section" hidden>
+					<h2 class="pd-section-title">Tin tức liên quan</h2>
+					<div class="row g-3" id="related-news"></div>
 				</section>
 			</div>
 		</main>

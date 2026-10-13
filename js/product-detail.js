@@ -87,7 +87,9 @@ function renderProductDetail(product) {
 	renderGallery(product);
 	renderSpecs(product);
 	wireAddToCart(product);
+	renderDescription(product);
 	renderSimilar(product);
+	renderRelatedNews();
 }
 
 function buildModelLine(product) {
@@ -246,15 +248,54 @@ function setupSpecToggle(rowCount) {
 	};
 }
 
-/** Hiển thị tối đa 4 sản phẩm cùng danh mục (bỏ sản phẩm đang xem). */
+/**
+ * Mô tả dựng từ dữ liệu có sẵn (tên, hãng, danh mục, thông số, tồn kho),
+ * vì bảng products chưa có cột mô tả riêng.
+ */
+function renderDescription(product) {
+	const holder = document.querySelector("#product-description");
+	if (!holder) return;
+
+	const esc = TNC.escapeHtml;
+	const brand = product.brand ? ` của thương hiệu ${esc(product.brand)}` : "";
+	const stock = Number(product.stock) || 0;
+	const highlights = (product.specs || [])
+		.slice(0, 5)
+		.map((spec) => `${esc(spec.label)}: ${esc(spec.unit ? `${spec.value} ${spec.unit}` : spec.value)}`)
+		.join("; ");
+
+	holder.innerHTML = `
+		<p><strong>${esc(product.name)}</strong> là sản phẩm thuộc danh mục ${esc(product.categoryName)}${brand}, được TNC Store phân phối chính hãng.</p>
+		${highlights ? `<p>Thông số nổi bật: ${highlights}.</p>` : ""}
+		<p>${stock > 0 ? `Hiện còn ${stock} sản phẩm trong kho, sẵn sàng giao hàng.` : "Sản phẩm tạm hết hàng, vui lòng liên hệ để được tư vấn."}</p>
+		<ul class="pd-desc-list">
+			<li>Bảo hành chính hãng theo linh kiện.</li>
+			<li>Miễn phí vận chuyển toàn quốc.</li>
+			<li>Hỗ trợ 1 đổi 1 khi có lỗi từ nhà sản xuất.</li>
+			<li>Hỗ trợ kỹ thuật trọn đời.</li>
+		</ul>
+	`;
+}
+
+/** Sản phẩm cùng danh mục; nếu không có thì lấy sản phẩm nổi bật để mục không bị trống. */
 async function renderSimilar(product) {
 	const section = document.querySelector("#similar-section");
 	const holder = document.querySelector("#similar-products");
-	if (!section || !holder || !product.category) return;
+	const title = document.querySelector("#similar-title");
+	if (!section || !holder) return;
+
+	const others = (list) => (list || []).filter((item) => item.slug !== product.slug).slice(0, 4);
 
 	try {
-		const payload = await TNC.api.products({ category: product.category, limit: 5 });
-		const items = (payload.data || []).filter((item) => item.slug !== product.slug).slice(0, 4);
+		let items = [];
+		if (product.category) {
+			const payload = await TNC.api.products({ category: product.category, limit: 5 });
+			items = others(payload.data);
+		}
+		if (items.length === 0) {
+			items = others(await TNC.api.featured(5));
+			if (title) title.textContent = "Sản phẩm nổi bật";
+		}
 		if (items.length === 0) return;
 
 		holder.innerHTML = items
@@ -262,7 +303,42 @@ async function renderSimilar(product) {
 			.join("");
 		section.hidden = false;
 	} catch {
-		// Không có sản phẩm tương tự thì bỏ qua, không ảnh hưởng trang chính.
+		// Lỗi tải sản phẩm tương tự thì bỏ qua, không ảnh hưởng trang chính.
+	}
+}
+
+/** 4 bài viết mới nhất (CSDL chưa có liên kết sản phẩm - tin tức). */
+async function renderRelatedNews() {
+	const section = document.querySelector("#news-section");
+	const holder = document.querySelector("#related-news");
+	if (!section || !holder) return;
+
+	try {
+		const posts = (await TNC.api.news({ limit: 4 })) || [];
+		if (posts.length === 0) return;
+
+		const esc = TNC.escapeHtml;
+		holder.innerHTML = posts
+			.map((post) => {
+				const url = `news-post.php?slug=${encodeURIComponent(post.slug)}`;
+				const cover = post.coverImage || "assets/img/branding/tnc.png";
+				return `
+					<div class="col-6 col-lg-3 d-flex">
+						<article class="pd-news-card w-100">
+							<a href="${url}" class="pd-news-img"><img src="${esc(cover)}" alt="${esc(post.title)}" loading="lazy" /></a>
+							<div class="pd-news-body">
+								<span class="pd-news-cat">${esc(post.category)}</span>
+								<h3><a href="${url}">${esc(post.title)}</a></h3>
+								<small>${esc(post.date)}</small>
+							</div>
+						</article>
+					</div>
+				`;
+			})
+			.join("");
+		section.hidden = false;
+	} catch {
+		// Lỗi tải tin tức thì bỏ qua.
 	}
 }
 
