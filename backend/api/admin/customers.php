@@ -5,9 +5,7 @@ require_once __DIR__ . '/../../bootstrap.php';
 require_once __DIR__ . '/../../src/Repositories/AdminCustomer.php';
 
 try {
-    if (($_SESSION['user']['role'] ?? '') !== 'admin') {
-        jsonResponse(['ok' => false, 'message' => 'Bạn không có quyền thực hiện thao tác này.'], 403);
-    }
+    requireRole(ADMIN_ROLES); // dữ liệu cá nhân của khách: chỉ quản trị viên
 
     $repository = new AdminCustomerRepository(database());
     $method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');

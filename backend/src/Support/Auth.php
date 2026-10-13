@@ -98,7 +98,7 @@ function guardAdminArea(): void
         try {
             requireRole(STAFF_ROLES);
         } catch (Throwable $exception) {
-            apiError($exception);
+            apiError($exception); // mất kết nối DB -> 503 dạng JSON thay vì lỗi trắng trang
         }
     } elseif (preg_match('#(^|/)admin(\.php|/[^/]+\.php)$#', $script)) {
         requirePageRole(STAFF_ROLES, str_contains($script, '/admin/') ? '../login.php' : 'login.php');

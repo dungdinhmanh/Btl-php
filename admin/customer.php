@@ -1,12 +1,7 @@
 <?php
 require_once __DIR__ . '/../backend/bootstrap.php';
 
-if (($_SESSION['user']['role'] ?? '') !== 'admin') {
-	header('Location: ../index.php');
-	exit;
-}
-
-$adminName = $_SESSION['user']['name'] ?? 'Administrator';
+$adminName = requirePageRole(ADMIN_ROLES, '../login.php')['name']; // dữ liệu cá nhân của khách: chỉ quản trị viên
 $adminInitials = strtoupper(substr(preg_replace('/\s+/', '', (string) $adminName), 0, 2));
 ?>
 <!doctype html>
