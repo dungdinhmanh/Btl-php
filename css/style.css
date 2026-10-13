@@ -573,13 +573,12 @@ body .btn-link:hover {
 .header-actions {
 	display: flex;
 	align-items: center;
-	margin-left: 64px;
+	margin-left: 30px;
 }
 
 .header-action {
 	display: inline-flex;
 	align-items: center;
-	gap: 9px;
 	color: #FFFFFF;
 	font-size: 0.85rem;
 	font-weight: 600;
@@ -588,11 +587,15 @@ body .btn-link:hover {
 	white-space: nowrap;
 }
 .header-actions > .header-action {
-	gap: 5px;
-	padding: 0 20px;
 	font-size: 14px;
+	padding: 0 20px;
 }
-
+.header-actions > a {
+	border-right: solid 2px #ccc;
+}
+.header-action > span {
+	margin-left: 5px;
+}
 .header-button {
 	border: 0;
 	background: transparent;

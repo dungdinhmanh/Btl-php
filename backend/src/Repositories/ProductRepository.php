@@ -252,8 +252,8 @@ final class ProductRepository
         ?string $category,
         ?string $brand,
         array $categories,
-        string $price = '',
-        string $socket = '',
+        ?string $price = null,
+        ?string $socket = null,
     ): array {
         $where = ['p.product_status = :status'];
         $params = [':status' => 'active'];
