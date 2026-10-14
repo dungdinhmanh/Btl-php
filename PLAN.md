@@ -45,6 +45,8 @@ mariadb --defaults-extra-file=/tmp/tnc-mysql.cnf -e 'SELECT ...'
 > `/usr/bin/mysql` trên máy này thực ra là **client MariaDB** → nó **từ chối `ssl-mode`** của MySQL 8.
 > Phải dùng `ssl-ca=` + `ssl-verify-server-cert=1`.
 > Nhớ `shred -u /tmp/tnc-mysql.cnf` sau khi dùng xong (file có mật khẩu).
+>
+> ⚠️ **Nếu máy bạn là Windows thì phần này KHÁC — đọc mục 8 trước.**
 
 ### Số liệu DB tại 2026-10-14
 | Bảng | Số dòng | Ghi chú |
@@ -217,3 +219,96 @@ mariadb --defaults-extra-file=/tmp/tnc-mysql.cnf -e \
 2. Reset đánh giá import (mục 4.1) — làm cùng lúc với #1.
 3. Chuẩn hoá `model` (4.5) — nhanh.
 4. Bộ thông số các danh mục (4.3 + 4.4) — nặng nhất, cần xin phép trước.
+
+---
+
+## 8. Nếu máy khác chạy **Windows**
+
+Mục 2 và mục 6 ở trên viết cho Linux. Trên Windows, **các điểm sau khác** — đọc hết trước khi làm.
+
+### 8.1 Cách an toàn nhất để kiểm tra DB: bỏ qua CLI, dùng PHP luôn
+Trên Windows rất dễ gặp **client Oracle MySQL** (hiểu `ssl-mode`) hoặc **client MariaDB** (không hiểu).
+Thay vì đoán, dùng chính `database()` mà app đang dùng — nó đã cấu hình TLS đúng rồi:
+
+```powershell
+php -r "require 'backend/bootstrap.php'; var_dump(database()->query('SELECT COUNT(*) FROM products')->fetchColumn());"
+```
+
+Nếu vẫn muốn dùng CLI thì kiểm tra trước:
+
+```powershell
+mysql --version        # nếu ghi 'MariaDB' -> dùng ssl-ca + ssl-verify-server-cert
+                       # nếu ghi 'MySQL'   -> dùng ssl-mode=VERIFY_CA
+```
+
+File cấu hình tạm đặt ở `%TEMP%\tnc-mysql.cnf` (thay cho `/tmp/tnc-mysql.cnf`):
+
+```ini
+[client]
+host=<DB_HOST trong backend/config/.env>
+port=<DB_PORT>
+user=<DB_USERNAME>
+password=<DB_PASSWORD>
+ssl-ca=<đường dẫn backend\config\ca.pem>
+ssl-verify-server-cert=1
+```
+
+> `backend/config/database.php` **đã xử lý được đường dẫn Windows** (`C:\...`) và đường dẫn tương đối
+> (tự ghép với `backend/config/`), nên không cần sửa gì trong code.
+
+Xoá file sau khi dùng (Windows không có `shred`): `Remove-Item $env:TEMP\tnc-mysql.cnf`
+
+### 8.2 Đừng quên `git config core.autocrlf`
+Repo dùng **LF**. Nếu máy Windows để `core.autocrlf=true` (mặc định của Git for Windows), mọi file sẽ bị đổi
+LF → CRLF và `git diff` sẽ **báo sửa toàn bộ repo** dù không sửa gì.
+
+```powershell
+git config core.autocrlf input      # hoặc false
+git status --short                  # phải sạch; nếu hiện hàng trăm file M thì xử lý ngay
+```
+
+### 8.3 Lệnh kiểm tra (tương đương mục 6)
+
+```powershell
+# php -l toàn bộ, chỉ in file lỗi
+Get-ChildItem -Recurse -Filter *.php | ForEach-Object {
+  $o = php -l $_.FullName
+  if ($o -notmatch 'No syntax errors') { $o }
+}
+
+# node --check
+Get-ChildItem js, admin/js -Filter *.js | ForEach-Object { node --check $_.FullName }
+
+# cân bằng ngoặc CSS
+Get-ChildItem css -Filter *.css | ForEach-Object {
+  $t = Get-Content $_.FullName -Raw
+  $o = ([regex]::Matches($t, '\{')).Count
+  $c = ([regex]::Matches($t, '\}')).Count
+  if ($o -ne $c) { "LECH $($_.Name): {=$o }=$c" }
+}
+
+# chạy web
+php -S 127.0.0.1:8080 -t .
+```
+
+`rg`, `php`, `node` phải có trên `PATH`. Nếu chưa có `rg`: `winget install BurntSushi.ripgrep.MSVC`.
+
+### 8.4 OPcache — cạm bẫy y hệt, không phải chỉ Linux
+`php -S` chạy SAPI **cli-server**, bị chi phối bởi `opcache.enable` (KHÔNG phải `enable_cli`).
+Sửa file PHP xong web vẫn trả bản cũ tới ~3 phút → **khởi động lại `php -S`** sau mỗi lần sửa PHP.
+
+```powershell
+php -i | Select-String -Pattern 'opcache' | Select-Object -First 8
+```
+
+### 8.5 Những thứ KHÔNG cần làm gì khác
+- Cú pháp PHP/JS/CSS/SQL trong dự án **không có gì riêng cho Linux**.
+- `schema.sql`, `apply.php`, `sync_tncstore_stats.php` chạy y nhau trên Windows.
+- Thư mục `backend/database/migrations/` **đã bị xoá** — đừng tạo lại.
+
+### 8.6 Cần để ý khi sửa file
+- File dùng **tab** để indent. Đừng để formatter tự đổi sang space.
+- Giữ **LF**. Nếu editor tự thêm CRLF thì `git diff` sẽ nhiễu toàn bộ file.
+- Script tạm ở mục 2 và 6 (`mk-tnc-cnf.php`, `comment-count2.py`) **không nằm trong repo** —
+  chúng nằm ở `/tmp` của máy Linux. Trên Windows cứ viết lại theo mô tả trong tài liệu này,
+  hoặc bỏ qua và dùng PHP/PDO như mục 8.1.
