@@ -11,7 +11,7 @@ sort($brandingImages, SORT_NATURAL | SORT_FLAG_CASE);
 $brandScrollDuration = max(30, count($brandingImages) * 3);
 
 $homeColumns = [
-	['heading' => 'TNC Channel', 'more' => 'news.php?category=tnc-channel', 'play' => true, 'category' => 'tnc-channel', 'posts' => []],
+	['heading' => 'TNC Channel', 'more' => 'news.php?category=tin-tuc-video', 'play' => true, 'category' => 'tin-tuc-video', 'posts' => []],
 	['heading' => 'Tin tức', 'more' => 'news.php', 'play' => false, 'category' => null, 'posts' => []],
 ];
 
