@@ -82,6 +82,23 @@ CREATE TABLE categories (
 ) ENGINE=InnoDB;
 CREATE INDEX ix_categories_parent ON categories (parent_category_id);
 
+-- Danh mục CHA, dùng cho breadcrumb 3 cấp như tncstore.vn.
+-- Tên và quan hệ cha-con lấy từ breadcrumb thật trên tncstore.vn (đã đọc #breadcrumb của
+-- nhiều trang sản phẩm, xem PLAN.md mục 5.10). Đặt category_id = 101.. để không đụng id
+-- của 10 danh mục lá đã có sẵn. Danh mục lá không có mặt trong schema.sql vì chúng
+-- được nạp từ tncstore.vn, xem backend/database/link_category_parents.php.
+--
+-- CHỈ 2 cha, không phải 3:
+--   - `linh-kien-may-tinh` cha của cpu, mainboard, ram, hdd, case, psu, ssd
+--   - `gaming-gears`      cha của phu-kien
+-- `vga` và `display` CỐ TÌNH không có cha. `vga`: bằng chứng tncstore cho breadcrumb 2 cấp.
+-- `display`: trang gốc tách màn hình theo brand ("Màn Hình LG"), ta gộp một danh mục lá
+-- tên "Màn hình máy tính" — gắn cha "Màn Hình Máy Tính" sẽ ra hai tên trùng nghĩa.
+-- Chủ dự án chốt bỏ cha, xem PLAN.md mục 5.10.
+INSERT INTO categories (category_id, category_name, category_slug) VALUES
+  (101, 'Linh kiện máy tính', 'linh-kien-may-tinh'),
+  (102, 'Gaming Gears', 'gaming-gears');
+
 CREATE TABLE products (
   product_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   brand_id INT UNSIGNED NULL,

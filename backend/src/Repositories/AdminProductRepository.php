@@ -52,12 +52,28 @@ final class AdminProductRepository
         }, $statement->fetchAll());
     }
 
+    /**
+     * Chỉ trả về danh mục LÁ — tức là danh mục KHÔNG CÓ danh mục con nào.
+     *
+     * Từ 2026-10 bảng `categories` có thêm 3 dòng danh mục CHA dùng cho breadcrumb
+     * 3 cấp của tncstore.vn ("Linh kiện máy tính", "Màn Hình Máy Tính", "Gaming Gears").
+     * Danh mục cha không được gán cho sản phẩm — chúng chỉ là cấp giữa của breadcrumb.
+     * Xem PLAN.md mục 5.10.
+     *
+     * LƯU Ý: đừng lọc bằng `parent_category_id IS NULL`, điều đó giữ lại chính các danh
+     * mục cha vì chúng cũng là top-level. Đã đo: bộ lọc sai đó làm dropdown chỉ còn 4 mục
+     * (3 cha + `vga`) thay vì 10 danh mục lá.
+     */
     public function categories(): array
     {
         $statement = $this->db->query(
-            'SELECT category_id AS id, category_name AS name, category_slug AS slug
-             FROM categories
-             ORDER BY category_name ASC',
+            'SELECT parent.category_id AS id, parent.category_name AS name, parent.category_slug AS slug
+             FROM categories parent
+             WHERE NOT EXISTS (
+                 SELECT 1 FROM categories child
+                 WHERE child.parent_category_id = parent.category_id
+             )
+             ORDER BY parent.category_name ASC',
         );
 
         return array_map(static fn (array $row): array => [
