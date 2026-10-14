@@ -55,6 +55,21 @@ CREATE TABLE brands (
   CONSTRAINT uq_brands_slug UNIQUE (brand_slug)
 ) ENGINE=InnoDB;
 
+-- Ảnh logo thương hiệu, dùng ở trang chi tiết sản phẩm (tncstore hiện logo 50x32).
+-- File nằm trong assets/img/branding/ của chính dự án này, không hotlink.
+-- Brand chưa có ảnh thì KHÔNG có dòng trong bảng này — giao diện tự lùi về hiện tên brand.
+CREATE TABLE brand_images (
+  brand_id INT UNSIGNED NOT NULL,
+  brand_image_path VARCHAR(500) NOT NULL,
+  brand_image_width SMALLINT UNSIGNED NOT NULL DEFAULT 50,
+  brand_image_height SMALLINT UNSIGNED NOT NULL DEFAULT 32,
+  brand_image_source VARCHAR(500) NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (brand_id),
+  CONSTRAINT fk_brand_images_brand FOREIGN KEY (brand_id) REFERENCES brands (brand_id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 CREATE TABLE categories (
   category_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   parent_category_id INT UNSIGNED NULL,
