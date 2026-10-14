@@ -204,23 +204,6 @@ function renderCheckoutPage() {
 }
 
 document.addEventListener("click", (event) => {
-	const addButton = event.target.closest(".product-item .js-quick-add, .idea-product button");
-	if (addButton) {
-		const card = addButton.closest(".product-item, .idea-product");
-		if (!card) return;
-
-		event.preventDefault();
-		event.stopPropagation();
-
-		addToCart(getProductFromCard(card));
-		const originalText = addButton.innerHTML;
-		addButton.innerHTML = '<i class="bi bi-check2"></i>';
-		setTimeout(() => {
-			addButton.innerHTML = originalText;
-		}, 1200);
-		return;
-	}
-
 	const actionButton = event.target.closest("[data-cart-action]");
 	if (!actionButton) return;
 

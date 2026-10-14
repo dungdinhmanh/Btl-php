@@ -41,6 +41,37 @@ const TNC = (() => {
 		return payload;
 	}
 
+	/**
+	 * Ghi dữ liệu (POST/PUT/DELETE) với JSON body.
+	 * `request` chỉ dùng GET nên các API ghi dùng đường này.
+	 */
+	async function send(path, method, payload = {}) {
+		const url = new URL(`${base}/${path}`, window.location.href);
+		const response = await fetch(url, {
+			method,
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(payload),
+		});
+
+		let data = null;
+		try {
+			data = await response.json();
+		} catch {
+			data = null;
+		}
+
+		if (!response.ok || !data || data.ok !== true) {
+			const error = new Error(data?.message || `Không lưu được dữ liệu (HTTP ${response.status}).`);
+			error.status = response.status;
+			throw error;
+		}
+
+		return data;
+	}
+
 	const api = {
 		meta: () => request("meta.php").then((payload) => payload.data),
 		featured: (limit = 4) =>
@@ -52,6 +83,11 @@ const TNC = (() => {
 			request("products.php", { categories: slugs.join(","), perCategory }).then(
 				(payload) => payload.data,
 			),
+		reviews: (product) => request("reviews.php", { product }).then((payload) => payload.data),
+		createReview: (payload) => send("reviews.php", "POST", payload),
+		replyReview: (payload) => send("reviews.php", "POST", payload),
+		updateReview: (payload) => send("reviews.php", "PUT", payload),
+		deleteReview: (payload) => send("reviews.php", "DELETE", payload),
 		news: (params = {}) => request("news.php", params).then((payload) => payload.data),
 		newsCategories: () =>
 			request("news.php", { categories: 1 }).then((payload) => payload.data),
@@ -66,8 +102,16 @@ const TNC = (() => {
 	const starClass = (rating) =>
 		`star${Math.max(0, Math.min(5, Math.round(Number(rating) || 0)))}`;
 
-	function productCard(product, options = {}) {
-		const { tag = "Chính hãng", showAddToCart = true } = options;
+	/**
+ * Thẻ sản phẩm — template DUY NHẤT, mọi thẻ trên mọi trang đều từ đây.
+ * DOM sao chép từ tncstore.vn. Hai điểm phải giữ nguyên, đã đo trên trang gốc:
+ * - `<del class="old-price">` LUÔN được render, kể cả rỗng. Trang gốc reserve cứng
+ *   `height: 20px` cho hàng này nên thiếu nó làm card thấp hơn 20px và lệch nhau.
+ * - `.product-name` có `height: 38px` cố định (2 dòng) nên tên 1 hay 2 dòng đều bằng nhau.
+ * Thẻ không có nút thêm vào giỏ — trang gốc cũng không có.
+ */
+function productCard(product, options = {}) {
+		const { tag = "Chính hãng" } = options;
 
 		const name = escapeHtml(product.name);
 		const url = detailUrl(product);
@@ -92,13 +136,6 @@ const TNC = (() => {
 					<img class="lazy" src="${escapeHtml(product.image)}" alt="${name}" loading="lazy">
 					${tag ? `<span class="box-sale">${escapeHtml(tag)}</span>` : ""}
 					<span class="p-icon-holder"></span>
-					${
-						showAddToCart
-							? `<button class="js-quick-add" type="button" aria-label="Thêm ${name} vào giỏ">
-									<i class="bi bi-cart-plus" aria-hidden="true"></i>
-								</button>`
-							: ""
-					}
 				</a>
 
 				<div class="product-info">
@@ -114,7 +151,7 @@ const TNC = (() => {
 					}
 
 					<div class="main-price">
-						${hasDiscount ? `<del class="old-price">${escapeHtml(oldPriceNumber)}<u>đ</u></del>` : ""}
+						<del class="old-price">${hasDiscount ? `${escapeHtml(oldPriceNumber)}<u>đ</u>` : ""}</del>
 						<div class="d-flex align-items">
 							<b class="price">${priceLabel}</b>
 							${
