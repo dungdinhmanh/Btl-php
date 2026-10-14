@@ -1,5 +1,8 @@
 /**
- * Product detail page: renders one product fetched from the products endpoint.
+ * Trang chi tiết sản phẩm: dựng khối trên (ảnh · thông tin · cột phải) và
+ * khối dưới (trái = đánh giá do js/reviews.js lo, phải = thông số).
+ *
+ * DOM và class bám theo tncstore.vn — đừng đổi tên id/class ở đây.
  */
 
 const TNC_CATEGORY_ICONS = {
@@ -23,9 +26,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 		return;
 	}
 
-	const specBody = document.querySelector("#spec-table tbody");
-	if (specBody) specBody.innerHTML = TNC.loadingRow(2, "Đang tải thông số...");
-
 	try {
 		renderProductDetail(await TNC.api.product(identifier));
 	} catch (error) {
@@ -40,62 +40,121 @@ function showProductError(message) {
 	const priceEl = document.querySelector("#product-price");
 	if (priceEl) priceEl.textContent = "---";
 
-	const specBody = document.querySelector("#spec-table tbody");
+	const specBody = document.querySelector("#content-specifications");
 	if (specBody) {
-		specBody.innerHTML = `<tr><td colspan="2">${TNC.escapeHtml(message)}</td></tr>`;
+		specBody.innerHTML = `<table><tbody><tr><td class="att-name">Lỗi</td><td class="att-value">${TNC.escapeHtml(message)}</td></tr></tbody></table>`;
 	}
 }
 
+/**
+ * Breadcrumb 3 cấp như tncstore.vn: Trang chủ › danh mục cha › danh mục lá,
+ * không có tên sản phẩm. Danh mục cha chỉ có với 8 danh mục lá thuộc 2 nhóm,
+ * `vga` và `display` không có cha nên breadcrumb rút còn 2 cấp — đúng như trang gốc.
+ * Bằng chứng và đối chiếu CSS: PLAN.md mục 5.10.
+ */
+function renderBreadcrumb(product) {
+	const list = document.querySelector("#breadcrumb-list");
+	if (!list) return;
+
+	const home = `
+		<li class="home">
+			<a href="index.php" class="nopad-l">
+				<span><i class="bi bi-house" aria-hidden="true"></i> Trang chủ</span>
+			</a>
+			<i class="bi bi-chevron-right" aria-hidden="true"></i>
+		</li>`;
+
+	const crumb = (name, slug) => `
+		<li>
+			<a href="products.php?category=${encodeURIComponent(slug)}"><span>${TNC.escapeHtml(name)}</span></a>
+			<i class="bi bi-chevron-right" aria-hidden="true"></i>
+		</li>`;
+
+	const parent = product.parentCategory
+		? crumb(product.parentCategoryName, product.parentCategory)
+		: "";
+	const leaf = product.category ? crumb(product.categoryName, product.category) : "";
+
+	list.innerHTML = home + parent + leaf;
+}
+
 function renderProductDetail(product) {
+	// js/reviews.js cần id sản phẩm để gọi API đánh giá.
+	window.__tncProduct = product;
+	document.dispatchEvent(new CustomEvent("tnc:product-loaded", { detail: { product } }));
+
 	const title = document.querySelector("#page-title");
 	if (title) title.textContent = `${product.name} | TNC Store`;
 
-	const breadcrumb = document.querySelector("#breadcrumb-product-name");
-	if (breadcrumb) breadcrumb.textContent = product.name;
-
-	const brandEl = document.querySelector("#product-brand");
-	if (brandEl) {
-		brandEl.textContent = product.brand || product.categoryName;
-	}
+	renderBreadcrumb(product);
 
 	const skuEl = document.querySelector("#product-sku");
-	if (skuEl) skuEl.textContent = product.slug;
+	if (skuEl) skuEl.textContent = product.sku || product.slug;
 
 	const nameEl = document.querySelector("#product-name");
 	if (nameEl) nameEl.textContent = product.name;
 
-	const modelEl = document.querySelector("#product-model");
-	if (modelEl) modelEl.textContent = buildModelLine(product);
-
-	const priceEl = document.querySelector("#product-price");
-	if (priceEl) priceEl.textContent = product.priceText;
-
-	// Giá gốc + % giảm: chỉ hiện khi backend trả thêm trường oldPrice (lớn hơn price).
-	const oldPriceEl = document.querySelector("#product-old-price");
-	const discountEl = document.querySelector("#product-discount");
-	const oldPrice = Number(product.oldPrice) || 0;
-	const price = Number(product.price) || 0;
-	if (oldPriceEl && discountEl && oldPrice > price && price > 0) {
-		oldPriceEl.textContent = TNC.formatPrice(oldPrice);
-		discountEl.textContent = `-${Math.round((1 - price / oldPrice) * 100)}%`;
-		oldPriceEl.hidden = false;
-		discountEl.hidden = false;
-	}
-
+	renderBrand(product);
 	renderStock(product);
-	renderHighlights(product);
 	renderGallery(product);
+	renderProductSummary(product);
+	renderDescription(product);
+	renderPrice(product);
 	renderSpecs(product);
-	wireAddToCart(product);
+	wireQuantity();
+	wireBuyButtons(product);
 	renderSimilar(product);
 }
 
-function buildModelLine(product) {
-	const parts = [];
-	if (product.socket) parts.push(`Socket: ${product.socket}`);
-	product.specs.slice(0, 2).forEach((spec) => parts.push(`${spec.label}: ${spec.value}`));
+function renderBrand(product) {
+	const link = document.querySelector("#product-brand-link");
+	const logo = document.querySelector("#product-brand-logo");
+	const name = document.querySelector("#product-brand-name");
 
-	return parts.join(" · ");
+	// Ưu tiên logo trong bảng brand_images; thiếu thì lùi về tên brand.
+	if (product.brandImage && logo && link) {
+		logo.src = product.brandImage;
+		logo.alt = product.brand || "";
+		link.href = `products.php?brand=${encodeURIComponent(product.brand || "")}`;
+		link.hidden = false;
+		if (name) name.hidden = true;
+		return;
+	}
+
+	if (name && product.brand) {
+		name.textContent = product.brand;
+		name.hidden = false;
+	}
+	if (link) link.hidden = true;
+}
+
+/** DB chưa có cột mô tả nên luôn rơi vào trạng thái rỗng, markup lấy từ tncstore.vn. */
+function renderDescription(product) {
+	const content = document.querySelector("#content-desciption");
+	const more = document.querySelector("#desc-more");
+	const html = typeof product.description === "string" ? product.description.trim() : "";
+
+	if (html !== "") {
+		content.innerHTML = html;
+		content.hidden = false;
+		more.hidden = false;
+		more.onclick = () => content.classList.toggle("active");
+		return;
+	}
+
+	content.hidden = true;
+	content.innerHTML = "";
+	if (more) {
+		more.hidden = true;
+		more.onclick = null;
+	}
+
+	const existing = document.querySelector(".box-desciption .alert-mess");
+	if (existing) existing.remove();
+	const notice = document.createElement("h2");
+	notice.className = "alert-mess";
+	notice.textContent = "Mô tả sản phẩm đang được cập nhật";
+	document.querySelector(".box-desciption")?.appendChild(notice);
 }
 
 function renderStock(product) {
@@ -103,46 +162,13 @@ function renderStock(product) {
 	if (!holder) return;
 
 	const stock = Number(product.stock) || 0;
-	holder.className = `product-stock ${stock > 0 ? "is-in" : "is-out"}`;
 	holder.textContent = stock > 0 ? `Còn hàng (${stock})` : "Hết hàng";
-}
-
-function renderHighlights(product) {
-	const box = document.querySelector("#product-highlights");
-	const list = document.querySelector("#highlight-list");
-	const toggle = document.querySelector("#highlight-toggle");
-	if (!box || !list) return;
-
-	const specs = product.specs || [];
-	if (specs.length === 0) {
-		box.hidden = true;
-		return;
-	}
-
-	const VISIBLE = 5;
-	list.innerHTML = specs
-		.map((spec, index) => {
-			const value = spec.unit ? `${spec.value} ${spec.unit}` : spec.value;
-			const extra = index >= VISIBLE ? " is-extra" : "";
-			return `<li class="${extra.trim()}"><span class="lbl">${TNC.escapeHtml(spec.label)}</span> ${TNC.escapeHtml(value)}</li>`;
-		})
-		.join("");
-	box.hidden = false;
-
-	if (!toggle) return;
-	const hasMore = specs.length > VISIBLE;
-	toggle.hidden = !hasMore;
-	list.classList.toggle("is-collapsed", hasMore);
-	toggle.textContent = "Xem thêm";
-	toggle.onclick = () => {
-		const collapsed = list.classList.toggle("is-collapsed");
-		toggle.textContent = collapsed ? "Xem thêm" : "Thu gọn";
-	};
+	holder.style.color = stock > 0 ? "#28a745" : "var(--color-red)";
 }
 
 function renderGallery(product) {
 	const mainImg = document.querySelector("#main-product-img");
-	const thumbsContainer = document.querySelector("#gallery-thumbs");
+	const thumbs = document.querySelector("#sync2");
 	const images = product.images?.length ? product.images : [product.image];
 
 	if (mainImg) {
@@ -150,101 +176,176 @@ function renderGallery(product) {
 		mainImg.alt = product.name;
 	}
 
-	thumbsContainer?.querySelectorAll(".product-thumb").forEach((thumb) => {
-		thumb.replaceWith(thumb.cloneNode(true));
-	});
+	if (!thumbs) return;
 
-	if (thumbsContainer) {
-		thumbsContainer.innerHTML = images
-			.map(
-				(imgSrc, index) => `
-					<img
-						src="${TNC.escapeHtml(imgSrc)}"
-						alt="${TNC.escapeHtml(product.name)} ${index + 1}"
-						class="product-thumb ${index === 0 ? "active" : ""}"
-						data-img-src="${TNC.escapeHtml(imgSrc)}"
-					/>
-				`,
-			)
-			.join("");
-
-		thumbsContainer.querySelectorAll(".product-thumb").forEach((thumb) => {
-			const switchImg = () => {
-				thumbsContainer
-					.querySelectorAll(".product-thumb")
-					.forEach((other) => other.classList.remove("active"));
-				thumb.classList.add("active");
-				if (mainImg) mainImg.src = thumb.dataset.imgSrc;
-			};
-			thumb.addEventListener("click", switchImg);
-			thumb.addEventListener("mouseenter", switchImg);
-		});
-	}
-
-	const zoomContainer = mainImg?.closest(".product-image-zoom");
-	if (mainImg && zoomContainer && !zoomContainer.dataset.zoomReady) {
-		zoomContainer.dataset.zoomReady = "true";
-		zoomContainer.addEventListener("mouseenter", () => {
-			mainImg.style.transform = "scale(2)";
-		});
-		zoomContainer.addEventListener("mousemove", (event) => {
-			const bounds = zoomContainer.getBoundingClientRect();
-			const x = ((event.clientX - bounds.left) / bounds.width) * 100;
-			const y = ((event.clientY - bounds.top) / bounds.height) * 100;
-			mainImg.style.transformOrigin = `${x}% ${y}%`;
-		});
-		zoomContainer.addEventListener("mouseleave", () => {
-			mainImg.style.transform = "";
-			mainImg.style.transformOrigin = "center center";
-		});
-	}
-}
-
-function renderSpecs(product) {
-	const specBody = document.querySelector("#spec-table tbody");
-	if (!specBody) return;
-
-	const rows = [{ label: "Hãng sản xuất", value: product.brand || "Đang cập nhật" }];
-	if (product.model) rows.push({ label: "Model", value: product.model });
-	if (product.socket) rows.push({ label: "Chuẩn Socket", value: product.socket });
-	product.specs.forEach((spec) =>
-		rows.push({ label: spec.label, value: spec.unit ? `${spec.value} ${spec.unit}` : spec.value }),
-	);
-	rows.push({ label: "Bảo hành", value: "36 Tháng" });
-
-	specBody.innerHTML = rows
+	thumbs.innerHTML = images
 		.map(
-			(row) => `
-				<tr>
-					<th>${TNC.escapeHtml(row.label)}</th>
-					<td>${TNC.escapeHtml(row.value)}</td>
-				</tr>
+			(src, index) => `
+				<a href="${TNC.escapeHtml(src)}" class="item${index === 0 ? " active" : ""}" data-img="${TNC.escapeHtml(src)}">
+					<img src="${TNC.escapeHtml(src)}" alt="${TNC.escapeHtml(product.name)} ${index + 1}" />
+				</a>
 			`,
 		)
 		.join("");
 
-	setupSpecToggle(rows.length);
+	thumbs.querySelectorAll(".item").forEach((thumb) => {
+		const switchImage = () => {
+			thumbs.querySelectorAll(".item").forEach((other) => other.classList.remove("active"));
+			thumb.classList.add("active");
+			if (mainImg) mainImg.src = thumb.dataset.img;
+		};
+		thumb.addEventListener("click", (event) => {
+			event.preventDefault();
+			switchImage();
+		});
+		thumb.addEventListener("mouseenter", switchImage);
+	});
 }
 
-function setupSpecToggle(rowCount) {
-	const wrap = document.querySelector("#spec-wrap");
-	const button = document.querySelector("#spec-toggle");
-	if (!wrap || !button) return;
+/** Tóm tắt thông số dạng gạch đầu dòng: 6 dòng đầu hiện, còn lại ẩn sau "Xem thêm".
+ *  Tên có tiền tố "Product" để không đụng `renderSummary` trong js/reviews.js. */
+function renderProductSummary(product) {
+	const list = document.querySelector("#show_summary");
+	const toggle = document.querySelector("#summary-toggle");
+	if (!list) return;
 
-	const collapsible = rowCount > 8;
-	wrap.classList.toggle("is-collapsed", collapsible);
-	button.hidden = !collapsible;
-	button.textContent = "Xem thêm thông số";
+	const items = [];
+	if (product.brand) items.push(`Hãng sản xuất: ${product.brand}`);
+	if (product.model) items.push(`Model: ${product.model}`);
+	if (product.socket) items.push(`Socket: ${product.socket}`);
+	(product.specs || []).forEach((spec) => {
+		items.push(`${spec.label}: ${spec.unit ? `${spec.value} ${spec.unit}` : spec.value}`);
+	});
 
-	button.onclick = () => {
-		const collapsed = wrap.classList.toggle("is-collapsed");
-		button.textContent = collapsed ? "Xem thêm thông số" : "Thu gọn";
+	if (items.length === 0) {
+		list.innerHTML = "";
+		if (toggle) toggle.hidden = true;
+		return;
+	}
+
+	const VISIBLE = 6;
+	list.innerHTML = items
+		.map((text, index) => `<li class="item${index >= VISIBLE ? " hide" : ""}"><p>${TNC.escapeHtml(text)}</p></li>`)
+		.join("");
+
+	if (!toggle) return;
+	toggle.hidden = items.length <= VISIBLE;
+	toggle.textContent = "Xem thêm";
+	toggle.onclick = () => {
+		const collapsed = list.querySelectorAll("li.hide").length > 0;
+		list.querySelectorAll("li.hide").forEach((li) => li.classList.toggle("hide", !collapsed));
+		toggle.textContent = collapsed ? "Thu gọn" : "Xem thêm";
 	};
+}
+
+function renderPrice(product) {
+	const priceEl = document.querySelector("#product-price");
+	if (priceEl) priceEl.textContent = product.priceText;
+
+	const oldPriceEl = document.querySelector("#product-old-price");
+	const discountEl = document.querySelector("#product-discount");
+	const oldPrice = Number(product.listPrice) || 0;
+	const price = Number(product.price) || 0;
+
+	if (oldPriceEl && discountEl && oldPrice > price && price > 0) {
+		oldPriceEl.textContent = TNC.formatPrice(oldPrice);
+		discountEl.textContent = `-${Math.round((1 - price / oldPrice) * 100)}%`;
+		oldPriceEl.hidden = false;
+		discountEl.hidden = false;
+	}
+}
+
+/** Bảng thông số: Hãng → Model → Socket → specs → Bảo hành (giữ thứ tự như cũ). */
+function renderSpecs(product) {
+	const holder = document.querySelector("#content-specifications");
+	const toggle = document.querySelector("#spec-toggle");
+	if (!holder) return;
+
+	const rows = [{ label: "Hãng sản xuất", value: product.brand || "Đang cập nhật" }];
+	if (product.model) rows.push({ label: "Model", value: product.model });
+	if (product.socket) rows.push({ label: "Chuẩn Socket", value: product.socket });
+	(product.specs || []).forEach((spec) =>
+		rows.push({ label: spec.label, value: spec.unit ? `${spec.value} ${spec.unit}` : spec.value }),
+	);
+	rows.push({ label: "Bảo hành", value: "36 Tháng" });
+
+	holder.innerHTML = `
+		<table>
+			<tbody>
+				${rows
+					.map(
+						(row) => `
+						<tr>
+							<th class="att-name">${TNC.escapeHtml(row.label)}</th>
+							<td class="att-value">${TNC.escapeHtml(row.value)}</td>
+						</tr>
+					`,
+					)
+					.join("")}
+			</tbody>
+		</table>
+	`;
+
+	if (!toggle) return;
+	toggle.hidden = rows.length <= 8;
+	toggle.onclick = () => {
+		const collapsed = !holder.classList.contains("active");
+		holder.classList.toggle("active", collapsed);
+	};
+}
+
+function wireQuantity() {
+	const input = document.querySelector("#js-buy-quantity");
+	if (!input) return;
+
+	document.querySelectorAll(".unit-detail-amount-control a").forEach((button) => {
+		button.addEventListener("click", (event) => {
+			event.preventDefault();
+			const step = Number(button.dataset.value);
+			const next = (parseInt(input.value, 10) || 1) + step;
+			input.value = String(Math.max(1, next));
+		});
+	});
+
+	input.addEventListener("change", () => {
+		input.value = String(Math.max(1, parseInt(input.value, 10) || 1));
+	});
+}
+
+function quantity() {
+	return Math.max(1, parseInt(document.querySelector("#js-buy-quantity")?.value, 10) || 1);
+}
+
+function cartPayload(product) {
+	return {
+		productId: Number(product.id),
+		id: product.slug,
+		name: product.name,
+		brand: product.brand || "TNC STORE",
+		price: product.price,
+		image: product.image,
+		icon: `bi ${TNC_CATEGORY_ICONS[product.category] || "bi-box-seam"}`,
+		quantity: quantity(),
+	};
+}
+
+/** Trang gốc không có nút "Thêm vào giỏ" ở trang chi tiết, chỉ "Mua Ngay" + "Nhận tư vấn". */
+function wireBuyButtons(product) {
+	const buyBtn = document.querySelector("#js-buyNow");
+	if (!buyBtn) return;
+
+	buyBtn.addEventListener("click", (event) => {
+		event.preventDefault();
+		if (typeof addToCart === "function") {
+			addToCart(cartPayload(product));
+		}
+		window.location.href = "checkout.php";
+	});
 }
 
 async function renderSimilar(product) {
 	const section = document.querySelector("#similar-section");
-	const holder = document.querySelector("#similar-products");
+	const holder = document.querySelector("#js-product-similar");
 	if (!section || !holder || !product.category) return;
 
 	try {
@@ -253,41 +354,16 @@ async function renderSimilar(product) {
 		if (items.length === 0) return;
 
 		holder.innerHTML = items
-			.map((item) => TNC.productCard(item))
+			.map(
+				(item) => `
+					<div class="col-6 col-md-3">
+						${TNC.productCard(item)}
+					</div>
+				`,
+			)
 			.join("");
 		section.hidden = false;
 	} catch {
-		// Không có sản phẩm tương tự thì bỏ qua, không ảnh hưởng trang chính.
+		// Không có sản phẩm tương tự thì bỏ qua, không ảnh hưởng phần chính.
 	}
-}
-
-function wireAddToCart(product) {
-	const button = document.querySelector("#btn-add-to-cart");
-	if (!button) return;
-
-	button.onclick = () => {
-		const qtyInput = document.querySelector("#product-qty");
-		const quantity = Math.max(1, parseInt(qtyInput?.value, 10) || 1);
-
-		if (typeof addToCart === "function") {
-			addToCart({
-				productId: Number(product.id),
-				id: product.slug,
-				name: product.name,
-				brand: product.brand || "TNC STORE",
-				price: product.price,
-				image: product.image,
-				icon: `bi ${TNC_CATEGORY_ICONS[product.category] || "bi-box-seam"}`,
-				quantity,
-			});
-		}
-
-		const originalHtml = button.innerHTML;
-		button.innerHTML = '<i class="bi bi-check2"></i> Đã thêm vào giỏ';
-		button.classList.add("is-added");
-		setTimeout(() => {
-			button.innerHTML = originalHtml;
-			button.classList.remove("is-added");
-		}, 1500);
-	};
 }

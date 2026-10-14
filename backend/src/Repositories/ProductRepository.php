@@ -10,15 +10,21 @@ final class ProductRepository
         'name-asc' => 'p.product_name ASC',
     ];
 
-    private const LIST_SELECT = 'SELECT p.product_id AS id, p.product_slug AS slug, p.product_name AS name,
-                b.brand_name AS brand, c.category_slug AS category, c.category_name AS categoryName,
+    private const LIST_SELECT = 'SELECT p.product_id AS id, p.product_slug AS slug, p.sku AS sku,
+                p.product_name AS name,
+                b.brand_name AS brand, b.brand_slug AS brandSlug,
+                bi.brand_image_path AS brandImage,
+                c.category_slug AS category, c.category_name AS categoryName,
+                pc.category_slug AS parentCategory, pc.category_name AS parentCategoryName,
                 p.unit_price AS price, p.list_price AS listPrice, p.rating_avg AS ratingAvg,
                 p.review_count AS reviewCount, image.image_path AS image, p.socket AS socket,
                 p.model AS model, p.is_featured AS isFeatured';
 
     private const LIST_FROM = 'FROM products p
                 LEFT JOIN brands b ON b.brand_id = p.brand_id
+                LEFT JOIN brand_images bi ON bi.brand_id = b.brand_id
                 INNER JOIN categories c ON c.category_id = p.category_id
+                LEFT JOIN categories pc ON pc.category_id = c.parent_category_id
                 LEFT JOIN product_images image ON image.product_id = p.product_id AND image.display_order = 1';
 
     public function __construct(private readonly PDO $db) {}
@@ -265,8 +271,16 @@ final class ProductRepository
             }
             $where[] = 'c.category_slug IN (' . implode(', ', $placeholders) . ')';
         } elseif ($category !== null && $category !== '') {
-            $where[] = 'c.category_slug = :category';
+            // Nhánh đơn: nhận cả slug danh mục LÁ lẫn slug danh mục CHA. Hai tên
+            // placeholder riêng vì MySQL native prepare không cho tái sử dụng.
+            $where[] = '(c.category_slug = :category
+                OR c.parent_category_id IN (
+                    SELECT parent_lookup.category_id
+                    FROM categories parent_lookup
+                    WHERE parent_lookup.category_slug = :categoryParent
+                ))';
             $params[':category'] = $category;
+            $params[':categoryParent'] = $category;
         }
 
         if ($brand !== null && $brand !== '') {
@@ -359,10 +373,17 @@ final class ProductRepository
         return [
             'id' => (int) $row['id'],
             'slug' => (string) $row['slug'],
+            'sku' => (string) $row['sku'],
             'name' => (string) $row['name'],
             'brand' => $row['brand'] !== null ? (string) $row['brand'] : null,
+            'brandImage' => $row['brandImage'] !== null ? (string) $row['brandImage'] : null,
             'category' => (string) $row['category'],
             'categoryName' => (string) $row['categoryName'],
+            // Danh mục CHA cho breadcrumb 3 cấp; null khi danh mục lá không có cha.
+            'parentCategory' => $row['parentCategory'] !== null ? (string) $row['parentCategory'] : null,
+            'parentCategoryName' => $row['parentCategoryName'] !== null
+                ? (string) $row['parentCategoryName']
+                : null,
             'price' => $price,
             'priceText' => $price > 0 ? number_format($price, 0, ',', '.') . ' đ' : 'Liên hệ',
             'listPrice' => $listPrice,
