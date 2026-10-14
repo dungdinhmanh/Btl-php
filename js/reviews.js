@@ -3,13 +3,7 @@
  *
  * DOM và class sao chép nguyên văn từ tncstore.vn (#review, #show-form,
  * .box-form-review-reply, .item-user-review, .box-list-reply) — đừng đổi tên class.
- * Sprite: .icon-star (dải 5 sao nhỏ) cho phần hiển thị, .sprite-star (1 sao lớn)
- * cho ô chọn sao trong modal.
- *
- * Quy tắc đã chốt với chủ dự án:
- * - Khách vãng lai đánh giá được, không cần đăng nhập; bắt buộc họ tên + số điện thoại.
- * - Tài khoản đã đăng nhập chỉ được đánh giá gốc 1 lần trên mỗi sản phẩm (chặn ở API).
- * - Trả lời đệ quy: mỗi bình luận có nút "Phản hồi", trả lời được tiếp vào trả lời.
+ * Quy tắc nghiệp vụ và cách chống trùng đánh giá: backend/README.md mục 4.4.
  */
 
 const REVIEW_STARS = [1, 2, 3, 4, 5];

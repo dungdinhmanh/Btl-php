@@ -3,9 +3,7 @@ declare(strict_types=1);
 
 /**
  * Phân quyền dùng chung. Vai trò (roles.role_code): customer, staff, admin.
- *
- * $_SESSION['user'] chỉ là bản ghi nhớ lúc đăng nhập, nên mỗi lần kiểm tra quyền đều hỏi lại DB:
- * tài khoản bị khóa hoặc bị hạ quyền sẽ mất quyền ngay, không phải chờ hết phiên đăng nhập.
+ * Mỗi lần kiểm tra quyền đều hỏi lại DB, nên tài khoản bị khóa mất quyền ngay.
  */
 const STAFF_ROLES = ['staff', 'admin'];
 const ADMIN_ROLES = ['admin'];
@@ -85,10 +83,9 @@ function requirePageRole(array $roles, string $loginUrl = 'login.php'): array
 }
 
 /**
- * Mặc định từ chối cho khu vực quản trị: mọi trang trong admin/, admin.php và mọi API trong
- * backend/api/admin/ đều bắt buộc nhân viên/quản trị, kể cả file mới thêm sau này mà quên gọi
- * requirePageRole()/requireRole(). Được gọi một lần ở cuối bootstrap.php.
- * (Các file vẫn nên tự gọi guard để lấy thông tin người dùng hoặc siết quyền chặt hơn, ví dụ DELETE sản phẩm.)
+ * Mặc định từ chối cho khu vực quản trị: mọi trang trong admin/, admin.php và mọi API
+ * trong backend/api/admin/ đều bắt buộc nhân viên/quản trị, kể cả file thêm sau này mà
+ * quên gọi requirePageRole()/requireRole().
  */
 function guardAdminArea(): void
 {

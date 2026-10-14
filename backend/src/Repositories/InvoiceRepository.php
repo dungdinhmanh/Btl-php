@@ -2,11 +2,10 @@
 declare(strict_types=1);
 
 /**
- * Hóa đơn được dựng trực tiếp từ đơn hàng (orders + order_items + order_addresses),
+ * Hóa đơn dựng trực tiếp từ đơn hàng (orders + order_items + order_addresses),
  * không có bảng invoices riêng nên không thể lệch với đơn hàng.
- *
- * Đơn giá lấy từ order_items.unit_price (đã chụp lại lúc đặt hàng) nên đổi giá sản phẩm
- * sau này không làm đổi hóa đơn cũ. Tên và SKU sản phẩm thì lấy từ bảng products hiện tại.
+ * Đơn giá lấy từ order_items.unit_price (chụp lúc đặt hàng) nên đổi giá sản phẩm
+ * sau này không làm đổi hóa đơn cũ.
  */
 final class InvoiceRepository
 {

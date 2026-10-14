@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 /**
  * Tính lại products.rating_avg / review_count từ bảng product_reviews.
- *
- * products lưu sẵn điểm trung bình để thẻ sản phẩm chỉ cần SELECT một bảng.
  * Bình thường ReviewRepository tự cập nhật trong cùng transaction với thao tác ghi,
  * nên script này chỉ cần chạy khi nghi ngờ hai bên lệch nhau.
  *

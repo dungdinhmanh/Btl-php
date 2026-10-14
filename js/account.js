@@ -1,11 +1,7 @@
 /**
  * Tài khoản: đăng nhập / đăng ký / quên mật khẩu (jQuery 4).
- *
- * Một logic dùng cho hai nơi:
- *   1. Panel thả xuống ở header:   [data-account-panel] > [data-account-form="login|register|forgot-password"]
- *   2. Trang riêng:                form[data-auth-form="login|register|forgot-password"]
- *
- * Mỗi "root" chứa các input có thuộc tính name và một phần tử .auth-note để hiện thông báo.
+ * Một logic dùng cho hai nơi: panel thả xuống ở header `[data-account-panel]` và
+ * trang riêng `form[data-auth-form]`. Mỗi root có input name + .auth-note.
  * Cần nạp jQuery (partial/link.php) trước file này.
  */
 (function ($) {

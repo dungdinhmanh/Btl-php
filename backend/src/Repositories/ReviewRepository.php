@@ -1,28 +1,12 @@
 <?php
 declare(strict_types=1);
 
-/**
- * Đánh giá sản phẩm: đánh giá gốc (có rating) và trả lời (không rating) để thành cây.
- *
- * Quy tắc đã chốt với chủ dự án:
- * - Khách vãng lai đánh giá được, không cần đăng nhập; bắt buộc có họ tên + số điện thoại.
- * - Chỉ chặn trùng khi đã đăng nhập: 1 tài khoản 1 đánh giá gốc trên mỗi sản phẩm
- *   (uq_reviews_one_per_user trên (product_id, root_user_id); user_id NULL thì MySQL
- *   coi mỗi NULL là 1 giá trị khác nhau nên khách vãng lai không bị chặn).
- * - Trả lời: khách trả lời được trong nhánh của mình (đúng họ tên + số điện thoại),
- *   admin/staff trả lời được mọi nhánh và được gắn cờ is_staff.
- *
- * products.rating_avg / review_count được cập nhật trong CÙNG transaction với thao tác
- * ghi để thẻ sản phẩm (chỉ SELECT trên products) không bao giờ đọc số lệch.
- * Đã đo trên chính DB này: AVG() trên tập rỗng trả NULL, nên phải COALESCE về 0
- * vì rating_avg là NOT NULL; PDO trả NEWDECIMAL dưới dạng string nên cast (float).
- */
+/** Đánh giá gốc (có rating) và trả lời (không rating) dựng thành cây. */
 final class ReviewRepository
 {
     private const MAX_NAME = 150;
     private const MAX_PHONE = 25;
     private const MAX_CONTENT = 2000;
-    /** Chặn vòng lặp khi dựng cây trong PHP nếu dữ liệu bị hỏng. */
     private const MAX_DEPTH = 12;
 
     public function __construct(private readonly PDO $db) {}
@@ -85,8 +69,6 @@ final class ReviewRepository
     }
 
     /**
-     * Tạo đánh giá gốc. Khách vãng lai không cần đăng nhập.
-     *
      * @throws InvalidArgumentException khi dữ liệu sai hoặc tài khoản đã đánh giá sản phẩm này
      */
     public function create(
@@ -134,8 +116,6 @@ final class ReviewRepository
     }
 
     /**
-     * Trả lời một bình luận bất kỳ trong cây (đệ quy được).
-     *
      * @param bool $isStaff nhân viên/quản trị được trả lời mọi nhánh
      * @throws InvalidArgumentException khi không có quyền trả lời nhánh đó
      */
@@ -185,7 +165,6 @@ final class ReviewRepository
         return $reviewId;
     }
 
-    /** Sửa nội dung đánh giá của chính mình (hoặc staff sửa bất kỳ bình luận nào). */
     public function updateContent(int $reviewId, string $content, ?int $userId, bool $isStaff): void
     {
         $content = trim($content);
@@ -215,7 +194,6 @@ final class ReviewRepository
         }
     }
 
-    /** Xoá đánh giá. Xoá đánh giá gốc sẽ kéo theo toàn bộ nhánh trả lời (FK ON DELETE CASCADE). */
     public function delete(int $reviewId, ?int $userId, bool $isStaff): void
     {
         $node = $this->findNode($reviewId);
@@ -238,7 +216,6 @@ final class ReviewRepository
         }
     }
 
-    /** Ẩn/hiện đánh giá (dành cho quản trị). Điểm trung bình được tính lại. */
     public function setStatus(int $reviewId, string $status): void
     {
         if (!in_array($status, ['published', 'hidden'], true)) {
@@ -262,10 +239,7 @@ final class ReviewRepository
         }
     }
 
-    /**
-     * Tính lại rating_avg/review_count cho một sản phẩm.
-     * Phải nằm trong transaction của thao tác ghi đang chạy.
-     */
+    /** Phải nằm trong transaction của thao tác ghi đang chạy. */
     public function refreshProductRating(int $productId): void
     {
         $statement = $this->db->prepare(
@@ -287,7 +261,6 @@ final class ReviewRepository
         $statement->execute([':id' => $productId]);
     }
 
-    /** Tính lại toàn bộ catalog — dùng khi nghi ngờ số liệu bị lệch. */
     public function refreshAllProducts(): int
     {
         $statement = $this->db->prepare(
@@ -310,9 +283,6 @@ final class ReviewRepository
     }
 
     /**
-     * Dựng cây từ danh sách phẳng. Bản ghi mồ côi (cha bị ẩn/xoá) được gắn lên gốc
-     * để không mất nội dung khỏi màn hình.
-     *
      * @param array<int, array<string, mixed>> $rows
      * @return array<int, array<string, mixed>>
      */
@@ -388,7 +358,7 @@ final class ReviewRepository
         return $node;
     }
 
-    /** Lấy một nút kèm review_id gốc của nhánh, để kiểm tra quyền trả lời. */
+    /** Kèm review_id gốc của nhánh, dùng kiểm tra quyền trả lời. */
     private function findNode(int $reviewId): ?array
     {
         $statement = $this->db->prepare(
@@ -443,10 +413,6 @@ final class ReviewRepository
         return $id === false ? null : (int) $id;
     }
 
-    /**
-     * Khách được trả lời trong nhánh của chính mình: đúng tên + số điện thoại với đánh giá gốc,
-     * hoặc đang đăng nhập bằng chính tài khoản đã viết đánh giá gốc đó.
-     */
     private function ownsThread(?int $rootId, string $name, string $phone, ?int $userId): bool
     {
         if ($rootId === null) {

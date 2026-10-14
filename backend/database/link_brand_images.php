@@ -2,16 +2,8 @@
 declare(strict_types=1);
 
 /**
- * Nối brand với ảnh logo: kiểm tra assets/img/branding/ rồi ghi vào bảng brand_images.
- *
- * KHÔNG đoán. Mỗi dòng chỉ được ghi khi:
- *   1. brand_slug có trong bảng `brands`,
- *   2. tồn tại đúng một file ảnh trong assets/img/branding/ khớp slug đó,
- *   3. file đó là PNG/JPG/WebP hợp lệ (đọc được kích thước thật).
- * Brand không có file thì BỎ QUA, không ghi dòng — giao diện sẽ tự hiện tên brand.
- *
- * Tên file trong branding/ đã được đặt sẵn theo brand_slug (đã đối chiếu:
- * lianli.png ↔ lian-li, coolermaster.png ↔ cooler-master, humanmotion.jpg ↔ human-motion).
+ * Nối brand với ảnh logo trong assets/img/branding/ rồi ghi vào bảng brand_images.
+ * Brand không có file thì BỎ QUA, không ghi dòng — giao diện tự hiện tên brand.
  *
  * Usage: php backend/database/link_brand_images.php [--dry-run] [--check]
  *        --dry-run  chỉ báo cáo, không ghi DB
@@ -30,13 +22,7 @@ const BRAND_IMAGE_DIR = 'assets/img/branding';
 const LOGO_WIDTH = 50;
 const LOGO_HEIGHT = 32;
 
-/**
- * brand_slug KHÔNG khớp tên file trong branding/. Mỗi cặp đã được ĐỐI CHIẾU BẰNG MẮT
- * với ảnh thật trong repo, không suy đoán từ tên file:
- *   lianli.png       -> đọc ảnh: logo "LIAN LI"
- *   coolermaster.png -> đọc ảnh: logo "COOLER MASTER"
- *   humanmotion.jpg  -> đọc ảnh: chữ "Humanmotion"
- */
+/** brand_slug KHÔNG khớp tên file trong branding/ — mỗi cặp đã đối chiếu với ảnh thật. */
 const LOGO_FILE_OVERRIDE = [
     'lian-li' => 'lianli',
     'cooler-master' => 'coolermaster',

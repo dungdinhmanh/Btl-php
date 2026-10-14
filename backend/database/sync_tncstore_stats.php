@@ -3,10 +3,7 @@ declare(strict_types=1);
 
 /**
  * Nạp giá niệm yết từ tncstore.vn vào products.
- *
- * CHỈ đồng bộ list_price. Không ghi rating_avg/review_count nữa: từ khi có bảng
- * product_reviews, điểm đó do ReviewRepository tính trong cùng transaction với thao tác
- * đánh giá. Ghi đè ở đây sẽ xoá mất đánh giá thật của khách.
+ * CHỈ đồng bộ list_price — không ghi rating_avg/review_count, xem backend/README.md mục 4.4.
  *
  * Usage: php backend/database/sync_tncstore_stats.php [--limit=20] [--category=cpu]
  *        [--delay=250] [--dry-run] [--refresh]

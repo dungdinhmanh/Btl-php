@@ -3,27 +3,7 @@ declare(strict_types=1);
 
 /**
  * Gắn danh mục lá vào danh mục CHA để breadcrumb có 3 cấp như tncstore.vn.
- *
- * Ánh xạ lấy từ breadcrumb THẬT trên tncstore.vn — đã đọc `#breadcrumb` của nhiều trang
- * sản phẩm (mỗi danh mục lấy 2 sản phẩm khác nhau), không suy đoán:
- *
- *   /cpu-intel-core-i9-14900kf-tray.html      → Trang chủ › Linh kiện máy tính › CPU - Bộ vi xử lý
- *   /bo-mach-chu-gigabyte-x870-...html        → Trang chủ › Linh kiện máy tính › Mainboard - Bo mạch chủ
- *   /ram-teamgroup-vulcan-16gb-...html        → Trang chủ › Linh kiện máy tính › RAM - Bộ nhớ trong
- *   /o-cung-hdd-western-digital-blue-4tb...   → Trang chủ › Linh kiện máy tính › Ổ cứng HDD
- *   /vo-case-lian-li-o11-...html              → Trang chủ › Linh kiện máy tính › Case - Vỏ máy tính
- *   /nguon-may-tinh-asus-rog-thor-...html     → Trang chủ › Linh kiện máy tính › PSU - Nguồn máy tính
- *   /o-cung-ssd-kioxia-exceria-plus-g4...     → Trang chủ › Linh kiện máy tính › Ổ cứng SSD
- *   /man-hinh-gaming-lg-24g411b-b.html        → Trang chủ › Màn Hình Máy Tính › Màn Hình LG
- *   /ban-phim-gaming-asus-m705-...html        → Trang chủ › Gaming Gears › Bàn Phím Cơ
- *
- * `vga` KHÔNG có danh mục cha: bằng chứng
- *   /card-man-hinh-asus-dual-radeon-rx-9050-8gb-oc-edition.html
- *     → Trang chủ › VGA - Card màn hình   (chỉ 2 cấp)
- * nên "VGA - Card màn hình" nằm ngay dưới Trang chủ, giống hệt "Ổ cứng HDD" về cấp.
- *
- * Script chạy lại được nhiều lần (idempotent): chỉ thêm danh mục cha nếu thiếu,
- * chỉ gán parent_category_id nếu khác giá trị hiện tại.
+ * Idempotent. Ánh xạ cha và bằng chứng đọc breadcrumb trang gốc: PLAN.md mục 5.10.
  *
  * Usage: php backend/database/link_category_parents.php [--dry-run] [--unlink]
  */
@@ -35,16 +15,7 @@ if (PHP_SAPI !== 'cli') {
     exit;
 }
 
-/**
- * Danh mục CHA => các slug danh mục lá thuộc về nó.
- *
- * `display` CỐ TÌNH không có cha. Lý do: tncstore.vn để các danh mục màn hình theo
- * BRAND ("Màn Hình LG", "Màn Hình VSP") — cấp lá của trang gốc không phải "màn hình".
- * Ta gộp hết vào một danh mục lá tên "Màn hình máy tính", gắn cha "Màn Hình Máy Tính"
- * vào sẽ ra breadcrumb "Màn Hình Máy Tính › Màn hình máy tính" — hai tên trùng nghĩa.
- * Bỏ cha thì ra 2 cấp, đúng cấu trúc như `vga` (xem bằng chứng ở trên).
- * Chủ dự án chốt ngày 2026-10-15. Xem PLAN.md mục 5.10.
- */
+/** Danh mục CHA => các slug danh mục lá thuộc về nó. `vga` và `display` cố ý không có cha. */
 const PARENTS = [
     'linh-kien-may-tinh' => ['cpu', 'mainboard', 'ram', 'hdd', 'case', 'psu', 'ssd'],
     'gaming-gears' => ['phu-kien'],
@@ -73,8 +44,7 @@ if ($unlink) {
     exit(0);
 }
 
-// Danh mục cha đã bị bỏ khỏi PARENTS (vì danh mục lá của nó được chốt là không có cha)
-// thì gỡ liên kết rồi xoá hẳn khỏi DB — không để lại dòng rác không ai dùng tới.
+// Gỡ liên kết rồi xoá hẳn danh mục cha đã bị bỏ khỏi PARENTS.
 $delete = $database->prepare('DELETE FROM categories WHERE category_slug = ?');
 foreach (ORPHAN_PARENTS as $orphanSlug) {
     if (!isset($existing[$orphanSlug])) {
