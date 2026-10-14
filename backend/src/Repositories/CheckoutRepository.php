@@ -5,10 +5,6 @@ final class CheckoutRepository
 {
     public function __construct(private readonly PDO $db) {}
 
-    /**
-     * @param array{name: string, phone: string, address: string, city: string} $customer
-     * @param array<int, array{product_id: int, quantity: int}> $items
-     */
     public function createOrder(array $customer, array $items, ?int $userId): string
     {
         $quantities = [];

@@ -15,7 +15,6 @@ if (PHP_SAPI !== 'cli') {
     exit;
 }
 
-/** @return array<string, string> */
 function parseOptions(array $argv): array
 {
     $options = [
@@ -72,9 +71,6 @@ function fetchPage(string $url): ?string
     return $status === 200 ? $body : null;
 }
 
-/**
- * @return array{rating: float, reviews: int, listPrice: float|null, percent: int}|null
- */
 function extractStats(string $html): ?array
 {
     $rating = 0.0;

@@ -75,6 +75,7 @@ CREATE TABLE products (
   product_slug VARCHAR(180) NOT NULL,
   product_name VARCHAR(255) NOT NULL,
   socket VARCHAR(80) NULL,
+  model VARCHAR(80) NULL,
   unit_price DECIMAL(15,2) NOT NULL,
   list_price DECIMAL(15,2) NULL,
   rating_avg DECIMAL(2,1) NOT NULL DEFAULT 0.0,

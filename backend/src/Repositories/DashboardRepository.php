@@ -5,7 +5,6 @@ final class DashboardRepository
 {
     public function __construct(private readonly PDO $db) {}
 
-    /** @return array{revenueThisMonth: float, ordersThisMonth: int, ordersTotal: int, customersThisMonth: int, customersTotal: int, activeProducts: int, lowStockCount: int} */
     public function stats(): array
     {
         $revenue = (float) $this->db->query(

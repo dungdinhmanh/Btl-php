@@ -6,9 +6,6 @@ final class AdminProductRepository
 {
     public function __construct(private readonly PDO $db) {}
 
-    /**
-     * @return array<int, array<string, mixed>>
-     */
     public function list(): array
     {
         $statement = $this->db->query(
@@ -55,9 +52,6 @@ final class AdminProductRepository
         }, $statement->fetchAll());
     }
 
-    /**
-     * @return array<int, array<string, mixed>>
-     */
     public function categories(): array
     {
         $statement = $this->db->query(
@@ -73,9 +67,6 @@ final class AdminProductRepository
         ], $statement->fetchAll());
     }
 
-    /**
-     * @return array<int, array<string, mixed>>
-     */
     public function brands(): array
     {
         $statement = $this->db->query(
@@ -91,9 +82,6 @@ final class AdminProductRepository
         ], $statement->fetchAll());
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
     public function create(array $payload): int
     {
         $prepared = $this->normalize($payload);
@@ -131,9 +119,6 @@ final class AdminProductRepository
         return $productId;
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
     public function update(int $productId, array $payload): void
     {
         $prepared = $this->normalize($payload, $productId);
@@ -181,10 +166,6 @@ final class AdminProductRepository
         $statement->execute([':id' => $productId]);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     * @return array<string, mixed>
-     */
     private function normalize(array $payload, ?int $productId = null): array
     {
         $name = trim((string) ($payload['name'] ?? ''));

@@ -113,7 +113,6 @@ final class NewsRepository
         return $this->presentMany($statement->fetchAll());
     }
 
-    /** @param array<int, array<string, mixed>> $rows */
     private function presentMany(array $rows): array
     {
         return array_map(function (array $row): array {
@@ -124,9 +123,6 @@ final class NewsRepository
         }, $rows);
     }
 
-    /**
-     * @param array<string, mixed> $row
-     */
     private function presentOne(array $row): array
     {
         $publishedAt = $row['publishedAt'] !== null ? (string) $row['publishedAt'] : null;

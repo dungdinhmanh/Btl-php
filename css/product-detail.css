@@ -6,7 +6,6 @@
 	--pd-line: #e5e7eb;
 }
 
-/* Khung chính: gallery trái, thông tin phải */
 .pd-wrapper {
 	display: grid;
 	grid-template-columns: 400px minmax(0, 1fr) 300px;
@@ -19,7 +18,6 @@
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-/* Gallery */
 .pd-gallery {
 	display: flex;
 	flex-direction: column;
@@ -61,7 +59,6 @@
 	box-shadow: 0 0 5px rgba(230, 0, 18, 0.3);
 }
 
-/* Thông tin bên phải */
 .pd-info {
 	min-width: 0;
 }
@@ -116,7 +113,6 @@
 	color: var(--pd-red);
 }
 
-/* Cấu hình nổi bật dạng gạch đầu dòng */
 .pd-brand-line {
 	margin-bottom: 6px;
 }
@@ -158,7 +154,6 @@
 	display: none;
 }
 
-/* Giá (một dòng: giá bán, giá gốc, % giảm) */
 .pd-price-row {
 	display: flex;
 	flex-wrap: wrap;
@@ -193,7 +188,6 @@
 	color: #555;
 }
 
-/* Cột phải: khuyến mãi */
 .pd-aside {
 	min-width: 0;
 }
@@ -234,7 +228,6 @@
 	color: #f59e0b;
 }
 
-/* Số lượng */
 .pd-qty {
 	display: flex;
 	align-items: center;
@@ -249,7 +242,6 @@
 	border-radius: 6px;
 }
 
-/* Nút hành động */
 .pd-btn-row {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
@@ -303,7 +295,6 @@
 	opacity: 0.85;
 }
 
-/* Tabs */
 .pd-tabs-card {
 	margin-bottom: 40px;
 	padding: 25px;
@@ -346,7 +337,6 @@
 	color: #444;
 }
 
-/* Thông số thu gọn / xem thêm */
 .pd-spec-wrap.is-collapsed {
 	position: relative;
 	max-height: 340px;
@@ -377,7 +367,6 @@
 	display: none;
 }
 
-/* Sản phẩm tương tự */
 .pd-similar {
 	margin-bottom: 40px;
 }

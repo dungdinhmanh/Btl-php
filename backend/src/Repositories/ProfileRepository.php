@@ -105,7 +105,6 @@ final class ProfileRepository
         return $statement->rowCount() > 0;
     }
 
-    /** @return array{total: int, processing: int, spent: float} */
     public function stats(int $userId): array
     {
         $statement = $this->db->prepare(

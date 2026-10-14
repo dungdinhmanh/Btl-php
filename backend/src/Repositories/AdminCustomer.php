@@ -5,9 +5,6 @@ final class AdminCustomerRepository
 {
     public function __construct(private readonly PDO $db) {}
 
-    /**
-        * @return array{total: int, active: int, disabled: int, deleted: int, newThisMonth: int}
-     */
     public function stats(): array
     {
         $statement = $this->db->query(
@@ -31,9 +28,6 @@ final class AdminCustomerRepository
         ];
     }
 
-    /**
-     * @return array{items: array<int, array<string, mixed>>, total: int, page: int, perPage: int}
-     */
     public function list(
         string $search = '',
         string $status = 'all',
@@ -111,7 +105,6 @@ final class AdminCustomerRepository
         return ['items' => $items, 'total' => $total, 'page' => $page, 'perPage' => $perPage];
     }
 
-    /** @return array<string, mixed>|null */
     public function detail(int $userId): ?array
     {
         $statement = $this->db->prepare(

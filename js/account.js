@@ -58,7 +58,6 @@
 			$wrap.addClass("error").find(".note-error").text(message);
 			return;
 		}
-		// trang riêng (Bootstrap)
 		$input.addClass("is-invalid").next(".invalid-feedback").remove();
 		$("<div>").addClass("invalid-feedback").text(message).insertAfter($input);
 	}
@@ -168,7 +167,6 @@
 			});
 	}
 
-	/* ---------- Panel thả xuống ở header ---------- */
 
 	const $panel = $("[data-account-panel]");
 
@@ -194,13 +192,11 @@
 
 	$(function () {
 		$(document)
-			// mở / đóng panel
 			.on("click", "[data-account-toggle]", function (event) {
 				event.preventDefault();
 				if ($panel.is(":visible")) return closePanel();
 				showForm($panel.find(".content-login.active").data("accountForm") || "login");
 			})
-			// chuyển giữa đăng nhập / đăng ký / quên mật khẩu
 			.on("click", "[data-account-form-link]", function (event) {
 				event.preventDefault();
 				showForm($(this).data("accountFormLink"));
@@ -209,7 +205,6 @@
 				event.preventDefault();
 				closePanel();
 			})
-			// bấm ra ngoài thì đóng
 			.on("click", function (event) {
 				if (!$(event.target).closest("[data-account-panel], [data-account-toggle]").length) {
 					closePanel();
@@ -218,7 +213,6 @@
 			.on("keydown", function (event) {
 				if (event.key === "Escape") closePanel();
 			})
-			// gửi form trong panel
 			.on("click", "[data-account-panel] .btn-submit", function (event) {
 				event.preventDefault();
 				submit($(this).closest("[data-account-form]"));
@@ -228,12 +222,10 @@
 				event.preventDefault();
 				submit($(this).closest("[data-account-form]"));
 			})
-			// gửi form ở trang riêng
 			.on("submit", "form[data-auth-form]", function (event) {
 				event.preventDefault();
 				submit($(this));
 			})
-			// gõ lại thì xóa lỗi của ô đó
 			.on("input", "[data-account-form] :input[name], form[data-auth-form] :input[name]", function () {
 				clearFieldError($(this));
 			});

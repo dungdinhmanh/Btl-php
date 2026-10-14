@@ -107,7 +107,6 @@ function renderStock(product) {
 	holder.textContent = stock > 0 ? `Còn hàng (${stock})` : "Hết hàng";
 }
 
-/** Danh sách cấu hình dạng gạch đầu dòng: hiện 5 dòng đầu, bấm "Xem thêm" để mở hết. */
 function renderHighlights(product) {
 	const box = document.querySelector("#product-highlights");
 	const list = document.querySelector("#highlight-list");
@@ -205,10 +204,8 @@ function renderSpecs(product) {
 	const specBody = document.querySelector("#spec-table tbody");
 	if (!specBody) return;
 
-	const rows = [
-		{ label: "Hãng sản xuất", value: product.brand || "Đang cập nhật" },
-		{ label: "Danh mục", value: product.categoryName },
-	];
+	const rows = [{ label: "Hãng sản xuất", value: product.brand || "Đang cập nhật" }];
+	if (product.model) rows.push({ label: "Model", value: product.model });
 	if (product.socket) rows.push({ label: "Chuẩn Socket", value: product.socket });
 	product.specs.forEach((spec) =>
 		rows.push({ label: spec.label, value: spec.unit ? `${spec.value} ${spec.unit}` : spec.value }),
@@ -229,7 +226,6 @@ function renderSpecs(product) {
 	setupSpecToggle(rows.length);
 }
 
-/** Thu gọn bảng thông số khi dài hơn 8 dòng, bấm nút để xem đầy đủ. */
 function setupSpecToggle(rowCount) {
 	const wrap = document.querySelector("#spec-wrap");
 	const button = document.querySelector("#spec-toggle");
@@ -246,7 +242,6 @@ function setupSpecToggle(rowCount) {
 	};
 }
 
-/** Hiển thị tối đa 4 sản phẩm cùng danh mục (bỏ sản phẩm đang xem). */
 async function renderSimilar(product) {
 	const section = document.querySelector("#similar-section");
 	const holder = document.querySelector("#similar-products");

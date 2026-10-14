@@ -43,7 +43,6 @@ function newsMeta(array $post): string
         . '<time datetime="' . e($post['publishedAtIso']) . '">' . e($post['date']) . '</time></div>';
 }
 
-/** Large card (left column). */
 function newsFeatureCard(array $post): string
 {
     $url = e(newsPostUrl($post));
@@ -57,7 +56,6 @@ function newsFeatureCard(array $post): string
         . '</div></article>';
 }
 
-/** Small row with thumbnail (right column). */
 function newsListItem(array $post): string
 {
     $url = e(newsPostUrl($post));
@@ -68,7 +66,6 @@ function newsListItem(array $post): string
         . '</article>';
 }
 
-/** Card for the 3-column grid. */
 function newsGridCard(array $post): string
 {
     $url = e(newsPostUrl($post));
@@ -80,7 +77,6 @@ function newsGridCard(array $post): string
         . '<p>' . e($post['excerpt']) . '</p></div></article>';
 }
 
-/** One row of the right-hand "Tin liên quan" list: thumbnail, title, summary, date, views. */
 function newsRelatedItem(array $post): string
 {
     $url = e(newsPostUrl($post));

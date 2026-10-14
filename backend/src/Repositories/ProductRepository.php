@@ -14,7 +14,7 @@ final class ProductRepository
                 b.brand_name AS brand, c.category_slug AS category, c.category_name AS categoryName,
                 p.unit_price AS price, p.list_price AS listPrice, p.rating_avg AS ratingAvg,
                 p.review_count AS reviewCount, image.image_path AS image, p.socket AS socket,
-                p.is_featured AS isFeatured';
+                p.model AS model, p.is_featured AS isFeatured';
 
     private const LIST_FROM = 'FROM products p
                 LEFT JOIN brands b ON b.brand_id = p.brand_id
@@ -244,10 +244,6 @@ final class ProductRepository
         ));
     }
 
-    /**
-     * @param string[] $categories
-     * @return array{0: string[], 1: array<string, string|int>}
-     */
     private function buildFilters(
         string $query,
         ?string $category,
@@ -322,7 +318,6 @@ final class ProductRepository
         return is_string($slug) ? $slug : '';
     }
 
-    /** @return string[] */
     private function imagesFor(int $productId): array
     {
         $statement = $this->db->prepare(
@@ -346,13 +341,11 @@ final class ProductRepository
         return (int) $statement->fetchColumn();
     }
 
-    /** @param array<int, array<string, mixed>> $rows */
     private function presentMany(array $rows): array
     {
         return array_map(fn (array $row): array => $this->presentOne($row), $rows);
     }
 
-    /** @param array<string, mixed> $row */
     private function presentOne(array $row): array
     {
         $price = (float) $row['price'];
@@ -382,6 +375,7 @@ final class ProductRepository
             'reviewCount' => $reviewCount,
             'image' => $row['image'] !== null ? (string) $row['image'] : 'assets/img/branding/tnc.png',
             'socket' => $row['socket'] !== null ? (string) $row['socket'] : null,
+            'model' => $row['model'] !== null ? (string) $row['model'] : null,
             'isFeatured' => (bool) ($row['isFeatured'] ?? false),
         ];
     }

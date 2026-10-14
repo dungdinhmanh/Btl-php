@@ -6,9 +6,6 @@ final class AdminOrderRepository
 {
     public function __construct(private readonly PDO $db) {}
 
-    /**
-     * @return array<int, array<string, mixed>>
-     */
     public function list(): array
     {
         $statement = $this->db->query(
@@ -46,9 +43,6 @@ final class AdminOrderRepository
         }, $statement->fetchAll());
     }
 
-    /**
-     * @return array<int, array<string, string>>
-     */
     public function statuses(): array
     {
         $statement = $this->db->query(
