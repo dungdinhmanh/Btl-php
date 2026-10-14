@@ -94,7 +94,7 @@ Example:
 ```env
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=tnc_store
+DB_DATABASE=tnc-db
 DB_USERNAME=root
 DB_PASSWORD=
 ```

@@ -1,8 +1,8 @@
 
-CREATE DATABASE IF NOT EXISTS tnc_store
+CREATE DATABASE IF NOT EXISTS `tnc-db`
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
-USE tnc_store;
+USE `tnc-db`;
 
 CREATE TABLE roles (
   role_id TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
