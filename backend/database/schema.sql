@@ -76,6 +76,9 @@ CREATE TABLE products (
   product_name VARCHAR(255) NOT NULL,
   socket VARCHAR(80) NULL,
   unit_price DECIMAL(15,2) NOT NULL,
+  list_price DECIMAL(15,2) NULL,
+  rating_avg DECIMAL(2,1) NOT NULL DEFAULT 0.0,
+  review_count INT UNSIGNED NOT NULL DEFAULT 0,
   product_status ENUM('draft', 'active', 'archived') NOT NULL DEFAULT 'draft',
   is_featured BOOLEAN NOT NULL DEFAULT FALSE,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -85,7 +88,9 @@ CREATE TABLE products (
   CONSTRAINT fk_products_brand FOREIGN KEY (brand_id) REFERENCES brands (brand_id) ON DELETE SET NULL,
   CONSTRAINT fk_products_category FOREIGN KEY (category_id) REFERENCES categories (category_id),
   CONSTRAINT chk_products_name CHECK (CHAR_LENGTH(TRIM(product_name)) >= 1),
-  CONSTRAINT chk_products_price CHECK (unit_price >= 0)
+  CONSTRAINT chk_products_price CHECK (unit_price >= 0),
+  CONSTRAINT chk_products_list_price CHECK (list_price IS NULL OR list_price >= unit_price),
+  CONSTRAINT chk_products_rating CHECK (rating_avg >= 0 AND rating_avg <= 5)
 ) ENGINE=InnoDB;
 CREATE INDEX ix_products_catalog ON products (product_status, is_featured, created_at);
 CREATE INDEX ix_products_category ON products (category_id);

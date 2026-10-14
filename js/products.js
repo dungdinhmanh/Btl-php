@@ -292,12 +292,7 @@ async function loadCategoryFeatured() {
         </button>
 
         <div class="category-featured-grid" id="cpu-carousel-track">
-            ${items.map((product) =>
-                TNC.productCard(product, {
-                    columnClass: " col-3",
-                    imageHeight: 160,
-                })
-            ).join("")}
+            ${items.map((product) => TNC.productCard(product)).join("")}
         </div>
 
         <button type="button" class="category-carousel-btn next"

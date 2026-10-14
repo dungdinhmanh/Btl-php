@@ -148,8 +148,12 @@ $adminInitials = strtoupper(substr(preg_replace('/\s+/', '', (string) $adminName
 								</select>
 							</div>
 							<div class="col-md-4">
-								<label class="form-label">Giá (đ)</label>
+								<label class="form-label">Giá bán (đ)</label>
 								<input type="number" min="0" step="1000" class="form-control" name="unit_price" required />
+							</div>
+							<div class="col-md-4">
+								<label class="form-label">Giá niệm yết (đ)</label>
+								<input type="number" min="0" step="1000" class="form-control" name="list_price" placeholder="Bỏ trống nếu không giảm giá" />
 							</div>
 							<div class="col-md-4">
 								<label class="form-label">Tồn kho</label>
@@ -162,6 +166,14 @@ $adminInitials = strtoupper(substr(preg_replace('/\s+/', '', (string) $adminName
 									<option value="active" selected>Đang bán</option>
 									<option value="archived">Lưu trữ</option>
 								</select>
+							</div>
+							<div class="col-md-4">
+								<label class="form-label">Điểm đánh giá (0-5)</label>
+								<input type="number" min="0" max="5" step="0.1" class="form-control" name="rating_avg" value="0" />
+							</div>
+							<div class="col-md-4">
+								<label class="form-label">Số đánh giá</label>
+								<input type="number" min="0" step="1" class="form-control" name="review_count" value="0" />
 							</div>
 							<div class="col-12">
 								<div class="form-check">

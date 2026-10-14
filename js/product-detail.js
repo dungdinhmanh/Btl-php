@@ -258,7 +258,7 @@ async function renderSimilar(product) {
 		if (items.length === 0) return;
 
 		holder.innerHTML = items
-			.map((item) => TNC.productCard(item, { columnClass: "col-6 col-lg-3", imageHeight: 140 }))
+			.map((item) => TNC.productCard(item))
 			.join("");
 		section.hidden = false;
 	} catch {

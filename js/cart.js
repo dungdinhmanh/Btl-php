@@ -35,18 +35,20 @@ function cartThumb(item) {
 }
 
 function getProductFromCard(card) {
-	const priceText = card.querySelector(".product-price")?.textContent || "0";
+	const nameEl = card.querySelector(".product-name");
+	const priceText = card.querySelector(".price")?.textContent || "0";
 
 	return {
-		productId: Number(card.dataset.productId || 0),
+		productId: Number(card.dataset.id || card.dataset.productId || 0),
 		id:
-			card.querySelector("h3")?.textContent.trim().toLowerCase().replace(/\s+/g, "-") ||
+			card.dataset.slug ||
+			nameEl?.textContent.trim().toLowerCase().replace(/\s+/g, "-") ||
 			Date.now().toString(),
-		name: card.querySelector("h3")?.textContent.trim() || "Sản phẩm",
-		brand: card.querySelector(".product-brand")?.textContent.trim() || "TNC STORE",
-		price: Number(priceText.replace(/[^\d]/g, "")),
+		name: nameEl?.textContent.trim() || "Sản phẩm",
+		brand: card.dataset.brand || "TNC STORE",
+		price: Number(priceText.replace(/[^\d]/g, "")) || 0,
 		image: card.querySelector(".product-image img")?.getAttribute("src") || "",
-		icon: card.querySelector(".product-image i")?.className || "bi bi-box",
+		icon: "bi bi-box",
 		quantity: 1,
 	};
 }
@@ -202,11 +204,17 @@ function renderCheckoutPage() {
 }
 
 document.addEventListener("click", (event) => {
-	const addButton = event.target.closest(".product-card button, .idea-product button");
+	const addButton = event.target.closest(".product-item .js-quick-add, .idea-product button");
 	if (addButton) {
-		addToCart(getProductFromCard(addButton.closest(".product-card")));
+		const card = addButton.closest(".product-item, .idea-product");
+		if (!card) return;
+
+		event.preventDefault();
+		event.stopPropagation();
+
+		addToCart(getProductFromCard(card));
 		const originalText = addButton.innerHTML;
-		addButton.innerHTML = '<i class="bi bi-check2 me-2"></i>Đã thêm';
+		addButton.innerHTML = '<i class="bi bi-check2"></i>';
 		setTimeout(() => {
 			addButton.innerHTML = originalText;
 		}, 1200);

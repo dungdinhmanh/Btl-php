@@ -63,43 +63,74 @@ const TNC = (() => {
 
 	const detailUrl = (product) => `product-detail.php?slug=${encodeURIComponent(product.slug)}`;
 
-	/**
-	 * Product card markup. `.product-card`, `h3`, `.product-brand` and
-	 * `.product-price` are relied on by cart.js, so keep those hooks intact.
-	 */
+	const starClass = (rating) =>
+		`star${Math.max(0, Math.min(5, Math.round(Number(rating) || 0)))}`;
+
 	function productCard(product, options = {}) {
-		const {
-			columnClass = "col-sm-6 col-xl-3",
-			tag = "Chính hãng",
-			imageHeight = 150,
-		} = options;
+		const { tag = "Chính hãng", showAddToCart = true } = options;
 
 		const name = escapeHtml(product.name);
 		const url = detailUrl(product);
-		const meta = [product.brand, product.socket ? `Socket ${product.socket}` : null]
-			.filter(Boolean)
-			.join(" · ");
+		const price = Number(product.price || 0);
+		const priceLabel = price > 0 ? formatPrice(price) : "Liên hệ";
+		const discountPercent = Number(product.discountPercent || 0);
+		const hasDiscount = Boolean(product.hasDiscount) && discountPercent > 0;
+		const reviewCount = Number(product.reviewCount || 0);
+		const brand = product.brand ? escapeHtml(product.brand) : "TNC STORE";
+		const oldPriceNumber = String(product.listPriceText || "")
+			.replace(/\s*đ\s*$/u, "")
+			.trim();
 
 		return `
-			<div class="${columnClass} d-flex">
-				<article class="product-card d-flex w-100 flex-column" data-product-id="${escapeHtml(product.id)}">
-					<a href="${url}" class="product-image p-3 text-center bg-white d-block text-decoration-none">
-						<img src="${escapeHtml(product.image)}" alt="${name}" class="img-fluid" style="height: ${imageHeight}px; object-fit: contain;" loading="lazy">
-						${tag ? `<span class="product-tag">${escapeHtml(tag)}</span>` : ""}
-					</a>
-					<p class="product-brand">${escapeHtml(meta)}</p>
-					<h3>
-						<a href="${url}" class="text-decoration-none text-dark">${name}</a>
-					</h3>
-					<strong class="product-price">${escapeHtml(product.priceText)}</strong>
-					<div class="mt-auto pt-2">
-						<button class="btn btn-outline-primary w-100" type="button">
-							<i class="bi bi-cart-plus me-2"></i>
-							Thêm vào giỏ
-						</button>
+			<article
+				class="product-item"
+				data-id="${escapeHtml(product.id)}"
+				data-brand="${brand}"
+				data-slug="${escapeHtml(product.slug)}"
+			>
+				<a href="${url}" class="product-image">
+					<img class="lazy" src="${escapeHtml(product.image)}" alt="${name}" loading="lazy">
+					${tag ? `<span class="box-sale">${escapeHtml(tag)}</span>` : ""}
+					<span class="p-icon-holder"></span>
+					${
+						showAddToCart
+							? `<button class="js-quick-add" type="button" aria-label="Thêm ${name} vào giỏ">
+									<i class="bi bi-cart-plus" aria-hidden="true"></i>
+								</button>`
+							: ""
+					}
+				</a>
+
+				<div class="product-info">
+					<a href="${url}" class="product-name line-clamp-2">${name}</a>
+
+					${
+						reviewCount > 0
+							? `<div class="info-review d-flex align-items">
+									<i class="icon-star ${starClass(product.rating)}"></i>
+									<span>${reviewCount} đánh giá</span>
+								</div>`
+							: ""
+					}
+
+					<div class="main-price">
+						${hasDiscount ? `<del class="old-price">${escapeHtml(oldPriceNumber)}<u>đ</u></del>` : ""}
+						<div class="d-flex align-items">
+							<b class="price">${priceLabel}</b>
+							${
+								hasDiscount
+									? `<div class="price-saleoff">-${discountPercent}%</div>`
+									: ""
+							}
+						</div>
 					</div>
-				</article>
-			</div>
+				</div>
+
+				<span class="boder-top"></span>
+				<span class="boder-right"></span>
+				<span class="boder-bottom"></span>
+				<span class="boder-left"></span>
+			</article>
 		`;
 	}
 

@@ -322,13 +322,22 @@ Ngoại lệ duy nhất là nội dung bài viết tin tức (`post.content`) �
 
 Giỏ hàng **chỉ nằm trong trình duyệt**, lưu ở `localStorage` dưới khoá `tnc-cart`. Không có request nào tới server, và cũng chưa ghi vào bảng `carts`/`cart_items` trong DB.
 
-Cách nó gắn với thẻ sản phẩm: `getProductFromCard()` **đọc HTML** của thẻ để lấy tên, giá, ảnh. Vì vậy `TNC.productCard()` phải giữ đúng các class sau, nếu đổi sẽ làm hỏng giỏ hàng:
+Cách nó gắn với thẻ sản phẩm: `getProductFromCard()` **đọc HTML** của thẻ để lấy tên, giá, ảnh. Vì vậy `TNC.productCard()` phải giữ đúng các hook sau, nếu đổi sẽ làm hỏng giỏ hàng:
 
-- `.product-card` — khối bao ngoài
-- `h3` — tên sản phẩm
+- `.product-item` — khối bao ngoài, mang `data-id` / `data-brand` / `data-slug`
+- `.js-quick-add` — nút thêm vào giỏ nằm trong thẻ
+- `.product-name` — tên sản phẩm
+- `.price` — giá bán
 - `.product-image img` — đường dẫn ảnh
-- `.product-price` — giá
-- `.product-brand` — thương hiệu
+
+Card dựng theo đúng DOM của tncstore.vn: `.product-image` (ảnh + `.box-sale` + `.p-icon-holder`)
+→ `.product-info` (`.product-name` clamp 2 dòng → `.info-review` với `icon-star star0..star5`
+và “N đánh giá” → `.main-price` gồm `del.old-price` + `b.price` + `.price-saleoff`) → bốn thanh
+`.boder-*` tạo viền xanh khi hover.
+
+Thẻ **không có lớp cột bao ngoài**: container tự chia bề rộng (`#product-grid`, `.content-product-category`,
+`#featured-products-list`, `#similar-products`, `.category-featured-grid`). Riêng `.js-quick-add`
+là phần thêm của project — trang gốc không có nút giỏ ở thẻ, nên nó chỉ hiện khi hover.
 
 `cart.js` cố ý **không phụ thuộc `TNC`**: nó có `formatPrice` và `escapeAttr` riêng, để trang giỏ hàng vẫn chạy được kể cả khi API/DB có vấn đề.
 
@@ -339,9 +348,11 @@ Cách nó gắn với thẻ sản phẩm: `getProductFromCard()` **đọc HTML**
 1. Cài PHP 8.1+ có extension `pdo_mysql`, và MySQL 8.
 2. `php backend/database/apply.php backend/database/schema.sql` — tạo bảng.
 3. `php backend/database/apply.php backend/database/seed.sql` — nạp dữ liệu mẫu.
-4. Copy `backend/config/.env.example` → `backend/config/.env` rồi điền các giá trị `DB_*`.
-5. Chạy ở thư mục gốc dự án: `php -S localhost:8000`
-6. Mở `http://localhost:8000/` (nếu dùng Apache/XAMPP thì `index.php` được nạp qua `.htaccess`).
+4. (Tuỳ chọn) `php backend/database/sync_tncstore_stats.php` — nạp giá niệm yết thật
+   từ tncstore.vn vào `products.list_price`.
+5. Copy `backend/config/.env.example` → `backend/config/.env` rồi điền các giá trị `DB_*`.
+6. Chạy ở thư mục gốc dự án: `php -S localhost:8000`
+7. Mở `http://localhost:8000/` (nếu dùng Apache/XAMPP thì `index.php` được nạp qua `.htaccess`).
 
 ### Khi DB không kết nối được
 

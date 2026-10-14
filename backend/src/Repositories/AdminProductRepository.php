@@ -13,7 +13,9 @@ final class AdminProductRepository
     {
         $statement = $this->db->query(
             'SELECT p.product_id AS id, p.product_name AS name, p.product_slug AS slug, p.sku,
-                    p.unit_price AS price, p.product_status AS status, p.is_featured AS isFeatured,
+                    p.unit_price AS price, p.list_price AS listPrice,
+                    p.rating_avg AS rating, p.review_count AS reviewCount,
+                    p.product_status AS status, p.is_featured AS isFeatured,
                     p.socket AS socket, p.created_at AS createdAt,
                     b.brand_id AS brandId, b.brand_name AS brand,
                     c.category_id AS categoryId, c.category_name AS category,
@@ -23,6 +25,7 @@ final class AdminProductRepository
              LEFT JOIN categories c ON c.category_id = p.category_id
              LEFT JOIN inventory i ON i.product_id = p.product_id
              GROUP BY p.product_id, p.product_name, p.product_slug, p.sku, p.unit_price,
+                      p.list_price, p.rating_avg, p.review_count,
                       p.product_status, p.is_featured, p.socket, p.created_at,
                       b.brand_id, b.brand_name, c.category_id, c.category_name
              ORDER BY p.created_at DESC, p.product_id DESC',
@@ -40,6 +43,9 @@ final class AdminProductRepository
                 'category' => $row['category'] !== null ? (string) $row['category'] : 'Chưa gán',
                 'price' => (float) $row['price'],
                 'priceText' => number_format((float) $row['price'], 0, ',', '.') . ' đ',
+                'listPrice' => $row['listPrice'] !== null ? (float) $row['listPrice'] : null,
+                'rating' => (float) $row['rating'],
+                'reviewCount' => (int) $row['reviewCount'],
                 'status' => (string) $row['status'],
                 'isFeatured' => (bool) $row['isFeatured'],
                 'socket' => $row['socket'] !== null ? (string) $row['socket'] : '',
@@ -95,10 +101,12 @@ final class AdminProductRepository
         $statement = $this->db->prepare(
             'INSERT INTO products (
                 brand_id, category_id, sku, product_slug, product_name, socket,
-                unit_price, product_status, is_featured, created_at, updated_at
+                unit_price, list_price, rating_avg, review_count,
+                product_status, is_featured, created_at, updated_at
             ) VALUES (
                 :brand_id, :category_id, :sku, :slug, :name, :socket,
-                :price, :status, :is_featured, NOW(), NOW()
+                :price, :list_price, :rating, :review_count,
+                :status, :is_featured, NOW(), NOW()
             )',
         );
 
@@ -110,6 +118,9 @@ final class AdminProductRepository
             ':name' => $prepared['name'],
             ':socket' => $prepared['socket'],
             ':price' => $prepared['price'],
+            ':list_price' => $prepared['list_price'],
+            ':rating' => $prepared['rating'],
+            ':review_count' => $prepared['review_count'],
             ':status' => $prepared['status'],
             ':is_featured' => $prepared['is_featured'] ? 1 : 0,
         ]);
@@ -136,6 +147,9 @@ final class AdminProductRepository
                  product_name = :name,
                  socket = :socket,
                  unit_price = :price,
+                 list_price = :list_price,
+                 rating_avg = :rating,
+                 review_count = :review_count,
                  product_status = :status,
                  is_featured = :is_featured,
                  updated_at = NOW()
@@ -150,6 +164,9 @@ final class AdminProductRepository
             ':name' => $prepared['name'],
             ':socket' => $prepared['socket'],
             ':price' => $prepared['price'],
+            ':list_price' => $prepared['list_price'],
+            ':rating' => $prepared['rating'],
+            ':review_count' => $prepared['review_count'],
             ':status' => $prepared['status'],
             ':is_featured' => $prepared['is_featured'] ? 1 : 0,
             ':id' => $productId,
@@ -202,6 +219,18 @@ final class AdminProductRepository
         }
 
         $price = (float) ($payload['unit_price'] ?? $payload['price'] ?? 0);
+
+        $listPriceRaw = $payload['list_price'] ?? $payload['listPrice'] ?? null;
+        $listPrice = ($listPriceRaw === null || $listPriceRaw === '')
+            ? null
+            : (float) $listPriceRaw;
+        if ($listPrice !== null && $listPrice <= $price) {
+            $listPrice = null;
+        }
+
+        $rating = min(5.0, max(0.0, round((float) ($payload['rating_avg'] ?? $payload['rating'] ?? 0), 1)));
+        $reviewCount = max(0, (int) ($payload['review_count'] ?? $payload['reviewCount'] ?? 0));
+
         $stock = max(0, (int) ($payload['stock'] ?? 0));
 
         $socket = trim((string) ($payload['socket'] ?? ''));
@@ -220,6 +249,9 @@ final class AdminProductRepository
             'category_id' => $categoryId,
             'status' => $status,
             'price' => $price,
+            'list_price' => $listPrice,
+            'rating' => $rating,
+            'review_count' => $reviewCount,
             'stock' => $stock,
             'socket' => $socket,
             'is_featured' => $isFeatured,

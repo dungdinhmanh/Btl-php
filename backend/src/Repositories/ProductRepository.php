@@ -12,7 +12,8 @@ final class ProductRepository
 
     private const LIST_SELECT = 'SELECT p.product_id AS id, p.product_slug AS slug, p.product_name AS name,
                 b.brand_name AS brand, c.category_slug AS category, c.category_name AS categoryName,
-                p.unit_price AS price, image.image_path AS image, p.socket AS socket,
+                p.unit_price AS price, p.list_price AS listPrice, p.rating_avg AS ratingAvg,
+                p.review_count AS reviewCount, image.image_path AS image, p.socket AS socket,
                 p.is_featured AS isFeatured';
 
     private const LIST_FROM = 'FROM products p
@@ -355,6 +356,12 @@ final class ProductRepository
     private function presentOne(array $row): array
     {
         $price = (float) $row['price'];
+        $listPrice = $row['listPrice'] !== null ? (float) $row['listPrice'] : null;
+
+        $hasDiscount = $listPrice !== null && $listPrice > $price;
+        $discountPercent = $hasDiscount ? (int) round((1 - $price / $listPrice) * 100) : 0;
+        $ratingAvg = (float) ($row['ratingAvg'] ?? 0);
+        $reviewCount = (int) ($row['reviewCount'] ?? 0);
 
         return [
             'id' => (int) $row['id'],
@@ -365,6 +372,14 @@ final class ProductRepository
             'categoryName' => (string) $row['categoryName'],
             'price' => $price,
             'priceText' => $price > 0 ? number_format($price, 0, ',', '.') . ' đ' : 'Liên hệ',
+            'listPrice' => $listPrice,
+            'listPriceText' => $hasDiscount
+                ? number_format((float) $listPrice, 0, ',', '.') . ' đ'
+                : null,
+            'hasDiscount' => $hasDiscount,
+            'discountPercent' => $discountPercent,
+            'rating' => $reviewCount > 0 ? round($ratingAvg, 1) : 0.0,
+            'reviewCount' => $reviewCount,
             'image' => $row['image'] !== null ? (string) $row['image'] : 'assets/img/branding/tnc.png',
             'socket' => $row['socket'] !== null ? (string) $row['socket'] : null,
             'isFeatured' => (bool) ($row['isFeatured'] ?? false),

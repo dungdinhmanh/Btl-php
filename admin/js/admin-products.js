@@ -49,7 +49,11 @@ function renderProducts(products) {
 					</td>
 					<td>${TNC.escapeHtml(product.category)}</td>
 					<td>${TNC.escapeHtml(product.brand)}</td>
-					<td>${TNC.escapeHtml(product.priceText)}</td>
+					<td>${TNC.escapeHtml(product.priceText)}${
+						product.reviewCount > 0
+							? `<br /><small class="text-muted">★ ${product.rating} · ${product.reviewCount} đánh giá</small>`
+							: ""
+					}</td>
 					<td>${TNC.escapeHtml(String(product.stock))}</td>
 					<td>
 						<span class="badge text-bg-${product.status === "active" ? "success" : product.status === "draft" ? "secondary" : "warning"}">
@@ -90,8 +94,11 @@ function fillForm(product) {
 	getField("category_id").value = product.categoryId || "";
 	getField("brand_id").value = product.brandId || "";
 	getField("unit_price").value = product.price || 0;
+	getField("list_price").value = product.listPrice ?? "";
 	getField("stock").value = product.stock || 0;
 	getField("product_status").value = product.status || "draft";
+	getField("rating_avg").value = product.rating || 0;
+	getField("review_count").value = product.reviewCount || 0;
 	getField("is_featured").checked = Boolean(product.isFeatured);
 	const title = document.querySelector("#productModalTitle");
 	if (title) title.textContent = "Sửa sản phẩm";
@@ -109,8 +116,13 @@ function serializeForm() {
 		category_id: Number(formData.get("category_id") || 0),
 		brand_id: Number(formData.get("brand_id") || 0),
 		unit_price: Number(formData.get("unit_price") || 0),
+		list_price: (formData.get("list_price") || "").toString().trim() === ""
+			? null
+			: Number(formData.get("list_price")),
 		stock: Number(formData.get("stock") || 0),
 		product_status: String(formData.get("product_status") || "draft"),
+		rating_avg: Number(formData.get("rating_avg") || 0),
+		review_count: Number(formData.get("review_count") || 0),
 		is_featured: formData.get("is_featured") === "1",
 	};
 }

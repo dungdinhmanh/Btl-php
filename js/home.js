@@ -8,13 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 		const products = await TNC.api.featured(4);
 		container.innerHTML = products.length
 			? products
-					.map((product) =>
-						TNC.productCard(product, {
-							columnClass: "col-sm-4 col-lg-3",
-							tag: "Bán chạy",
-							imageHeight: 160,
-						}),
-					)
+					.map((product) => TNC.productCard(product, { tag: "Bán chạy" }))
 					.join("")
 			: TNC.emptyState({ icon: "bi-box-seam", title: "Chưa có sản phẩm nổi bật" });
 	} catch (error) {
@@ -254,7 +248,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 		if (!button) return;
 		const carousel = button.closest("[data-product-carousel]");
 		const list = carousel?.querySelector("[data-product-list]");
-		const item = list?.querySelector(".home-category-product");
+		const item = list?.querySelector(".product-item");
 		if (!list || !item) return;
 		list.scrollBy({
 			left: Number(button.dataset.productScroll) * item.getBoundingClientRect().width,
@@ -292,13 +286,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 				list.innerHTML = items.length
 					? items
-							.map((product) =>
-								TNC.productCard(product, {
-									columnClass: "home-category-product",
-									tag: "",
-									imageHeight: 205,
-								}),
-							)
+							.map((product) => TNC.productCard(product, { tag: "" }))
 							.join("")
 					: TNC.emptyState({ icon: "bi-box-seam", title: "Chưa có sản phẩm" });
 				updateCarouselControls(list.closest("[data-product-carousel]"));

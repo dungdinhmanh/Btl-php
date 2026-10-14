@@ -148,16 +148,12 @@ require_once __DIR__ . '/backend/bootstrap.php';
             </div>
         </div>
         <div id="active-filters"></div>
-    <div id="product-grid">
-								<div class="col-12 py-5 text-center text-muted">
-									<div
-										class="spinner-border spinner-border-sm me-2"
-										role="status"
-									></div>
-								</div>
-									 <div class="row g-4" id="product-grid">Đang nạp danh sách sản phẩm...
-								</div>
-							</div>
+					<div id="product-grid">
+						<div class="col-12 py-5 text-center text-muted">
+							<div class="spinner-border spinner-border-sm me-2" role="status"></div>
+							Đang nạp danh sách sản phẩm...
+						</div>
+					</div>
 						</div>
 					</div>
 				</div>
