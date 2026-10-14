@@ -48,6 +48,51 @@ mariadb --defaults-extra-file=/tmp/tnc-mysql.cnf -e 'SELECT ...'
 >
 > ⚠️ **Nếu máy bạn là Windows thì phần này KHÁC — đọc mục 8 trước.**
 
+### 2.1 Cách khuyến nghị: Python + `python-dotenv` (chạy giống nhau trên Linux và Windows)
+
+Cách này **tốt hơn CLI** vì không phụ thuộc client `mysql`/`mariadb` của từng máy
+(khỏi vướng chuyện `ssl-mode` vs `ssl-verify-server-cert`).
+
+⚠️ **Máy này CHƯA cài sẵn** — đã kiểm chứng: `dotenv`, `mysql.connector`, `pymysql`,
+`MySQLdb`, `mariadb` đều **không có**. `pip` thì có (26.2.1, Python 3.14). Phải cài trước:
+
+```bash
+python3 -m venv /tmp/tncvenv
+/tmp/tncvenv/bin/pip install python-dotenv mysql-connector-python
+/tmp/tncvenv/bin/python /tmp/tnc-py-check.py      # xem script mẫu bên dưới
+```
+
+Script mẫu — **đã chạy thật, trả về `products: 138`, `so bang: 19`, `cot model: ['model']`**:
+
+```python
+import os
+from pathlib import Path
+import mysql.connector
+from dotenv import load_dotenv
+
+ROOT = Path('<đường dẫn repo>')
+load_dotenv(ROOT / 'backend/config/.env')
+
+conn = mysql.connector.connect(
+    host=os.environ['DB_HOST'], port=int(os.environ['DB_PORT']),
+    user=os.environ['DB_USERNAME'], password=os.environ['DB_PASSWORD'],
+    database=os.environ['DB_DATABASE'],
+    ssl_ca=str(ROOT / 'backend/config' / os.environ['DB_SSL_CA']),
+    ssl_verify_cert=True,
+    ssl_verify_identity=False,   # ← xem ghi chú bên dưới
+    connection_timeout=20,
+)
+```
+
+**Hai điều bắt buộc phải nhớ:**
+1. `ssl_verify_identity=False`. Script mẫu đặt vậy và chạy được. Tôi **chưa thử**
+   `ssl_verify_identity=True` — nếu bật mà lỗi hostname mismatch thì đừng tưởng cert hỏng,
+   chỉ là cert Aiven không khớp tên host.
+2. `load_dotenv` **tự bỏ dấu nháy**, còn `loadEnvironment()` trong `backend/bootstrap.php` thì
+   **không**. Hiện `.env` có 8 khoá và **không có dấu nháy hay `#`** trong giá trị nên hai bên
+   đọc ra y nhau. **Nếu sau này ai bọc giá trị trong nháy kép, PHP và Python sẽ đọc khác nhau**
+   → đừng bọc nháy.
+
 ### Số liệu DB tại 2026-10-14
 | Bảng | Số dòng | Ghi chú |
 |---|---|---|
@@ -227,6 +272,8 @@ mariadb --defaults-extra-file=/tmp/tnc-mysql.cnf -e \
 Mục 2 và mục 6 ở trên viết cho Linux. Trên Windows, **các điểm sau khác** — đọc hết trước khi làm.
 
 ### 8.1 Cách an toàn nhất để kiểm tra DB: bỏ qua CLI, dùng PHP luôn
+→ Còn cách gọn hơn nữa, chạy giống nhau trên cả hai hệ: **Python + `python-dotenv`**,
+xem **mục 2.1**.
 Trên Windows rất dễ gặp **client Oracle MySQL** (hiểu `ssl-mode`) hoặc **client MariaDB** (không hiểu).
 Thay vì đoán, dùng chính `database()` mà app đang dùng — nó đã cấu hình TLS đúng rồi:
 
@@ -257,6 +304,51 @@ ssl-verify-server-cert=1
 > (tự ghép với `backend/config/`), nên không cần sửa gì trong code.
 
 Xoá file sau khi dùng (Windows không có `shred`): `Remove-Item $env:TEMP\tnc-mysql.cnf`
+
+### 8.1b Dùng mysql client của XAMPP — được, nhưng đọc kỹ 3 điều này
+
+Đường dẫn (không có trên `PATH` mặc định, phải gọi full path):
+
+```powershell
+C:\xampp\mysql\bin\mysql.exe --defaults-extra-file="$env:TEMP\tnc-mysql.cnf" -e "SELECT VERSION(), DATABASE();"
+```
+
+**(1) Client của XAMPP rất có thể là MariaDB, không phải Oracle MySQL.**
+XAMPP bản mới đóng gói **MariaDB**, nên nó **từ chối `ssl-mode`** — đúng lỗi máy Linux này đã gặp:
+
+```
+mysql: unknown variable 'ssl-mode=VERIFY_CA'
+```
+
+→ **Luôn kiểm trước khi viết câu lệnh:**
+
+```powershell
+C:\xampp\mysql\bin\mysql.exe --version
+# có chữ "MariaDB" -> dùng  ssl-ca=...  + ssl-verify-server-cert=1
+# có chữ "MySQL"   -> dùng  ssl-mode=VERIFY_CA
+```
+
+**(2) `--defaults-extra-file` phải đứng ĐẦU TIÊN** trong câu lệnh, nếu không client bỏ qua file đó
+(đây là quy tắc của cả MySQL lẫn MariaDB client).
+
+**(3) ⚠️ ĐỪNG NHẦM HAI DATABASE — cạm bẫy dễ mắc nhất khi có XAMPP**
+
+| | XAMPP | Dự án này |
+|---|---|---|
+| Chạy ở | `localhost:3306`, **cục bộ trên máy bạn** | **Aiven remote** |
+| User | thường `root`, mật khẩu rỗng | `avnadmin`, lấy trong `backend/config/.env` |
+| Schema | do bạn tự tạo, thường rỗng | `tnc-db` (có gạch nối) |
+| Dữ liệu | **không có** | 138 sản phẩm, 242 ảnh… |
+
+DB của dự án **nằm trên Aiven**, không phải trên XAMPP. Luôn lấy `DB_HOST` / `DB_PORT` (`20644`)
+từ `backend/config/.env`, **không bao giờ hardcode `localhost`**.
+
+Nếu agent trỏ nhầm vào `localhost` của XAMPP, nó sẽ thấy DB **rỗng** rồi kết luận sai kiểu
+"chưa có sản phẩm nào" / "chưa có bảng `products`" — trong khi thực tế chỉ là đang nhìn sai chỗ.
+Đó là lỗi tệ nhất có thể xảy ra ở đây.
+
+XAMPP chỉ nên dùng như **client** để kết nối ra Aiven. Đừng import `schema.sql` vào XAMPP rồi
+coi như đã xong việc — dữ liệu thật không nằm ở đó.
 
 ### 8.2 Đừng quên `git config core.autocrlf`
 Repo dùng **LF**. Nếu máy Windows để `core.autocrlf=true` (mặc định của Git for Windows), mọi file sẽ bị đổi
