@@ -8,6 +8,8 @@
 1. **Đừng tin trí nhớ, hãy chạy lệnh.** Mọi điều về DB phải kiểm bằng `mariadb`/`PDO`, mọi điều về git phải bằng `git`.
 2. `information_schema.table_rows` là **số ước lượng của InnoDB và nói dối** (từng báo `order_statuses = 0` nhưng thật là 5). Luôn `COUNT(*)`.
 3. Tài liệu cũ trong repo có chỗ **sai**: `backend/README.md`, `README.MD`, `schema.sql` ghi database là `tnc_store`, nhưng DB thật là **`tnc-db`** (có gạch nối).
+   → **Đã sửa (2026-10-14):** `README.MD`, `backend/config/.env.example` và `schema.sql`
+   (`CREATE DATABASE`/`USE`) đều đã đổi sang `tnc-db`. `backend/README.md` không nhắc tên DB nên không cần sửa.
 4. Đừng giả định tính năng nào đã có. Khoản "chưa làm" ở mục 4 là **chưa có một dòng code nào**.
 
 ---
@@ -16,10 +18,12 @@
 
 ```
 branch            : main
-commit mới nhất   : 7b1bfe9  Thêm products.model + dọn comment thừa
-commit trước đó   : b115043  Thẻ sản phẩm: dựng lại theo DOM/CSS gốc tncstore.vn
-origin/main       : 024d163  (main đang hơn 2 commit, CHƯA PUSH)
-working tree      : sạch
+commit mới nhất   : a85ad51  PLAN.md: thêm mục 8.1b dùng mysql client của XAMPP + cảnh báo nhầm localhost/XAMPP với Aiven
+commit trước đó   : d5b11e7  PLAN.md: thêm mục 8 cho máy Windows (DB, autocrlf, lệnh kiểm tra, OPcache)
+commit code gần nhất: 7b1bfe9  Thêm products.model + dọn comment thừa
+origin/main       : chưa pull khi ghi lại mục này — **chạy `git pull` và `git log --oneline -5` để xác nhận**
+working tree      : có thay đổi chưa commit — hệ thống đánh giá (mục 4.1 + 4.2),
+                     sửa tên DB trong README.MD / .env.example / schema.sql, và ảnh banner mới
 ```
 
 **Việc đầu tiên của bạn:** `git pull` (nếu máy khác đã push) rồi `git log --oneline -5` để xác nhận, **đừng tin con số trên nếu repo đã di chuyển**.
@@ -104,8 +108,13 @@ conn = mysql.connector.connect(
 | `order_statuses` | 5 | pending, confirmed, shipping, completed, cancelled |
 | `orders`, `order_items` | **0 / 0** | chưa ai mua gì |
 | `product_images` | 242 | |
+| `products` có `list_price` | 29 | giá gạch đã nạp được |
 
-**Không có bảng nào tên chứa `review`** (đã kiểm bằng `information_schema`).
+**Không có bảng nào tên chứa `review`** (đã kiểm bằng `information_schema`, ngày 2026-10-14).
+
+Đã đối chiếu lại bằng PHP/PDO ngày **2026-10-14**: MySQL `8.4.8`, `DATABASE()` = `tnc-db`,
+138 sản phẩm, 36 sản phẩm có `rating_avg > 0`, 292 dòng thông số, 8 định nghĩa, 242 ảnh,
+1 user (`asdfhsdfgthjefg` / `abc@test.com` / customer / active). Số liệu bảng trên khớp.
 
 ---
 
@@ -135,45 +144,269 @@ conn = mysql.connector.connect(
 
 ## 4. CHƯA LÀM (đừng tưởng là đã có)
 
-### 4.1 Reset đánh giá import — đã chốt, CHƯA chạy
-Chủ dự án đã quyết định **reset toàn bộ** `rating_avg` / `review_count` (36 SP đang giữ điểm `5.0`
-nhập từ tncstore, không phân biệt được gì). **Việc này chưa được thực hiện.**
+### 4.1 Reset đánh giá import — **ĐÃ CHẠY 2026-10-14**
 
 ```sql
 UPDATE `tnc-db`.products SET rating_avg = 0.0, review_count = 0;
 ```
-⚠️ Sau khi reset, thẻ sản phẩm sẽ **không còn hiện sao** cho tới khi có đánh giá thật.
-⚠️ `backend/database/sync_tncstore_stats.php` hiện vẫn ghi cả `rating_avg`/`review_count`;
-khi làm hệ thống đánh giá thật thì phải sửa script này để **chỉ đồng bộ `list_price`**.
 
-### 4.2 Hệ thống đánh giá — chưa có dòng code nào
-Yêu cầu **đã chốt** với chủ dự án (không cần hỏi lại):
-- **Khách vãng lai KHÔNG cần đăng nhập vẫn đánh giá được.**
-- **Bắt buộc nhập đủ 3 thứ:** điểm đánh giá + **họ tên** + **số điện thoại**.
-- Có **reply phân cấp**, chủ dự án muốn thử **đệ quy**.
-- `user_id` nullable (đăng nhập thì gắn vào, không thì để NULL và dùng tên/SĐT).
+Đã chạy, `UPDATE` 36 dòng. Kết quả kiểm lại sau đó: 138 sản phẩm, **0 sản phẩm có điểm**,
+29 sản phẩm có `list_price`, 10 sản phẩm có `model` — hai cột sau không bị đụng.
 
-Việc cần làm (chưa có file nào):
-| Mảnh | Đường dẫn đề xuất |
+⚠️ Thẻ sản phẩm **không còn hiện sao** cho tới khi có đánh giá thật. Đây là trạng thái
+đúng như chủ dự án chốt, không phải lỗi.
+
+### 4.2 Hệ thống đánh giá — **ĐÃ LÀM XONG 2026-10-14**
+
+Yêu cầu đã chốt với chủ dự án:
+- **Khách vãng lai đánh giá được**, không cần đăng nhập.
+- Bắt buộc **3 thứ**: điểm + họ tên + số điện thoại.
+- **Reply đệ quy** (trả lời được vào chính reply trước).
+- **Chặn trùng chỉ khi đã đăng nhập** (1 tài khoản 1 đánh giá gốc / sản phẩm).
+  Khách vãng lai đánh giá bao nhiêu lần cũng được — chủ dự án chọn phương án này.
+- **Khách trả lời khách + admin**: khách trả lời trong nhánh của chính mình (đúng họ tên
+  và SĐT), admin/staff trả lời mọi nhánh và được gắn badge "TNC Store".
+
+File đã tạo:
+
+| Mảnh | Đường dẫn |
 |---|---|
-| Bảng `product_reviews` | gộp vào `backend/database/schema.sql` |
+| Bảng | `product_reviews` trong `backend/database/schema.sql` (đã tạo trên DB thật) |
 | Repository | `backend/src/Repositories/ReviewRepository.php` |
-| API ghi (POST/PUT/DELETE) | `backend/api/reviews.php` |
-| API đọc | `backend/api/products.php?reviews=1` hoặc endpoint riêng |
-| UI | `product-detail.php` + `js/product-detail.js` + CSS mới |
-| Admin duyệt/xoá | chưa có trang |
+| API khách (GET/POST/PUT/DELETE) | `backend/api/reviews.php` |
+| API quản trị | `backend/api/admin/reviews.php` |
+| UI khách | tab "Đánh giá" + 2 modal trong `product-detail.php`, `js/reviews.js` |
+| UI quản trị | `admin/reviews.php` + `admin/js/admin-reviews.js` |
+| CSS | khối review trong `css/product-detail.css` |
+| Script tính lại | `backend/database/recalculate_ratings.php` |
 
-Hai điểm **còn bỏ ngỏ**, phải hỏi chủ dự án trước khi code:
-(a) có chống trùng theo số điện thoại không (một người 1 đánh giá / sản phẩm)?
-(b) reply thì ai được trả lời — chỉ admin, hay khách trả lời khách?
+Ghi chú kỹ thuật đã đo thật trên DB này, đừng phá:
+- `AVG()` trên tập rỗng trả `NULL` → đã bọc `COALESCE(..., 0)` vì `rating_avg` là `NOT NULL`.
+- PDO trả `NEWDECIMAL` dưới dạng string → đã cast `(float)`.
+- `rating_avg`/`review_count` được cập nhật **trong cùng transaction** với thao tác ghi
+  nên thẻ sản phẩm (chỉ `SELECT` trên `products`) không bao giờ đọc số lệch.
+- **KHÔNG dùng cột `GENERATED ... STORED`** trong bảng có FK: MySQL 8.4.8 trả
+  `ERROR 1215 Cannot add foreign key constraint`. Vì vậy `root_user_id` là cột thường do
+  app gán (`= user_id` với đánh giá gốc, `NULL` với reply). UNIQUE
+  `(product_id, root_user_id)` chặn trùng cho tài khoản đăng nhập, còn `NULL` thì MySQL coi
+  mỗi NULL là một giá trị khác nhau nên khách vãng lai không bị chặn.
+- **MySQL native prepare không cho tái sử dụng placeholder**: `ATTR_EMULATE_PREPARES = false`,
+  nên `LIKE :term` dùng 4 lần trong cùng một `WHERE` sẽ nổ lỗi 503. Mỗi vị trí phải một
+  tên placeholder riêng (`backend/api/admin/reviews.php` đã sửa theo).
 
-**Dùng `AVG()` của DB được, nhưng đã đo trên chính DB này:**
-- `AVG()` trên tập rỗng trả **`NULL`**, không phải 0 → phải bọc `COALESCE(..., 0)`
-  vì `rating_avg` là `NOT NULL`.
-- PDO trả `NEWDECIMAL` dưới dạng **string** → phải `(float)` cast.
-- Khuyến nghị: cache vào `products.rating_avg`/`review_count` trong **cùng transaction**
-  với thao tác thêm/sửa/xoá đánh giá. Đọc chỉ `SELECT` trên `products` nên không chậm thêm.
-  Kèm một script "tính lại toàn bộ" để đồng bộ khi nghi ngờ lệch.
+Giao diện **sao chép nguyên văn DOM của tncstore.vn** (`#review`, `#show-form`,
+`.box-form-review-reply`, `.item-user-review`, `.box-list-reply`) — đã mở trang thật bằng
+trình duyệt và đọc `outerHTML` + CSS gốc. Đừng đổi tên class.
+
+### 5.6 Trang chi tiết sản phẩm — layout bám sát tncstore.vn
+
+`product-detail.php` + `css/product-detail.css` đã dựng lại theo DOM gốc (đọc trực tiếp từ
+`.product-detail` của trang thật), **không dùng tab nữa**:
+
+```
+.product-detail > .container
+├── #breadcrumb.breadcrumb
+└── .clearfix
+    ├── .main-product-detail.background-white
+    │   └── .content-main-product.d-flex
+    │       ├── .product-images-detail   (290px)  #sync1 ảnh lớn + #sync2 thumbnail
+    │       ├── .product-main-detail      (calc(100% - 728px)) tên · MSP · đánh giá · tóm tắt
+    │       └── .product-main-right       (390px) khuyến mãi · giá · số lượng · nút · cam kết
+    ├── .content-product-detail.d-flex     ← phần "dưới" mà chủ dự án yêu cầu
+    │   ├── .content-left  (calc(100% - 447px))  #review.box-review
+    │   └── .content-right (415px)               .box-specifications
+    └── .product-similar.background-white
+```
+
+Nguyên tắc đã chốt khi dựng lại:
+- **KHÔNG thêm `border-radius`** vào khối nào. Trang gốc chỉ có đúng một chỗ:
+  `.avg-rate-item .box-percent { border-radius: 3px }` — giữ nguyên vì nó thuộc bản gốc.
+- **KHÔNG thêm nút "Thêm vào giỏ"** ở trang chi tiết. Trang gốc chỉ có "Mua Ngay" và
+  "Nhận tư vấn ngay"; thêm giỏ làm từ thẻ sản phẩm (`.js-quick-add`).
+- Icon: trang gốc dùng Font Awesome, dự án chỉ có Bootstrap Icons → thay `fa …` bằng `bi …`
+  tương đương. Đây là khác biệt duy nhất so với bản gốc.
+- MSP hiển thị `products.sku` (`CPU-0001`), **không phải** `product_slug`. `ProductRepository`
+  đã trả thêm trường `sku`.
+- Khối `.box-related-news` (Tin tức liên quan) của trang gốc **đã bỏ** vì chưa có API tin
+  theo danh mục. Không bịa dữ liệu.
+
+**Biến màu của tncstore.vn** (đọc từ `getComputedStyle(document.documentElement)`, đừng đoán):
+
+| Biến | Giá trị thật | Ghi chú |
+|---|---|---|
+| `--color-global` | `#3278f6` | **MÀU CHÍNH, XANH DƯƠNG — không phải đỏ** |
+| `--color-red` | `#fb4e4e` | chỉ dùng cho giá, khuyến mãi, badge |
+| `--grey-bold` | `#8d94ac` | chữ phụ |
+| `--text-black` | `#29324e` | icon cam kết, chữ nút "Xem thêm" |
+| `--blue` | **không định nghĩa** | rơi về fallback `#3278f6` |
+
+⚠️ **`css/style.css` có rule global đè lên mọi `h2`:**
+```css
+h2 { text-transform: uppercase; border-bottom: 3px solid var(--color-global);
+     display: inline-block; font-size: 24px !important; font-weight: 700 !important; }
+```
+Vì có `!important`, muốn `h2` khác 24px thì **phải dùng `!important`**, và phải tắc lại
+`text-transform` + `border-bottom` vì rule đó không set hai thuộc tính đó. Đã dùng cho
+`#review .title` và `.alert-mess`.
+
+**Tiêu đề KHÔNG đồng nhất — đừng gộp chung** (đo thật):
+| Khối | font-size | uppercase | gạch dưới |
+|---|---|---|---|
+| `.box-desciption .title` | 24px | có | 3px `#3278f6` |
+| `.box-specifications .title` | 24px | có | 3px `#3278f6` |
+| `.product-similar .title` | 24px | có | 3px `#3278f6` |
+| **`#review .title`** | **21px** | **không** | **không** |
+| **`.alert-mess`** | **21px** | **không** | **không** |
+
+### 5.7 Mô tả sản phẩm rỗng — markup đã đọc từ trang thật
+
+DB **chưa có cột mô tả**. Khi mô tả rỗng, tncstore render (đã đọc `outerHTML` từ 3 trang thật,
+ví dụ `/man-hinh-msi-mag-275cqf-e18.html`):
+
+```html
+<div class="box-desciption background-white">
+  <h2 class="title">Mô tả sản phẩm</h2>
+  <h2 class="alert-mess" style="font-style: italic; color: gray; height: 100px; line-height: 100px;">
+    Mô tả sản phẩm đang được cập nhật
+  </h2>
+</div>
+```
+
+Số đo thực tế của `.alert-mess`: **21px**, weight 700, italic, **không uppercase**,
+`color: gray`, `height: 100px`, `margin: 0`. Khối vẫn hiện, không ẩn đi.
+
+### 5.8 Ảnh logo thương hiệu
+
+Ảnh **đã có sẵn** trong `assets/img/branding/` (143 file, tên đã đặt sẵn theo brand).
+Bảng `brand_images` chỉ **link brand với file có sẵn đó**, không tải gì thêm, không hotlink.
+
+| Việc | Đường dẫn |
+|---|---|
+| Bảng | `brand_images` trong `backend/database/schema.sql` (đã tạo trên DB thật) |
+| Nạp/kiểm tra | `php backend/database/link_brand_images.php [--dry-run] [--check]` |
+| Truy vấn | `LEFT JOIN brand_images bi ON bi.brand_id = b.brand_id` trong `ProductRepository` |
+| API | `products.php` trả thêm `brandImage` |
+| Giao diện | `.list-brand .item img` 50×32, thiếu ảnh thì lùi về hiện tên brand |
+
+Quy tắc của script — **không đoán**: chỉ ghi dòng khi (1) brand có trong `brands`,
+(2) tồn tại file ảnh khớp, (3) file là PNG/JPG/WebP hợp lệ. Brand không có file thì **không
+ghi dòng**, giao diện tự lùi về tên brand.
+
+3 brand có tên file lệch `brand_slug`, đã **đối chiếu bằng mắt với ảnh thật** chứ không đoán
+theo tên (`LOGO_FILE_OVERRIDE` trong script):
+`lian-li → lianli.png` (đọc ảnh: logo LIAN LI) ·
+`cooler-master → coolermaster.png` (đọc ảnh: COOLER MASTER) ·
+`human-motion → humanmotion.jpg` (đọc ảnh: chữ Humanmotion).
+
+Kết quả: **24/25 brand có ảnh**, tất cả đều trỏ tới file tồn tại (đã `--check`).
+Riêng **Crucial chưa có ảnh** — `assets/img/branding/` không có file nào tên `crucial.*`
+(đã kiểm bằng cả `Get-ChildItem -Filter "*crucial*"` lẫn quét DB). Brand này có đúng 1 sản phẩm.
+
+### 5.9 Ba lỗi đã tìm ra bằng đo DOM (đừng phá lại)
+
+Cả ba đều do **đoán thay vì đo**, đã sửa và kiểm chứng lại bằng `getComputedStyle`:
+
+**(1) Nút "Nhận tư vấn ngay" tràn khung.** Bootstrap đặt `p { margin-bottom: 1rem }`, còn trang gốc
+không dùng Bootstrap nên `<p>` không có margin. Đo bản gốc: `p` = 15px, `margin-bottom: 0px`,
+cao 20px; `<a>` cao **45px** (ta đã viết 48px). Sửa cả hai.
+Nguyên nhân gốc rộng hơn: tôi từng thêm `@media (max-width: 1200px)` thu `.product-main-right`
+còn 312px → nút còn 151px → nhãn xuống 2 dòng → tràn.
+**Đã xác minh tncstore KHÔNG có media query nào cho `.product-detail`** (quét toàn bộ stylesheet) —
+cột 290 / calc(100%-728) / 390 và container 1200 là cố định. Đã xoá breakpoint đó.
+Còn lại `@media (max-width: 992px)` chỉ xếp dọc, là **thêm của dự án**, không phải bản gốc.
+
+**(2) `.alert-mess` lệch vị trí.** `css/style.css` có rule global
+`h2 { display: inline-block; text-transform: uppercase; border-bottom: 3px solid ...;
+font-size: 24px !important; font-weight: 700 !important }`. Bản gốc đo được
+`display: block`. Đã thêm `display: block` + `!important`.
+
+**(3) Card sản phẩm không đều chiều cao** (337px vs 317px, lệch đúng 20px).
+Đo thấy: card có `<del class="old-price">` → `.main-price` 48px; card không có → 28px.
+`css/style.css` reserve cứng `.old-price { height: 20px }` nên hàng này phải **luôn tồn tại**.
+Đếm trên trang danh mục tncstore: **41/41 card đều có `<del class="old-price">`**.
+Đã sửa `productCard()` trong `js/api.js` render `<del>` kể cả khi rỗng. Sau đó 4/4 card = 337px.
+
+Sau khi sửa, đối chiếu 16 chỉ số giữa trang ta và tncstore.vn: **0 chỉ số lệch**.
+
+**(4) Bảng thông số nhạt.** Đo bản gốc: cả `.att-name` và `.att-value` đều `font-weight: 600`
+(kể cả `<p>` bên trong ô giá trị), và `td` **không** set `line-height` (trang gốc không dùng
+Bootstrap nên không bị `td { line-height: 1.5 }` như ta). Ta đang 400 / 21px.
+Đã sửa thành `font-weight: 600` và `line-height: normal`. Sau đó khớp cả 6 chỉ số của bảng.
+
+Hai sprite khác nhau, dùng chỗ khác nhau — đừng gộp:
+- `assets/img/icon-star.png` (60×75) = dải **5 sao nhỏ**, dùng cho `.icon-star.star1..5`
+  (thẻ sản phẩm, tên người viết).
+- `assets/img/star-rating.png` (40×173, tải từ tncstore) = **1 sao lớn** 4 trạng thái xếp dọc,
+  dùng cho `.sprite-star.rating-star` = ô chọn sao trong modal.
+
+### 5.10 Breadcrumb 3 cấp + danh mục CHA — 2026-10-15
+
+**Bằng chứng** (đọc `#breadcrumb` trên tncstore.vn, mỗi danh mục lấy 2 sản phẩm):
+
+| Sản phẩm tncstore | Breadcrumb đọc được |
+|---|---|
+| `/cpu-intel-core-i9-14900kf-tray.html` | Trang chủ › **Linh kiện máy tính** › CPU - Bộ vi xử lý |
+| `/bo-mach-chu-gigabyte-x870-aorus-stealth-am5-ddr5.html` | Trang chủ › **Linh kiện máy tính** › Mainboard - Bo mạch chủ |
+| `/ram-teamgroup-vulcan-16gb-ddr5-black.html` | Trang chủ › **Linh kiện máy tính** › RAM - Bộ nhớ trong |
+| `/card-man-hinh-asus-dual-radeon-rx-9050-8gb-oc-edition.html` | Trang chủ › **VGA - Card màn hình** ← chỉ 2 cấp |
+| `/man-hinh-gaming-lg-...html` | Trang chủ › **Màn Hình Máy Tính** › **Màn Hình LG** (cấp lá theo brand) |
+| `/ban-phim-gaming-asus-m705-...html` | Trang chủ › **Gaming Gears** › **Bàn Phím Cơ** (cấp lá theo loại) |
+
+Kết luận cấu trúc (không phải 10 danh mục lá cùng hàng):
+- **Linh kiện máy tính** → `cpu`, `mainboard`, `ram`, `hdd`, `case`, `psu`, `ssd`
+- **Gaming Gears** → `phu-kien`
+- **`vga` KHÔNG có cha** — bằng chứng: sản phẩm VGA trên tncstore chỉ có 2 cấp.
+  Đừng "sửa cho đủ 3 cấp".
+- **`display` KHÔNG có cha** — tncstore tách màn hình theo **brand** ("Màn Hình LG",
+  "Màn Hình VSP"), còn ta gộp hết vào một danh mục lá tên "Màn hình máy tính". Gắn cha
+  "Màn Hình Máy Tính" vào sẽ ra breadcrumb *"Màn Hình Máy Tính › Màn hình máy tính"* —
+  hai tên trùng nghĩa. **Chủ dự án chốt bỏ cha (2026-10-15)** → 2 cấp, cùng cấu trúc với `vga`.
+- Tên 10 danh mục lá đã có **trùng khớp** tên trang gốc, không sửa gì.
+
+Kết quả cuối (đã đo trên DB thật, 9/9 danh mục):
+
+| slug | cấp | breadcrumb |
+|---|---|---|
+| `cpu`, `mainboard`, `ram`, `hdd`, `case`, `psu`, `ssd` | 3 | Trang chủ › Linh kiện máy tính › *tên danh mục* |
+| `phu-kien` | 3 | Trang chủ › Gaming Gears › Phụ kiện máy tính |
+| `vga` | 2 | Trang chủ › VGA - Card màn hình |
+| `display` | 2 | Trang chủ › Màn hình máy tính |
+
+**DOM đo được trên trang gốc** (đã dựng lại y hệt):
+- KHÔNG có tên sản phẩm trong breadcrumb; `<h1 class="name">` nằm ở `.product-main-detail`.
+- Dấu phân cách `<i>` là **anh em của `<a>`** (không nằm trong `<a>`), và bị `display: none`
+  ở `li` cuối — trang gốc vẫn render nó.
+- `li` đầu có `class="home"`, chữ + icon màu `--grey-bold` (#8d94ac); các `li` sau chữ đen.
+- Mọi `li` `float: left`, cao đúng 80px, `span` `font-size:14px; font-weight:600; line-height:80px`,
+  icon `font-size:12px; margin:0 10px`.
+
+Đối chiếu sau khi sửa (đo cả hai trang): khớp **10/10** chỉ số. Chỉ lệch **bề rộng `li`**:
+gốc `125.34 / 147.84 / 108.41` px, ta `128.34 / 152.34 / 108.41` px — vì trang gốc dùng Font
+Awesome (`fa fa-home`, `fa fa-angle-right`) còn dự án này **không nạp Font Awesome**, nên dùng
+Bootstrap Icons (`bi bi-house`, `bi bi-chevron-right`) cùng `font-size:12px`. Tổng lệch ~7px.
+
+**Thay đổi kèm theo:**
+- `backend/database/schema.sql`: thêm **2** dòng danh mục cha (`category_id` 101–102).
+- `backend/database/link_category_parents.php`: script idempotent (`--dry-run`, `--unlink`)
+  gắn cha cho **8** danh mục lá. Hằng `ORPHAN_PARENTS` liệt kê cha đã bỏ
+  (`man-hinh-may-tinh`) để script gỡ liên kết rồi xoá hẳn — không để lại dòng rác.
+  Đã chạy trên DB thật: cha còn lại là `#11` (Linh kiện máy tính) và `#13` (Gaming Gears);
+  `#12` (Màn Hình Máy Tính) đã bị xoá.
+- `AdminProductRepository::categories()`: lọc danh mục LÁ. **Đừng dùng
+  `WHERE parent_category_id IS NULL`** — điều đó giữ lại chính các danh mụu cha vì chúng cũng
+  là top-level; đã đo: bộ lọc sai làm dropdown còn 4 mục thay vì 10. Đúng là `NOT EXISTS` con.
+- `ProductRepository::buildFilters()`: filter `?category=` nhận **cả slug lá lẫn slug cha**
+  (cha → mọi sản phẩm của các con). Không có nhánh này thì link breadcrumb cấp cha dẫn
+  tới trang rỗng. MySQL native prepare không cho tái sử dụng placeholder nên dùng 2 tên.
+- `ProductRepository` trả thêm `parentCategory` / `parentCategoryName` qua
+  `LEFT JOIN categories pc ON pc.category_id = c.parent_category_id`.
+- `product-detail.php` + `js/product-detail.js` (`renderBreadcrumb()`) render lại breadcrumb.
+  CSS cũ `.product-detail #breadcrumb ol li h1` đã xoá (hết dùng).
+
+**Hạn chế đã biết:** `products.php?category=<slug-cha>` hiện lọc đúng sản phẩm nhưng tiêu đề
+rơi về fallback `"LINH KIỆN MÁY TÍNH"` và breadcrumb của trang đó rút còn 2 cấp, vì
+`ProductRepository::categories()` chỉ trả 7 danh mục lá dùng cho bộ lọc. Muốn đúng 3 cấp
+phải trả kèm danh mục cha qua API — **chưa làm**.
 
 ### 4.3 Đánh số lại catalog thông số — CẦN XIN PHÉP trước khi chạy
 Xem mục 5.3.
@@ -201,13 +434,14 @@ CSS card nằm ở `css/style.css`, các rule `.product-item ...`, sao chép t�
 - lớp cột bọc ngoài thẻ
 
 Giá gạch in dạng `2.889.000<u>đ</u>` (chữ **đ gạch chân**, không có dấu cách).
-Nút thêm vào giỏ là `.js-quick-add` — **phần thêm của dự án này**, trang gốc không có;
-`showAddToCart: false` thì markup khớp trang gốc.
+**KHÔNG có nút thêm vào giỏ trên thẻ.** Đếm trên tncstore.vn ngày 2026-10-15:
+`.js-quick-add` = **0** ở trang chi tiết, trang danh mục (`/ram.html`, 41 card) và trang chủ.
+Đã gỡ khỏi `productCard()` (`js/api.js`) + CSS + handler trong `js/cart.js`. Giỏ dùng qua
+trang giỏ và nút Mua Ngay. **Đừng thêm lại.**
 
 ### 5.2 `js/cart.js` đọc DOM của thẻ — đổi DOM là hỏng giỏ
-Các hook phải giữ: `.product-item`, `.js-quick-add`, `.product-name`, `.price`,
+Các hook phải giữ: `.product-item`, `.product-name`, `.price`,
 `.product-image img`, và `data-id` / `data-brand` / `data-slug` trên `.product-item`.
-Nút giỏ nằm trong `<a class="product-image">` nên handler **phải `preventDefault()`**.
 
 ### 5.3 Thứ tự thông số: KHÔNG có `display_order`
 `ProductRepository::findBySlug()` đã `ORDER BY d.specification_id`, nên **thứ tự = thứ tự chèn
@@ -242,8 +476,8 @@ Trang chi tiết đọc được: JSON-LD `aggregateRating{ratingValue,reviewCou
 ## 6. Lệnh hữu ích
 
 ```bash
-# Chạy web
-php -S 127.0.0.1:8080 -t .
+# Chạy web — PHP built-in dev server (cách chủ dự án dùng gần như luôn)
+php -S localhost:8001 -t .
 
 # Kiểm tra trước khi commit (chạy cả 3)
 for f in $(rg -l '' --glob '*.php'); do php -l "$f" | rg -v 'No syntax errors'; done
@@ -257,6 +491,16 @@ rg -n -e '^\s*//' -e '^\s*/\*' --glob '!PLAN.md'
 mariadb --defaults-extra-file=/tmp/tnc-mysql.cnf -e \
   "SELECT COUNT(*) tong, SUM(review_count>0) co_danh_gia, SUM(list_price IS NOT NULL) co_gia_gach FROM \`tnc-db\`.products;"
 ```
+
+> **Cổng chạy web:** trên máy chủ dự án, PHP dev server đang chạy ở **`localhost:8001`**
+> (`C:\xampp\php\php.exe -S localhost:8001`, đã kiểm chứng bằng `Get-CimInstance Win32_Process`).
+> `localhost:8080` không có gì — mở ra thấy `502 Bad Gateway`.
+> `APP_URL` trong `.env` vẫn ghi `http://localhost:8000`; đó chỉ là giá trị tham chiếu,
+> app không dùng nó để dựng link.
+>
+> **Apache chỉ là phương án dự phòng.** XAMPP Apache (`http://localhost/tnc/`) ít khi dùng.
+> Nếu chuyển sang chạy bằng Apache thì phải kiểm lại link tương đối và `APP_URL`;
+> còn với `php -S -t .` thì mọi đường dẫn tương đối (`backend/api/...`, `css/...`) chạy đúng ngay.
 
 ## 7. Thứ tự ưu tiên đề xuất
 
@@ -379,19 +623,62 @@ Get-ChildItem css -Filter *.css | ForEach-Object {
   if ($o -ne $c) { "LECH $($_.Name): {=$o }=$c" }
 }
 
-# chạy web
-php -S 127.0.0.1:8080 -t .
+# chạy web (PHP dev server — cách dùng chính; Apache XAMPP chỉ là dự phòng)
+php -S localhost:8001 -t .
 ```
 
 `rg`, `php`, `node` phải có trên `PATH`. Nếu chưa có `rg`: `winget install BurntSushi.ripgrep.MSVC`.
 
-### 8.4 OPcache — cạm bẫy y hệt, không phải chỉ Linux
+### 8.3b Kiểm tra giao diện bằng trình duyệt — KHÔNG cần chrome-devtools MCP
+
+Máy này **không cài `chrome-devtools-mcp`**, và không có MCP server nào được cấu hình
+(đã kiểm: `list_mcp_resources` trả rỗng, `~/.config/opencode/` không có `opencode.json`,
+global npm không có package nào liên quan).
+
+Kiểm tra giao diện vẫn làm được bằng **browser tool built-in** của opencode — nó nói chuyện
+Chrome DevTools Protocol, đủ dùng cho việc kiểm tra này:
+
+```js
+const tab = await tools.browser.tabs.open({ url: "http://localhost:8001" });
+await tools.browser.network.list({ tabID: tab.id });            // request + status
+await tools.browser.console({ tabID: tab.id, level: "error" }); // lỗi JS
+await tools.browser.evaluate({ tabID: tab.id, script: "document.querySelectorAll('.product-item').length" });
+await tools.browser.screenshot({ tabID: tab.id });
+```
+
+Ba lưu ý đã gặp thật:
+- `evaluate` nhận tham số tên **`script`**, không phải `expression`.
+- `wait` nhận **`condition`** (`"load" | "text" | "textGone"`), không nhận `time`.
+- `screenshot` cần tab **visible**: mở tab với `focus: true` và để cửa sổ desktop hiện ra,
+  nếu không sẽ lỗi `browser.screenshot failed. Screenshot needs a visible tab.`
+- Script chạy trong cùng một scope giữa các lần `evaluate`, nên khai báo `const btn` ở lần
+  trước sẽ gây `SyntaxError: Identifier 'btn' has already been declared`.
+  Bọc mọi đoạn kiểm tra vào `(() => { ... })()`.
+- Trong `evaluate` của Code Mode **không có `setTimeout`**. Muốn chờ thì dùng
+  `await new Promise(r => setTimeout(r, 800))` ngay trong script trang.
+
+### 8.4 OPcache — cạm bẫy y hệt, nhưng **máy này KHÔNG bị**
 `php -S` chạy SAPI **cli-server**, bị chi phối bởi `opcache.enable` (KHÔNG phải `enable_cli`).
 Sửa file PHP xong web vẫn trả bản cũ tới ~3 phút → **khởi động lại `php -S`** sau mỗi lần sửa PHP.
 
+> **Đã kiểm trên máy này: KHÔNG có OPcache.** `php -r "var_dump(extension_loaded('Zend OPcache'))"`
+> trả `bool(false)`. Nên sửa PHP xong reload trình duyệt là thấy bản mới, **không cần restart server**.
+> Nếu sau này web trả bản cũ thì kiểm tra lại lệnh trên trước đã.
+
 ```powershell
-php -i | Select-String -Pattern 'opcache' | Select-Object -First 8
+php -r "var_dump(extension_loaded('Zend OPcache'), ini_get('opcache.enable'));"
 ```
+
+### 8.4b Chỉnh file trên Windows — đừng dùng `Set-Content`
+`Set-Content -Encoding UTF8` của PowerShell 5 **thêm BOM** và đổi LF thành CRLF;
+`-Encoding Ascii` thì **xoá hết tiếng Việt** trong comment (thành `???`).
+Đã làm hỏng `css/product-detail.css` một lần, phải `git checkout` rồi sửa lại bằng tool edit.
+
+- Sửa file bằng **tool `edit`** của agent, hoặc bằng script PHP/Python ghi rõ encoding.
+- Kiểm tra sau khi sửa: file không có BOM (3 byte đầu ≠ `EF BB BF`),
+  `git diff --stat` không báo "sửa toàn bộ file".
+- Working tree của repo này **dùng CRLF** (do `core.autocrlf=true` của Git for Windows quy định),
+  nên thấy CRLF trong file là bình thường, không phải lỗi.
 
 ### 8.5 Những thứ KHÔNG cần làm gì khác
 - Cú pháp PHP/JS/CSS/SQL trong dự án **không có gì riêng cho Linux**.

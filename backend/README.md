@@ -146,7 +146,8 @@ Bốn repository:
 
 | Repository | Phụ trách | Bảng chính |
 | --- | --- | --- |
-| `ProductRepository` | Danh mục, tìm kiếm, lọc, chi tiết sản phẩm | `products`, `brands`, `categories`, `product_images`, `product_specifications`, `inventory` |
+| `ProductRepository` | Danh mục, tìm kiếm, lọc, chi tiết sản phẩm | `products`, `brands`, `brand_images`, `categories`, `product_images`, `product_specifications`, `inventory` |
+| `ReviewRepository` | Đánh giá, trả lời, tính lại điểm | `product_reviews`, `products` |
 | `NewsRepository` | Danh sách & chi tiết bài viết | `news_posts`, `news_categories` |
 | `DashboardRepository` | Số liệu cho trang quản trị | `orders`, `order_items`, `users`, `inventory` |
 | `UserRepository` | Tìm user theo email (cho đăng nhập) | `users`, `roles` |
@@ -161,7 +162,77 @@ Bốn repository:
 
 Nhờ vậy front-end không cần biết quy tắc định dạng tiền Việt Nam. Sản phẩm giá `0` trả về `"Liên hệ"`.
 
-### 4.3 `src/Support/Http.php` — tiện ích cho request/response
+### 4.4 `ReviewRepository` — luồng đánh giá và trả lời
+
+Đánh giá gốc có `rating`, trả lời thì không — `parent_review_id` khác NULL nối vào nhánh nên
+thành cây, đệ quy được.
+
+**Quy tắc nghiệp vụ**
+
+- Khách vãng lai đánh giá được, không cần đăng nhập; bắt buộc có họ tên + số điện thoại.
+- Chỉ chặn trùng khi đã đăng nhập: 1 tài khoản 1 đánh giá gốc trên mỗi sản phẩm.
+  Ràng buộc `uq_reviews_one_per_user (product_id, root_user_id)` làm việc này mà **không**
+  khoá khách vãng lai, vì MySQL coi mỗi `NULL` là một giá trị khác nhau trong `UNIQUE`.
+- Trả lời: khách chỉ trả lời được trong nhánh của chính mình (khớp họ tên + số điện thoại,
+  hoặc đang đăng nhập bằng chính tài khoản đã viết đánh giá gốc đó). `admin`/`staff` trả lời
+  được mọi nhánh và được gắn cờ `is_staff`.
+- Sửa bình luận: tác giả sửa của mình, staff sửa bất kỳ bình luận nào.
+- Xoá đánh giá gốc kéo theo toàn bộ nhánh trả lời (`fk_reviews_parent` ON DELETE CASCADE).
+- Ẩn/hiện đánh giá là dành cho quản trị và **có tính lại** điểm trung bình.
+
+**Vì sao phải cập nhật điểm trong cùng transaction**
+
+`products.rating_avg` / `review_count` được ghi lại bởi `refreshProductRating()` ngay trong
+transaction của thao tác ghi đánh giá. Thẻ sản phẩm chỉ `SELECT` trên `products` và không
+join bảng đánh giá, nên nếu tính điểm ở transaction riêng thì thẻ sẽ đọc ra số cũ. Vì vậy
+`sync_tncstore_stats.php` **không** còn ghi `rating_avg` / `review_count` — ghi đè ở đó sẽ
+xoá mất đánh giá thật của khách.
+
+**Hai điểm đo trên chính DB này, đừng "sửa cho gọn"**
+
+- `AVG()` trên tập rỗng trả `NULL`, mà `rating_avg` là `NOT NULL` → phải `COALESCE` về 0.
+- PDO trả `NEWDECIMAL` dưới dạng **string** → phải cast `(float)` trước khi tính trung bình.
+
+**Cột `GENERATED` không dùng được**
+
+Không sinh `root_user_id` bằng `GENERATED ALWAYS AS (...) STORED`: MySQL 8.4.8 trả lỗi 1215
+`Cannot add foreign key constraint` khi bảng vừa có cột generated STORED vừa có FK. Nên
+`root_user_id` là cột thường do app gán: bằng `user_id` với đánh giá gốc, `NULL` với trả lời.
+
+**Cây dựng ở tầng PHP, không query đệ quy**
+
+`product_reviews` được lấy phẳng một lần rồi dựng cây trong PHP. Bản ghi mồ côi (cha bị ẩn
+hoặc xoá) được gắn lên gốc để không mất nội dung khỏi màn hình. `MAX_DEPTH = 12` chặn vòng
+lặp nếu dữ liệu bị hỏng.
+
+`recalculate_ratings.php` tính lại điểm toàn catalog — dùng khi nghi ngờ số liệu lệch.
+
+### 4.5 Danh mục cha và breadcrumb 3 cấp
+
+`categories` có cột `parent_category_id` tự tham chiếu. Ánh xạ cha lấy từ breadcrumb thật
+trên tncstore.vn, cấu trúc **không đồng nhất**:
+
+| Danh mục cha | Danh mục lá |
+| --- | --- |
+| `linh-kien-may-tinh` | `cpu`, `mainboard`, `ram`, `hdd`, `case`, `psu`, `ssd` |
+| `gaming-gears` | `phu-kien` |
+| _(không có cha)_ | `vga`, `display` |
+
+`vga` không có cha vì sản phẩm VGA trên trang gốc chỉ có breadcrumb 2 cấp. `display` không
+có cha vì trang gốc tách màn hình theo **brand** ("Màn Hình LG"), còn dự án gộp một danh mục
+lá tên "Màn hình máy tính" — gắn cha sẽ ra hai tên trùng nghĩa.
+
+**Hai chỗ dễ làm sai**
+
+- `AdminProductRepository::categories()` phải lọc lá bằng `NOT EXISTS` (không có con).
+  `WHERE parent_category_id IS NULL` là **sai**: nó giữ lại chính các danh mục cha vì chúng
+  cũng là top-level, khiến dropdown chỉ còn 4 mục thay vì 10.
+- `ProductRepository::buildFilters()` phải nhận **cả slug cha** ở tham số `?category=`, nếu
+  không link breadcrumb cấp cha sẽ dẫn tới trang danh mục rỗng. Vì MySQL native prepare không
+  cho tái sử dụng placeholder nên phải dùng hai tên khác nhau (`:category` và `:categoryParent`)
+  chứ không được viết cùng một placeholder hai lần trong một `WHERE`.
+
+### 4.6 `src/Support/Http.php` — tiện ích cho request/response
 
 - `requestInput()` — đọc dữ liệu gửi lên, hiểu cả form thường lẫn JSON.
 - `jsonResponse($payload, $status)` — in JSON rồi `exit`.
@@ -325,7 +396,6 @@ Giỏ hàng **chỉ nằm trong trình duyệt**, lưu ở `localStorage` dướ
 Cách nó gắn với thẻ sản phẩm: `getProductFromCard()` **đọc HTML** của thẻ để lấy tên, giá, ảnh. Vì vậy `TNC.productCard()` phải giữ đúng các hook sau, nếu đổi sẽ làm hỏng giỏ hàng:
 
 - `.product-item` — khối bao ngoài, mang `data-id` / `data-brand` / `data-slug`
-- `.js-quick-add` — nút thêm vào giỏ nằm trong thẻ
 - `.product-name` — tên sản phẩm
 - `.price` — giá bán
 - `.product-image img` — đường dẫn ảnh
@@ -336,8 +406,11 @@ và “N đánh giá” → `.main-price` gồm `del.old-price` + `b.price` + `.
 `.boder-*` tạo viền xanh khi hover.
 
 Thẻ **không có lớp cột bao ngoài**: container tự chia bề rộng (`#product-grid`, `.content-product-category`,
-`#featured-products-list`, `#similar-products`, `.category-featured-grid`). Riêng `.js-quick-add`
-là phần thêm của project — trang gốc không có nút giỏ ở thẻ, nên nó chỉ hiện khi hover.
+`#featured-products-list`, `#similar-products`, `.category-featured-grid`).
+
+Thẻ **không có nút thêm vào giỏ**. Đếm trên tncstore.vn ngày 2026-10-15: `.js-quick-add` = 0
+ở trang chi tiết, trang danh mục và trang chủ. Nút đã bị gỡ khỏi `productCard()`, khỏi CSS và
+khỏi handler trong `cart.js`. Thêm giỏ qua trang giỏ hàng và nút Mua Ngay ở trang chi tiết.
 
 `cart.js` cố ý **không phụ thuộc `TNC`**: nó có `formatPrice` và `escapeAttr` riêng, để trang giỏ hàng vẫn chạy được kể cả khi API/DB có vấn đề.
 
