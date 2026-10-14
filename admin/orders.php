@@ -31,6 +31,10 @@ $adminInitials = strtoupper(substr(preg_replace('/\s+/', '', (string) $adminName
 					<i class="bi bi-receipt"></i>
 					<span>Đơn hàng</span>
 				</a>
+				<a href="reviews.php">
+					<i class="bi bi-star"></i>
+					<span>Đánh giá</span>
+				</a>
 				<a href="customer.php">
 					<i class="bi bi-chat-left-text"></i>
 					<span>Khách hàng</span>

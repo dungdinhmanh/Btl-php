@@ -4,6 +4,10 @@ declare(strict_types=1);
 /**
  * Nạp giá niệm yết từ tncstore.vn vào products.
  *
+ * CHỈ đồng bộ list_price. Không ghi rating_avg/review_count nữa: từ khi có bảng
+ * product_reviews, điểm đó do ReviewRepository tính trong cùng transaction với thao tác
+ * đánh giá. Ghi đè ở đây sẽ xoá mất đánh giá thật của khách.
+ *
  * Usage: php backend/database/sync_tncstore_stats.php [--limit=20] [--category=cpu]
  *        [--delay=250] [--dry-run] [--refresh]
  */
@@ -113,7 +117,7 @@ $delayMs = max(0, (int) $options['delay']);
 $limit = max(0, (int) $options['limit']);
 
 $sql = 'SELECT product_id AS id, product_slug AS slug, product_name AS name,
-               unit_price AS price, rating_avg AS rating, review_count AS reviews
+               unit_price AS price
         FROM products
         WHERE product_status = :status';
 
@@ -125,7 +129,8 @@ if ($options['category'] !== '') {
 }
 
 if ($options['refresh'] === '0') {
-    $sql .= ' AND review_count = 0';
+    // Mặc định chỉ nạp cho sản phẩm chưa có giá gạch, không phụ thuộc vào điểm đánh giá.
+    $sql .= ' AND list_price IS NULL';
 }
 
 $sql .= ' ORDER BY product_id ASC';
@@ -144,7 +149,7 @@ if ($products === []) {
 
 $update = $database->prepare(
     'UPDATE products
-     SET list_price = :list_price, rating_avg = :rating, review_count = :reviews
+     SET list_price = :list_price
      WHERE product_id = :id',
 );
 
@@ -175,21 +180,17 @@ foreach ($products as $index => $product) {
             if (!$dryRun) {
                 $update->execute([
                     ':list_price' => $listPrice,
-                    ':rating' => $stats['rating'],
-                    ':reviews' => $stats['reviews'],
                     ':id' => (int) $product['id'],
                 ]);
             }
 
             ++$updated;
             fwrite(STDOUT, sprintf(
-                "[%d/%d] %-52s %s★ / %d đánh giá%s%s\n",
+                "[%d/%d] %-52s giá gạch %s%s\n",
                 $index + 1,
                 count($products),
                 $slug,
-                $stats['rating'],
-                $stats['reviews'],
-                $listPrice !== null ? ' / giá gạch ' . number_format($listPrice, 0, ',', '.') . 'đ' : '',
+                $listPrice !== null ? number_format($listPrice, 0, ',', '.') . 'đ' : 'không có',
                 $dryRun ? ' (dry-run)' : '',
             ));
         }

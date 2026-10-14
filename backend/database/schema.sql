@@ -127,6 +127,45 @@ CREATE TABLE product_specifications (
     REFERENCES specification_definitions (specification_id) ON DELETE RESTRICT
 ) ENGINE=InnoDB;
 
+-- Đánh giá sản phẩm. parent_review_id NULL = đánh giá gốc (có rating),
+-- khác NULL = trả lời (không có rating) — cấu trúc cây nên đệ quy được.
+-- root_user_id là cột thường do app gán: bằng user_id với đánh giá gốc, NULL với trả lời.
+-- UNIQUE (product_id, root_user_id) nên chặn trùng cho tài khoản đã đăng nhập
+-- mà vẫn cho khách vãng lai (user_id NULL) đánh giá không giới hạn — vì MySQL
+-- coi mỗi NULL là một giá trị khác nhau trong UNIQUE.
+-- KHÔNG dùng cột GENERATED: MySQL 8.4.8 từ chối ("Cannot add foreign key constraint",
+-- mã 1215) khi bảng có cột generated STORED và đồng thời có FK.
+CREATE TABLE product_reviews (
+  review_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  product_id BIGINT UNSIGNED NOT NULL,
+  user_id BIGINT UNSIGNED NULL,
+  parent_review_id BIGINT UNSIGNED NULL,
+  root_user_id BIGINT UNSIGNED NULL,
+  rating TINYINT UNSIGNED NULL,
+  reviewer_name VARCHAR(150) NOT NULL,
+  reviewer_phone VARCHAR(25) NOT NULL,
+  content TEXT NOT NULL,
+  is_staff BOOLEAN NOT NULL DEFAULT FALSE,
+  review_status ENUM('published', 'hidden') NOT NULL DEFAULT 'published',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT uq_reviews_one_per_user UNIQUE (product_id, root_user_id),
+  CONSTRAINT fk_reviews_product FOREIGN KEY (product_id)
+    REFERENCES products (product_id) ON DELETE CASCADE,
+  CONSTRAINT fk_reviews_user FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE SET NULL,
+  CONSTRAINT fk_reviews_parent FOREIGN KEY (parent_review_id)
+    REFERENCES product_reviews (review_id) ON DELETE CASCADE,
+  CONSTRAINT chk_reviews_name CHECK (CHAR_LENGTH(TRIM(reviewer_name)) >= 1),
+  CONSTRAINT chk_reviews_phone CHECK (CHAR_LENGTH(TRIM(reviewer_phone)) >= 1),
+  CONSTRAINT chk_reviews_content CHECK (CHAR_LENGTH(TRIM(content)) >= 1),
+  CONSTRAINT chk_reviews_rating CHECK (
+    (parent_review_id IS NULL AND rating IS NOT NULL AND rating BETWEEN 1 AND 5)
+    OR (parent_review_id IS NOT NULL AND rating IS NULL)
+  )
+) ENGINE=InnoDB;
+CREATE INDEX ix_reviews_product ON product_reviews (product_id, parent_review_id, created_at);
+CREATE INDEX ix_reviews_parent ON product_reviews (parent_review_id);
+
 CREATE TABLE warehouses (
   warehouse_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   warehouse_code VARCHAR(30) NOT NULL,
