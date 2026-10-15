@@ -1,5 +1,14 @@
 <?php
 require_once __DIR__ . '/backend/bootstrap.php';
+require_once __DIR__ . '/partial/news-cards.php';
+
+/** Tin tức cho khối "Tin tức liên quan" (như TNC lấy 4 bài mới nhất). */
+try {
+	$newsRepository = new NewsRepository(database());
+	$relatedPosts = $newsRepository->latest(4);
+} catch (Throwable $exception) {
+	$relatedPosts = [];
+}
 ?>
 <!doctype html>
 <html lang="vi">
@@ -12,212 +21,195 @@ require_once __DIR__ . '/backend/bootstrap.php';
 		/>
 		<title>Build PC | TNC Store</title>
 		<?php require 'partial/link.php' ?>
+		<link rel="stylesheet" href="css/buildpc.css" />
 	</head>
-	<body class="buildpc-body">
+	<body>
 		<?php require 'partial/header.php' ?>
-		<main>
-			<section class="buildpc-intro">
-				<div class="container">
-					<div class="buildpc-intro-copy">
-						<p class="eyebrow">TNC Build / Tự chọn linh kiện</p>
-						<h1>
-							Xây cấu hình
-							<br />
-							<span>đúng nhu cầu.</span>
-						</h1>
-						<p>
-							Chọn từng linh kiện, theo dõi ngân sách và kiểm tra tương thích ngay
-							trong lúc build. Cấu hình của bạn sẽ được lưu trên trình duyệt này.
-						</p>
-					</div>
-					<div class="buildpc-intro-art" aria-hidden="true">
-						<i class="bi bi-cpu"></i>
-						<span>
-							BUILD
-							<br />
-							<b>YOUR WAY</b>
-						</span>
+		<main class="page-buildpc">
+			<div class="container">
+				<div class="breadcrumb">
+					<ol class="ul clearfix">
+						<li>
+							<a href="index.php"><span>Trang chủ</span></a>
+							<i class="bi bi-chevron-right" aria-hidden="true"></i>
+						</li>
+						<li>
+							<a href="buildpc.php"><h1>Build PC - Xây dựng cấu hình PC</h1></a>
+						</li>
+					</ol>
+				</div>
+
+				<div class="product-list-buildpc background-white">
+					<h2 class="title">Mẫu PC nổi bật</h2>
+					<div class="list-bst" id="js-list-bst">
+						<p style="font-size: 30px; text-align: center; display: flex; align-items: center; justify-content: center; line-height: 300px; font-weight: bold;">Đang cập nhật sản phẩm.....!</p>
 					</div>
 				</div>
-			</section>
 
-			<section class="section-space buildpc-workspace">
-				<div class="container">
-					<div class="buildpc-toolbar">
-						<div>
-							<p class="eyebrow">Bộ linh kiện</p>
-							<h2>Chọn phần cứng</h2>
+				<div class="banner-buildpc">
+					<a href="products.php" class="item">
+						<img src="assets/img/banner/promo/banner-build-pc-gigabyte-intel-pc.jpg" alt="Khuyến mại build PC" />
+					</a>
+				</div>
+
+				<div class="content-buildpc d-flex">
+					<div class="left-buildpc">
+						<div class="list-btn-action d-flex align-items">
+							<a href="javascript:void(0)" class="item active" data-slot="1">Cấu hình 1</a>
+							<a href="javascript:void(0)" class="item" data-slot="2">Cấu hình 2</a>
+							<a href="javascript:void(0)" class="item" data-slot="3">Cấu hình 3</a>
+							<a href="javascript:void(0)" class="item" data-slot="4">Cấu hình 4</a>
+							<a href="javascript:void(0)" class="item" data-slot="5">Cấu hình 5</a>
 						</div>
-						<button id="reset-build" class="btn btn-outline-primary" type="button">
-							<i class="bi bi-arrow-counterclockwise me-2"></i>
-							Làm lại
-						</button>
+						<div class="background-white">
+							<h3 class="title">Chọn linh kiện pc</h3>
+							<div class="list-action d-flex align-items space-between" id="js-buildpc-action">
+								<a href="javascript:void(0)" class="item">
+									<i class="bi bi-floppy" aria-hidden="true"></i>
+									<span class="hover-txt" data-action="save">Lưu cấu hình</span>
+								</a>
+								<a href="javascript:void(0)" class="item">
+									<i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
+									<span class="hover-txt" data-action="download-excel">Tải file excel cấu hình</span>
+								</a>
+								<a href="javascript:void(0)" class="item">
+									<i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
+									<span class="hover-txt" data-action="create-image">Tải ảnh cấu hình</span>
+								</a>
+								<a href="javascript:void(0)" class="item">
+									<i class="bi bi-printer" aria-hidden="true"></i>
+									<span class="hover-txt" data-action="view">In báo giá</span>
+								</a>
+								<a href="javascript:void(0)" class="item">
+									<i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+									<span class="hover-txt">Làm mới cấu hình</span>
+								</a>
+							</div>
+							<div class="list-drive" id="js-buildpc-layout"></div>
+						</div>
 					</div>
-					<div class="row g-4 align-items-start">
-						<div class="col-xl-8">
-							<div id="component-list" class="component-list"></div>
+
+					<div class="right-buildpc">
+						<div class="box-promotion background-white">
+							<div class="box-info-promotion js-buildpc-promotion-content">
+								<b style="color: red; font-weight: 600;">Không tìm thấy khuyến mãi phù hợp!</b>
+							</div>
+							<p class="note-user">Mã giảm giá và phiếu mua hàng sẽ khổng thể dùng lại sau khi đã đặt mua hàng</p>
+							<div class="box-note-promotion">
+								<p>Quý khách hàng lưu ý: Khuyến mãi áp dụng cho 01 bộ PC, tính trên tổng linh kiện bắt buộc và phụ kiện tùy chọn trong cùng đơn hàng.</p>
+								<p>Trong đó những <strong>sản phẩm bắt buộc</strong> bao gồm: VGA, Main, CPU, RAM, SSD, Nguồn, Vỏ Case (Chiết khấu chỉ áp dụng số lượng 01 cho mỗi linh kiện).</p>
+								<p>Những <strong>sản phẩm tùy chọn</strong> bao gồm: Màn hình, Tản Nhiệt, Quạt, Bàn Phím, Chuột,...</p>
+								<p>Đối với <strong>PC không có VGA</strong> chỉ giảm 3% cho bộ PC</p>
+								<p><strong>Ưu đãi mua kèm:</strong> Màn hình -2% | Gaming gear -3% (Chỉ áp dụng giảm số lượng 01 cho mỗi nhóm sản phẩm)</p>
+								<p>Chương trình khuyến mãi không áp dụng với PC build Card màn hình chạy Flash Sale, ưu đãi không cộng dồn với các khuyến mãi khác. Giá hiển thị chỉ mang tính tham khảo, vui lòng liên hệ NVKD để biết thông tin chi tiết.</p>
+							</div>
 						</div>
-						<aside class="col-xl-4">
-							<div class="build-summary" aria-live="polite">
-								<div class="build-summary-head">
-									<div>
-										<p class="eyebrow">Cấu hình của bạn</p>
-										<h2 id="summary-title">Chưa hoàn thiện</h2>
+
+						<div class="box-add-buildpc background-white">
+							<div class="box-config-summary">
+								<h4 class="text-center">Mời bạn chọn linh kiện ở bảng tên</h4>
+								<a href="javascript:void(0)" class="add-buildpc error">
+									<span class="txt">Xác nhận mua hàng</span>
+								</a>
+								<div class="show-action-buy">
+									<h4>Thông tin PC</h4>
+									<div class="content-total-buildpc">
+										<div class="item d-flex align-items space-between">
+											<b>Chi phí dự tính</b>
+											<b class="price js-config-summary"></b>
+										</div>
+										<div class="item d-flex align-items space-between" id="price-sale-promotion">
+											<b>Khuyến mãi</b>
+											<b class="price js-title-promotion">0đ</b>
+										</div>
+										<div class="item d-flex align-items space-between" id="total-sale-promotion">
+											<b>Giảm tiền mặt</b>
+											<b class="price">0đ</b>
+										</div>
+										<div class="item total d-flex align-items space-between">
+											<b>Tổng chi phí</b>
+											<b class="total-price-config js-config-summary js-total-price-final"></b>
+										</div>
+										<div class="item">
+											<span class="vat">Đã bao gồm VAT [nếu có]</span>
+										</div>
 									</div>
-									<span id="selected-count" class="build-count">0/8</span>
+									<a href="javascript:void(0)" class="add-buildpc active" id="js-add-to-cart">
+										<span class="txt">Tiến hành thanh toán</span>
+									</a>
 								</div>
-								<div id="compatibility-message" class="compatibility-message">
-									<i class="bi bi-info-circle"></i>
-									<span>Chọn CPU và bo mạch chủ để bắt đầu kiểm tra.</span>
-								</div>
-								<div id="summary-list" class="summary-list"></div>
-								<div class="summary-total">
-									<span>Tạm tính</span>
-									<strong id="total-price">Chưa có dữ liệu</strong>
-								</div>
-								<button
-									id="consult-build"
-									class="btn btn-primary w-100"
-									type="button"
-								>
-									<i class="bi bi-chat-square-text me-2"></i>
-									Nhận tư vấn cấu hình
-								</button>
-								<p class="build-summary-note">
-									TNC sẽ kiểm tra lại nguồn, socket và khả năng nâng cấp trước khi
-									chốt đơn.
-								</p>
 							</div>
-						</aside>
-					</div>
-				</div>
-			</section>
+							<div class="icon-pay">
+								<img src="assets/img/pay_cart.png" alt="pay" />
+							</div>
+							<div class="info-policy">
+								<div class="item">
+									<i class="bi bi-credit-card" aria-hidden="true"></i>
+									<span>Hỗ trợ trả góp 0%, trả trước 0 đ</span>
+								</div>
+								<div class="item">
+									<i class="bi bi-cash-coin" aria-hidden="true"></i>
+									<span>Hoàn tiền 200% nếu có hàng giả</span>
+								</div>
+								<div class="item">
+									<i class="bi bi-lightning-charge-fill" aria-hidden="true"></i>
+									<span>Giao hàng nhanh trên toàn quốc</span>
+								</div>
+								<div class="item">
+									<i class="bi bi-headset" aria-hidden="true"></i>
+									<span>Hỗ trợ kĩ thuật online 24/7</span>
+								</div>
+								<div class="item">
+									<i class="bi bi-wrench-adjustable" aria-hidden="true"></i>
+									<span>Vệ sinh miễn phí PC, Laptop trọn đời</span>
+								</div>
+							</div>
+						</div>
 
-			<section class="section-space section-muted buildpc-notes">
-				<div class="container">
-					<div class="row g-4">
-						<div class="col-md-4">
-							<div class="build-note">
-								<i class="bi bi-shield-check"></i>
-								<h3>Tương thích rõ ràng</h3>
-								<p>
-									Socket CPU, loại RAM và công suất nguồn được kiểm tra trong lúc
-									chọn.
-								</p>
+						<div class="box-related-news background-white">
+							<div class="d-flex align-items space-between">
+								<h4 class="title">Tin tức liên quan</h4>
 							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="build-note">
-								<i class="bi bi-sliders"></i>
-								<h3>Đi theo ngân sách</h3>
-								<p>
-									Thay từng linh kiện để cân bằng hiệu năng chơi game, làm việc
-									hoặc sáng tạo.
-								</p>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="build-note">
-								<i class="bi bi-person-check"></i>
-								<h3>Có người kiểm tra</h3>
-								<p>
-									Gửi cấu hình cho đội ngũ TNC để được rà soát trước khi đặt hàng.
-								</p>
+							<div class="list-related" id="js-list-related">
+								<?php if ($relatedPosts !== []): ?>
+									<?php foreach ($relatedPosts as $post): ?>
+										<div class="item-article d-flex">
+											<div class="info">
+												<h3 class="name line-clamp-2"><a href="<?= e(newsPostUrl($post)) ?>"><?= e($post['title']) ?></a></h3>
+												<div class="summary line-clamp-2"><?= e($post['excerpt']) ?></div>
+												<div class="time d-flex align-items">
+													<div class="datetime">
+														<i class="bi bi-clock" aria-hidden="true"></i> <?= e($post['dateTime']) ?>
+													</div>
+													<div class="view">
+														<i class="bi bi-eye" aria-hidden="true"></i> <?= number_format((float) $post['views'], 0, ',', '.') ?>
+													</div>
+												</div>
+											</div>
+										</div>
+									<?php endforeach; ?>
+								<?php else: ?>
+									<i style="padding: 10px; display: block;">Bài viết đang được cập nhật.....!</i>
+								<?php endif; ?>
 							</div>
 						</div>
 					</div>
 				</div>
-			</section>
+			</div>
+
+			<div id="js-modal-popup"><!-- popup select --></div>
+
+			<div class="mask-popup" id="mask-rebuild">
+				<div id="popup-rebuild_config">
+					<div class="d-flex align-items space-center">
+						<h2>Chọn linh kiện mới</h2>
+					</div>
+					<p>Cảnh báo: Toàn bộ linh kiện của bộ PC hiện tại sẽ bị xóa đi</p>
+					<button type="button" class="btn btn-red cancel" id="rebuild-cancel">HỦY</button>
+					<button type="button" class="btn btn-red confirm" id="rebuild-confirm">XÁC NHẬN</button>
+				</div>
+			</div>
 		</main>
-
-		<div class="modal fade" id="consultModal" tabindex="-1" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-centered modal-sm">
-				<div class="modal-content account-modal">
-					<div class="modal-header border-0">
-						<h2 class="modal-title">Gửi cấu hình cho TNC</h2>
-						<button
-							type="button"
-							class="btn-close"
-							data-bs-dismiss="modal"
-							aria-label="Đóng"
-						></button>
-					</div>
-					<div class="modal-body pt-0">
-						<p class="build-modal-copy">
-							Để lại thông tin, đội ngũ tư vấn sẽ liên hệ với bạn.
-						</p>
-						<form id="consult-form">
-							<label for="consult-name">Họ và tên</label>
-							<input
-								id="consult-name"
-								class="form-control mb-3"
-								type="text"
-								required
-							/>
-							<label for="consult-phone">Số điện thoại</label>
-							<input
-								id="consult-phone"
-								class="form-control mb-3"
-								type="tel"
-								required
-							/>
-							<button class="btn btn-primary w-100" type="submit">Gửi yêu cầu</button>
-						</form>
-						<p id="consult-success" class="consult-success" hidden>
-							Đã ghi nhận cấu hình. TNC sẽ liên hệ sớm với bạn.
-						</p>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="modal fade" id="partPickerModal" tabindex="-1" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-centered modal-lg">
-				<div class="modal-content part-picker-modal">
-					<div class="modal-header">
-						<div>
-							<p class="eyebrow">Kho sản phẩm</p>
-							<h2 class="modal-title" id="part-picker-title">Chọn linh kiện</h2>
-						</div>
-						<button
-							type="button"
-							class="btn-close"
-							data-bs-dismiss="modal"
-							aria-label="Đóng"
-						></button>
-					</div>
-					<div class="modal-body">
-						<div class="part-picker-toolbar">
-							<label class="part-picker-search" for="part-search">
-								<i class="bi bi-search" aria-hidden="true"></i>
-								<input
-									id="part-search"
-									type="search"
-									placeholder="Tìm theo tên, thương hiệu..."
-									autocomplete="off"
-								/>
-							</label>
-							<select
-								id="part-brand-filter"
-								class="form-select"
-								aria-label="Lọc theo thương hiệu"
-							>
-								<option value="">Tất cả thương hiệu</option>
-							</select>
-						</div>
-						<div id="part-picker-results" class="part-picker-results">
-							<div class="part-picker-empty">
-								<i class="bi bi-database-exclamation"></i>
-								<strong>Chưa có dữ liệu sản phẩm</strong>
-								<p>
-									Kết quả từ database sẽ xuất hiện ở đây khi backend được kết nối.
-								</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
 		<script src="js/buildpc.js"></script>
 		<?php require 'partial/footer.php' ?>
 	</body>

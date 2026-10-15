@@ -1,0 +1,1146 @@
+/* ==========================================================================
+   Build PC — dựng theo tncstore.vn/buildpc
+   Nguồn: buildpc.css + các rule liên quan trong style_2023.css của TNC.
+   File này chỉ được nạp ở buildpc.php nên giữ nguyên tên class như gốc.
+   ========================================================================== */
+
+.page-buildpc {
+	--grey-bold: #8d94ac;
+	margin-bottom: 32px;
+}
+
+/* Khung nội dung trang gốc rộng 1200px (container gốc không có padding) */
+.page-buildpc > .container {
+	max-width: 1200px;
+	padding: 0;
+}
+
+/* Reset của gốc: ảnh không tràn khung, link không gạch chân */
+.page-buildpc img {
+	max-width: 100%;
+	height: auto;
+}
+
+.page-buildpc :where(a) {
+	text-decoration: none;
+	color: #29324e;
+}
+
+/* Thanh cuộn mảnh 7px giống gốc */
+::-webkit-scrollbar-track {
+	background-color: #f5f5f5;
+	border-radius: 10px;
+}
+
+::-webkit-scrollbar {
+	width: 7px;
+	background-color: #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #8d94ac;
+	border-radius: 20px;
+	background-image: -webkit-gradient(
+		linear,
+		0 0,
+		0 100%,
+		color-stop(0.7, #8d94ac),
+		color-stop(0.5, transparent),
+		to(transparent)
+	);
+}
+
+/* --------------------------------------------------------------------------
+   Breadcrumb
+   -------------------------------------------------------------------------- */
+.breadcrumb i {
+	color: #333;
+	font-size: 12px;
+}
+
+.breadcrumb li:first-child span,
+.breadcrumb li:first-child i {
+	color: var(--grey-bold);
+}
+
+.breadcrumb ol li a span:hover {
+	color: var(--color-global);
+}
+
+.breadcrumb ol li a span {
+	font-size: 14px;
+	line-height: 80px;
+	float: left;
+	display: flex;
+	align-items: center;
+	color: #000;
+	font-weight: 600;
+}
+
+.breadcrumb ol li h1 {
+	font-size: 15px;
+	line-height: 80px;
+	float: left;
+	font-weight: 400;
+	margin: 0;
+}
+
+.breadcrumb ol li i {
+	margin-left: 10px;
+	margin-right: 10px;
+	float: left;
+	line-height: 80px;
+}
+
+.breadcrumb ol li:last-child i {
+	display: none;
+}
+
+.breadcrumb ol li {
+	float: left;
+	list-style: none;
+}
+
+.breadcrumb ol {
+	width: 100%;
+	float: left;
+	padding: 0;
+	margin: 0;
+	background: none;
+}
+
+/* --------------------------------------------------------------------------
+   Mẫu PC nổi bật (dữ liệu PC dựng sẵn chưa có nên hiển thị trạng thái chờ)
+   -------------------------------------------------------------------------- */
+.page-buildpc .product-list-buildpc .title {
+	font-size: 24px;
+	font-weight: 700;
+	text-transform: uppercase;
+	border-bottom: 3px solid var(--color-global);
+	display: inline-block;
+	margin-bottom: 24px;
+	padding-bottom: 0;
+}
+
+.page-buildpc .product-list-buildpc .list-bst {
+	border-left: 1px solid #ededed;
+	position: relative;
+	min-height: 360px;
+}
+
+/* --------------------------------------------------------------------------
+   Banner
+   -------------------------------------------------------------------------- */
+.page-buildpc .banner-buildpc {
+	margin: 32px 0;
+}
+
+.page-buildpc .banner-buildpc .item {
+	display: block;
+}
+
+.page-buildpc .banner-buildpc img {
+	width: 100%;
+	height: auto;
+	display: block;
+}
+
+/* --------------------------------------------------------------------------
+   Hai cột trái/phải
+   -------------------------------------------------------------------------- */
+.page-buildpc .left-buildpc {
+	width: calc(100% - 416px);
+}
+
+.page-buildpc .left-buildpc .title {
+	font-size: 20px;
+	font-weight: 700;
+	margin-bottom: 24px;
+}
+
+.page-buildpc .right-buildpc {
+	width: 400px;
+	margin-left: 16px;
+}
+
+.background-white {
+	background: #fff;
+	padding: 24px;
+}
+
+/* --------------------------------------------------------------------------
+   Danh sách dòng linh kiện
+   -------------------------------------------------------------------------- */
+.page-buildpc .item-drive {
+	padding: 24px 12px;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+.page-buildpc .item-drive:nth-child(2n) {
+	background: #f5f5f5;
+}
+
+.page-buildpc .item-drive .name {
+	width: 190px;
+	color: var(--grey-bold);
+	font-size: 16px;
+	font-weight: 600;
+	margin-right: 24px;
+}
+
+.page-buildpc .item-drive .drive-checked {
+	width: calc(100% - 214px);
+}
+
+.page-buildpc .item-drive .drive-checked.active {
+	width: 100%;
+	margin-top: 16px;
+}
+
+.page-buildpc .item-drive .drive-checked.active .box-add {
+	display: none;
+}
+
+.page-buildpc .item-drive .box-add {
+	background: var(--color-global);
+	display: block;
+	width: 24px;
+	height: 24px;
+	cursor: pointer;
+	transition: all 0.35s;
+	position: relative;
+}
+
+.page-buildpc .item-drive .box-add i {
+	color: #fff;
+	text-align: center;
+	line-height: 24px;
+	display: block;
+	font-size: 18px;
+}
+
+.page-buildpc .item-drive .box-add:hover {
+	transform: translateY(-0.25em);
+	box-shadow: 0 0 0.5em 0 var(--color-global);
+}
+
+.page-buildpc .item-drive .show-selected {
+	width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   5 tab cấu hình + thanh hành động
+   -------------------------------------------------------------------------- */
+.list-btn-action {
+	background: #29324e;
+	height: 50px;
+}
+
+.list-btn-action .item {
+	display: inline-block;
+	color: #fff;
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 50px;
+	padding: 0 24px;
+}
+
+.list-btn-action .item.active,
+.list-btn-action .item:hover {
+	background: var(--color-global);
+}
+
+.list-action {
+	margin-bottom: 24px;
+}
+
+.list-action .item {
+	color: var(--color-global);
+	font-weight: 600;
+	display: flex;
+	align-items: center;
+}
+
+.list-action .item i {
+	margin-right: 8px;
+	font-size: 16px;
+}
+
+.list-action .item i.bi-box-arrow-in-right {
+	transform: rotate(90deg);
+}
+
+.list-action .item .hover-txt {
+	position: relative;
+}
+
+.list-action .item .hover-txt::before {
+	position: absolute;
+	content: "";
+	width: 0;
+	height: 1px;
+	bottom: -1px;
+	left: 0;
+	transition: 0.5s;
+	background: var(--color-global);
+}
+
+.list-action .item .hover-txt:hover::before {
+	width: 100%;
+	transition: 0.5s;
+}
+
+/* --------------------------------------------------------------------------
+   Cột phải: khuyến mãi
+   -------------------------------------------------------------------------- */
+.box-promotion .note-user {
+	color: #8d94ac;
+	margin-bottom: 24px;
+	display: block;
+}
+
+.box-promotion .box-note-promotion {
+	background: #f5f5f5;
+	padding: 12px;
+}
+
+.box-promotion .box-note-promotion p {
+	font-size: 13px;
+	margin-bottom: 20px;
+}
+
+.box-promotion .box-note-promotion p:last-child {
+	margin-bottom: 0;
+}
+
+.box-info-promotion {
+	border: 2px solid #fb4e4e;
+	background: rgba(255, 175, 175, 0.1);
+	padding: 15px;
+	margin-bottom: 8px;
+}
+
+.box-info-promotion .title {
+	font-size: 16px;
+	font-weight: 600;
+	margin-bottom: 16px;
+}
+
+.box-info-promotion .title i {
+	color: var(--color-red);
+	margin-right: 16px;
+}
+
+.box-info-promotion li {
+	color: var(--color-red);
+	line-height: 23px;
+	list-style: inside;
+	font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   Cột phải: tổng tiền + thanh toán
+   -------------------------------------------------------------------------- */
+.box-add-buildpc {
+	margin-top: 24px;
+}
+
+.box-config-summary h4 {
+	font-size: 20px;
+	margin-bottom: 24px;
+}
+
+.box-add-buildpc .content-total-buildpc .item {
+	font-size: 16px;
+	margin-bottom: 8px;
+}
+
+.box-add-buildpc .content-total-buildpc .item.total {
+	margin-top: 16px;
+}
+
+.box-add-buildpc .content-total-buildpc .price {
+	color: var(--color-red);
+}
+
+.box-add-buildpc .content-total-buildpc .total-price-config {
+	font-size: 20px;
+	color: var(--color-red);
+}
+
+.box-add-buildpc .content-total-buildpc .vat {
+	display: block;
+	text-align: right;
+	margin-bottom: 24px;
+	color: #8d94ac;
+}
+
+.show-action-buy {
+	display: none;
+}
+
+.show-action-buy.active {
+	display: block;
+}
+
+.add-buildpc {
+	display: block;
+	width: 100%;
+	height: 50px;
+	line-height: 50px;
+	background: #ededed;
+	text-align: center;
+	font-size: 16px;
+	font-weight: 600;
+	color: #ccc;
+	position: relative;
+	overflow: hidden;
+}
+
+.add-buildpc::before {
+	position: absolute;
+	content: "";
+	width: 0;
+	height: 42px;
+	top: 4px;
+	left: 0;
+	-webkit-clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%);
+	clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%);
+	background: rgba(0, 0, 0, 0.3137254902);
+	transition: 0.5s;
+	opacity: 0;
+}
+
+.add-buildpc .txt {
+	position: relative;
+	z-index: 9;
+}
+
+.add-buildpc:hover::before {
+	opacity: 1;
+	width: 120%;
+}
+
+.add-buildpc.active {
+	background: var(--color-global);
+	color: #fff;
+}
+
+.add-buildpc.active:hover::before {
+	background: #193c7b;
+}
+
+.box-add-buildpc .icon-pay {
+	padding: 15px 0;
+	border-bottom: 1px solid #ededed;
+}
+
+.info-policy {
+	padding-top: 24px;
+}
+
+.info-policy .item {
+	display: flex;
+	margin-bottom: 10px;
+}
+
+.info-policy .item:last-child {
+	margin-bottom: 0;
+}
+
+.info-policy i {
+	font-size: 18px;
+	margin-right: 8px;
+	color: #29324e;
+}
+
+.info-policy i.bi-lightning-charge-fill {
+	font-size: 12px;
+	border: 2px solid;
+	border-radius: 50%;
+	width: 20px;
+	height: 20px;
+	text-align: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+}
+
+.box-add-buildpc .info-policy {
+	padding-top: 16px;
+}
+
+.box-add-buildpc .info-policy .item {
+	margin-bottom: 12px;
+}
+
+/* --------------------------------------------------------------------------
+   Cột phải: tin tức liên quan
+   -------------------------------------------------------------------------- */
+.box-related-news {
+	margin-top: 24px;
+}
+
+.box-related-news .title {
+	font-size: 24px;
+	font-weight: 700;
+	text-transform: uppercase;
+	border-bottom: 3px solid var(--color-global);
+	display: inline-block;
+	padding-bottom: 5px;
+	margin-bottom: 0;
+}
+
+.box-related-news .list-related {
+	margin-top: 24px;
+}
+
+.item-article {
+	margin-bottom: 24px;
+}
+
+.item-article .image {
+	position: relative;
+	display: block;
+	width: 160px;
+	height: 90px;
+	margin-right: 16px;
+	overflow: hidden;
+}
+
+.item-article .image img {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: fill;
+	transition: 0.5s all;
+	transform: scale(1);
+}
+
+.item-article .image img:hover {
+	transition: 0.5s all;
+	transform: scale(1.03);
+}
+
+.item-article .info {
+	width: calc(100% - 170px);
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.item-article .info .name {
+	font-size: 18px;
+	font-weight: 700;
+}
+
+.item-article .info .name:hover {
+	color: var(--color-global);
+}
+
+.item-article .info .summary {
+	margin: 8px 0;
+}
+
+.item-article .time {
+	color: #8d94ac;
+	font-size: 12px;
+}
+
+.item-article .time i {
+	margin-right: 5px;
+}
+
+.item-article .datetime {
+	padding-right: 15px;
+	border-right: 1px solid #ccc;
+}
+
+.item-article .view {
+	padding-left: 15px;
+}
+
+.box-related-news .item-article .image {
+	width: 140px;
+}
+
+.box-related-news .item-article .info {
+	width: calc(100% - 150px);
+}
+
+.box-related-news .item-article .name {
+	font-size: 16px;
+}
+
+.box-related-news .item-article:last-child {
+	margin-bottom: 0;
+}
+
+.page-buildpc .box-related-news .item-article .image {
+	display: none;
+}
+
+.page-buildpc .box-related-news .item-article .info {
+	width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Tiện ích dùng chung (bản gốc nằm trong style_2023.css)
+   -------------------------------------------------------------------------- */
+.flex-direction {
+	flex-direction: column;
+}
+
+.space-center {
+	justify-content: center !important;
+}
+
+/* --------------------------------------------------------------------------
+   Modal chọn linh kiện
+   -------------------------------------------------------------------------- */
+.mask-popup {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	background-color: rgba(0, 0, 0, 0.7);
+	transform-origin: center;
+	transition: opacity 0.3s ease;
+	z-index: -99;
+	opacity: 0;
+}
+
+.mask-popup .popup-select {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	width: 1200px;
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	text-align: center;
+	max-height: calc(100vh - 40px);
+	overflow: hidden;
+}
+
+.mask-popup.active {
+	z-index: 999999999;
+	opacity: 1;
+	transition: 0.7s ease-in-out;
+}
+
+.mask-popup .content-main {
+	border-top: 1px solid #ededed;
+}
+
+.mask-popup .header {
+	display: flex;
+	align-items: center;
+	padding: 24px;
+	/* Ghi đè .header của site (nền navy) để chữ đen trên nền trắng như gốc */
+	background: transparent;
+	top: auto;
+}
+
+.mask-popup .header h4 {
+	margin-right: 64px;
+	font-size: 24px;
+	text-transform: uppercase;
+	white-space: nowrap;
+	color: #000;
+}
+
+.mask-popup .header .close-popup {
+	width: 40px;
+	height: 40px;
+	background: #fff;
+	margin-left: 64px;
+	line-height: 40px;
+}
+
+.mask-popup .header .close-popup:hover {
+	background: var(--color-global);
+	color: #fff;
+}
+
+.mask-popup .form-input-buildpc {
+	border: 1px solid #ccc;
+	width: 100%;
+	display: flex;
+	align-items: center;
+}
+
+.mask-popup .form-input-buildpc .input-search {
+	width: calc(100% - 60px);
+	height: 40px;
+	padding: 0 12px;
+	border: 0;
+	outline: none;
+}
+
+.mask-popup .form-input-buildpc .input-search:focus {
+	box-shadow: inset 0 0 0 1px var(--color-global);
+}
+
+.mask-popup .form-input-buildpc .btn-search {
+	cursor: pointer;
+	display: block;
+	width: 60px;
+	padding: 0 16px;
+	height: 40px;
+	line-height: 40px;
+	background: var(--color-global);
+	position: relative;
+	z-index: 999;
+	overflow: hidden;
+}
+
+.mask-popup .form-input-buildpc .btn-search i {
+	color: #fff;
+	font-size: 16px;
+}
+
+.mask-popup .form-input-buildpc .btn-search::before {
+	position: absolute;
+	content: "";
+	background: #193c7b;
+	width: 0;
+	left: 0;
+	height: 40px;
+	-webkit-clip-path: polygon(0 0, 100% 0, 80% 100%, 0 100%);
+	clip-path: polygon(0 0, 100% 0, 80% 100%, 0 100%);
+	z-index: -1;
+	transition: 0.4s;
+}
+
+.mask-popup .form-input-buildpc .btn-search:hover::before {
+	width: 150%;
+}
+
+.popup-main-filter {
+	width: 288px;
+	padding: 24px;
+	max-height: calc(100vh - 170px);
+	overflow-y: auto;
+	margin-bottom: 24px;
+	border-right: 1px solid #ededed;
+}
+
+.popup-content-right {
+	width: calc(100% - 288px);
+	padding: 16px;
+}
+
+.list-product-select {
+	overflow-y: auto;
+	max-height: calc(100vh - 230px);
+}
+
+.popup-content-right .scroll-list {
+	height: 470px;
+	overflow: hidden;
+}
+
+.content-sort span {
+	color: #8d94ac;
+	margin-right: 5px;
+}
+
+.content-sort select {
+	border: none;
+	outline: none;
+}
+
+.sort-paging {
+	padding-bottom: 16px;
+	border-bottom: 1px solid #ededed;
+}
+
+.content-paging .item {
+	width: 35px;
+	height: 30px;
+	margin-left: 8px;
+	background: #f5f5f5;
+	line-height: 30px;
+	font-weight: 600;
+	display: block;
+	text-align: center;
+}
+
+.content-paging .item.active {
+	background: #000;
+	color: #fff;
+}
+
+/* Bộ lọc trong modal */
+.box-filter .content-filter {
+	max-height: 300px;
+	overflow-x: auto;
+	transition: max-height 350ms ease-out;
+}
+
+.box-filter .item-filter {
+	margin-bottom: 24px;
+	padding-bottom: 16px;
+	border-bottom: 1px solid #ccc;
+}
+
+.box-filter .title-filter {
+	margin-bottom: 16px;
+	width: 100%;
+}
+
+.box-filter .title-filter span {
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--grey-bold);
+	text-transform: uppercase;
+}
+
+.box-filter .title-filter i {
+	color: var(--grey-bold);
+	font-size: 12px;
+}
+
+.box-filter .item-attr {
+	margin-bottom: 8px;
+}
+
+.box-filter .item-attr:hover span {
+	color: var(--color-global);
+}
+
+.box-filter .item-attr:hover .icon-check {
+	background: var(--color-global);
+	border: none;
+}
+
+.box-filter .item-attr:hover .icon-check::before {
+	display: block;
+	color: #fff;
+}
+
+.box-filter .icon-check {
+	width: 14px;
+	height: 14px;
+	margin-right: 6px;
+	border: 1px solid #29324e;
+	position: relative;
+	z-index: 9;
+	flex-shrink: 0;
+}
+
+.box-filter .icon-check::before {
+	position: absolute;
+	content: "\f26e";
+	left: 50%;
+	top: 45%;
+	font-family: "bootstrap-icons";
+	font-weight: 400;
+	font-size: 9px;
+	color: #fff;
+	display: none;
+	transform: translate(-45%, -50%);
+}
+
+.box-filter .icon-check.checkered {
+	background: var(--color-global);
+	border: none;
+}
+
+.box-filter .icon-check.checkered::before {
+	display: block;
+	color: #fff;
+}
+
+.box-filter .filter-right {
+	width: calc(100% - 20px);
+	padding-right: 10px;
+}
+
+.box-filter .filter-right span {
+	color: #29324e;
+	font-weight: 500;
+}
+
+.box-filter .filter-right .total-attr {
+	color: #8d94ac;
+	font-size: 12px;
+}
+
+.box-filter .item-filter.hidden {
+	padding-bottom: 0;
+}
+
+.box-filter .item-filter.hidden .content-filter {
+	max-height: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+.box-filter .item-filter.hidden .title-filter i {
+	transform: rotate(180deg);
+}
+
+/* Sản phẩm trong modal */
+.pro-item {
+	padding: 16px;
+	border-bottom: 1px solid #ededed;
+}
+
+.pro-item .pro-image {
+	width: 60px;
+	height: 60px;
+	margin-right: 8px;
+}
+
+.pro-item .pro-image img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+.pro-item .pro-info {
+	width: calc(100% - 68px);
+	text-align: left;
+}
+
+.pro-item .pro-name {
+	font-size: 16px;
+	font-weight: 600;
+	margin-bottom: 4px;
+	display: block;
+}
+
+.pro-item .info-review b {
+	margin-right: 5px;
+	margin-bottom: 4px;
+}
+
+.pro-item .pro-status {
+	margin-bottom: 4px;
+}
+
+.pro-item .price {
+	color: var(--color-red);
+	font-size: 16px;
+	font-weight: 600;
+	margin-bottom: 4px;
+}
+
+.pro-item .btn-buy {
+	background: var(--color-global);
+	height: 40px;
+	display: block;
+	width: 170px;
+	text-align: center;
+	line-height: 40px;
+	color: #fff;
+	font-weight: 600;
+}
+
+.pro-item .btn-buy i {
+	margin-left: 5px;
+}
+
+/* --------------------------------------------------------------------------
+   Linh kiện đã chọn trong từng dòng
+   -------------------------------------------------------------------------- */
+.contain-item-drive {
+	display: flex;
+}
+
+.contain-item-drive .d-img {
+	display: block;
+	width: 80px;
+	height: 80px;
+	background: #fff;
+}
+
+.contain-item-drive .d-img img {
+	width: 100%;
+	height: 100%;
+	display: block;
+	object-fit: contain;
+}
+
+.contain-item-drive .d-info {
+	width: calc(100% - 104px);
+	margin-left: 24px;
+}
+
+.contain-item-drive .info-name-edit-remove {
+	width: 100%;
+	margin-bottom: 8px;
+}
+
+.contain-item-drive .info-name-edit-remove .btn-edit {
+	width: 70px;
+	margin-left: 16px;
+	flex-shrink: 0;
+}
+
+.contain-item-drive .info-name-edit-remove .btn-action_seclect {
+	margin-left: 16px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.contain-item-drive .info-name-edit-remove .show-popup_select {
+	margin-left: 0;
+	color: var(--color-global);
+}
+
+.contain-item-drive .info-name-edit-remove .delete_select:hover {
+	color: red;
+}
+
+.contain-item-drive .info-name-edit-remove .product-name {
+	width: calc(100% - 86px);
+	font-weight: 600;
+}
+
+.contain-item-drive .info-main-price .icon-time {
+	margin: 0 10px;
+	font-weight: 600;
+	color: #8d94ac;
+}
+
+.contain-item-drive .info-main-price .d-price {
+	color: #8d94ac;
+	font-weight: 600;
+}
+
+.contain-item-drive .info-main-price .sum_price {
+	color: #fb4e4e;
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.unit-detail-amount-control input {
+	width: 40px;
+	height: 40px;
+	border: 1px solid #ccc;
+	text-align: center;
+	font-size: 14px;
+	font-weight: 700;
+}
+
+.unit-detail-amount-control input::-webkit-outer-spin-button,
+.unit-detail-amount-control input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+.unit-detail-amount-control input[type="number"] {
+	-moz-appearance: textfield;
+	appearance: textfield;
+}
+
+.unit-detail-amount-control a {
+	height: 20px;
+	width: 25px;
+	text-align: center;
+	border-right: 1px solid #ccc;
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+	display: block;
+	color: var(--header-ink);
+}
+
+.unit-detail-amount-control a:first-child {
+	border-top: 1px solid #ccc;
+}
+
+.unit-detail-amount-control i {
+	line-height: 15px;
+	font-size: 12px;
+}
+
+/* --------------------------------------------------------------------------
+   Popup "Làm mới cấu hình"
+   -------------------------------------------------------------------------- */
+#mask-rebuild {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#popup-rebuild_config {
+	width: 500px;
+	padding: 24px;
+	background: #fff;
+	border-radius: 10px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+#popup-rebuild_config h2 {
+	font-size: 24px;
+	text-transform: uppercase;
+	margin: 24px 0;
+	border-bottom: 0;
+}
+
+#popup-rebuild_config p {
+	margin-bottom: 20px;
+	font-size: 16px;
+}
+
+#popup-rebuild_config button {
+	display: inline-block;
+	width: 100px;
+	margin-right: 20px;
+	height: 40px;
+	border-radius: 20px;
+	background: transparent;
+	cursor: pointer;
+	padding: 0;
+}
+
+#popup-rebuild_config .cancel {
+	border: 2px solid red;
+	color: red;
+	font-weight: bold;
+}
+
+#popup-rebuild_config .confirm {
+	border: 2px solid var(--color-global);
+	color: var(--color-global);
+	font-weight: bold;
+}
+
+/* --------------------------------------------------------------------------
+   Media queries (giữ nguyên theo bản gốc)
+   -------------------------------------------------------------------------- */
+@media (max-width: 1600px) {
+	.popup-content-right .scroll-list {
+		height: 570px;
+	}
+
+	.mask-popup .popup-select {
+		width: 1000px;
+	}
+}
+
+@media (max-width: 1200px) {
+	.popup-content-right .scroll-list {
+		height: 570px;
+	}
+
+	.mask-popup .popup-select {
+		width: 1000px;
+	}
+}
+
+@media (min-width: 1889px) {
+	.popup-content-right .scroll-list {
+		height: 730px;
+	}
+}

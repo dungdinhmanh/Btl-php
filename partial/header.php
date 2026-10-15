@@ -8,7 +8,7 @@ declare(strict_types=1);
 $headerCategories = [
     [
         'title' => 'Xây dựng cấu hình PC',
-        'url' => '/xay-dung-cau-hinh-pc.html',
+        'url' => '/buildpc.php',
         'children' => [
             ['title' => 'PC AMD', 'url' => '/pc-amd.html'],
             ['title' => 'PC Cao Cấp', 'url' => '/pc-cao-cap.html'],
