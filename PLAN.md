@@ -1,6 +1,6 @@
 # PLAN — bàn giao dự án Btl-php
 
-> Cập nhật: **2026-10-14**. Mọi số liệu dưới đây do **chạy lệnh thật** mà có, không phải suy đoán.
+> Cập nhật: **2026-10-19**. Mọi số liệu dưới đây do **chạy lệnh thật** mà có, không phải suy đoán.
 > Nếu bạn (agent) thấy tài liệu này khác với code/DB hiện tại → **tin code/DB**, và sửa lại file này.
 
 ## 0. Quy tắc chống hallucinate
@@ -139,6 +139,37 @@ conn = mysql.connector.connect(
   Chủ dự án yêu cầu: *không tạo migration riêng nữa, mọi thay đổi schema gộp thẳng vào `schema.sql`*.
 - Xoá 98 dòng comment thừa (261 → 172 dòng comment toàn repo).
   Đã chứng minh bằng token stream: **comment không ảnh hưởng runtime**.
+
+### 3.5 Quản trị tin tức (admin) — 2026-10-19
+
+`news_posts` trước đây chỉ đọc ở storefront; nay có màn hình quản trị đầy đủ
+(danh sách + soạn thảo WYSIWYG + khung xem trước cạnh bài viết):
+
+| Thành phần | File |
+|---|---|
+| Danh sách | `admin/news.php` + `admin/js/admin-news.js` |
+| Soạn/sửa | `admin/news-edit.php` + `admin/js/admin-news-editor.js` |
+| API | `backend/api/admin/news.php` (GET/POST/PUT; DELETE chỉ admin) |
+| Upload ảnh | `backend/api/admin/news-upload.php` (JPG/PNG/GIF/WEBP ≤ 5MB) |
+| Dữ liệu | `backend/src/Repositories/AdminNewsRepository.php` |
+
+Quy ước đã kiểm chứng:
+- `news_posts.content` là **HTML thật** và `news-post.php` render thẳng, nên editor dùng
+  `contenteditable` + `execCommand` (toolbar) chứ không phải markdown.
+- Ảnh tải lên lưu ở `assets/news/...` — **đường dẫn tương đối từ gốc site**, cùng quy ước
+  `assets/products/...`. Trang trong `/admin/` tự thêm `../` khi hiển thị; khi lưu (và ở chế độ
+  mã HTML) bỏ `../` trở lại. DB **không** lưu `../`.
+- Slug tự sinh từ tiêu đề tiếng Việt (bỏ dấu); trùng thì thêm `-2`, `-3`…
+- `post_status` mặc định `draft`; khi `published` mà `published_at` trống, trang soạn thảo gửi
+  **giờ địa phương của máy quản trị** (tránh lệch timezone: PHP trên máy này là `Europe/Berlin`
+  còn hệ điều hành là UTC+7). Gọi API trực tiếp không kèm ngày thì server mới dùng `date()`.
+  Ràng buộc `chk_news_posts_publication` luôn được bảo đảm.
+- Dán từ Word/web khác: client lọc allowlist thẻ/thuộc tính (bỏ `script/style/table/on*`,
+  `javascript:`), server lọc lần nữa trước khi ghi.
+- `DELETE` yêu cầu `ADMIN_ROLES`, các thao tác khác `STAFF_ROLES` (giống `admin/products.php`).
+- Sidebar "Tin tức" (`bi-newspaper`) đã thêm vào **tất cả** trang admin hiện có.
+- Trang soạn thảo nạp thêm `css/article-layout.css` để khung xem trước khớp trang thật;
+  `h2` trong editor phải dùng `font-size: 24px !important` vì rule global của `style.css`.
 
 ---
 

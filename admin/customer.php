@@ -21,6 +21,7 @@ $adminInitials = strtoupper(substr(preg_replace('/\s+/', '', (string) $adminName
 				<a href="products.php"><i class="bi bi-box-seam"></i><span>Sản phẩm</span></a>
 				<a href="orders.php"><i class="bi bi-receipt"></i><span>Đơn hàng</span></a>
 				<a href="reviews.php"><i class="bi bi-star"></i><span>Đánh giá</span></a>
+				<a href="news.php"><i class="bi bi-newspaper"></i><span>Tin tức</span></a>
 				<a class="active" href="customer.php"><i class="bi bi-people"></i><span>Khách hàng</span></a>
 			</nav>
 			<button class="admin-sidebar-toggle" type="button" aria-controls="adminSidebar" aria-expanded="true" aria-label="Thu gọn thanh bên">

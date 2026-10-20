@@ -36,6 +36,10 @@ $todayLabel = date('d/m/Y');
 					<i class="bi bi-star"></i>
 					<span>Đánh giá</span>
 				</a>
+				<a href="admin/news.php">
+					<i class="bi bi-newspaper"></i>
+					<span>Tin tức</span>
+				</a>
 				<a href="admin/customer.php">
 					<i class="bi bi-chat-left-text"></i>
 					<span>Khách hàng</span>
