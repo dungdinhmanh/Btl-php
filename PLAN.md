@@ -170,6 +170,21 @@ Quy ước đã kiểm chứng:
 - Sidebar "Tin tức" (`bi-newspaper`) đã thêm vào **tất cả** trang admin hiện có.
 - Trang soạn thảo nạp thêm `css/article-layout.css` để khung xem trước khớp trang thật;
   `h2` trong editor phải dùng `font-size: 24px !important` vì rule global của `style.css`.
+- Toolbar có thêm màu chữ/màu nền. `sanitizeHtml` giữ các thuộc tính `style` an toàn (màu, font,
+  cỡ chữ, khoảng cách...) và bỏ `url()/expression()/JS`, nên nội dung dán từ Google Docs/Word
+  vẫn giữ định dạng cơ bản mà không phá layout.
+- Liên kết là `<a href>` thật; mặc định **không gạch chân** (chỉ gạch chân khi hover hoặc khi
+  người dùng bấm nút Underline). URL thiếu scheme được tự thêm `https://`.
+- Video: modal YouTube/Vimeo + dán mã `<iframe>` trực tiếp; iframe được kiểm tra host, hiển thị
+  cả trong editor, preview và storefront với khung 16:9 responsive. Bài chỉ có video vẫn đăng được.
+- Khung xem trước có 2 chế độ: **Ngoài trang tin** (card giống `news-grid-card` của `news.php`,
+  có ảnh bìa/logo, danh mục, ngày, tiêu đề, mô tả) và **Trong bài viết** (`article-shell` chi tiết).
+  Cả hai cập nhật trực tiếp từ dữ liệu đang nhập.
+- Control ở header danh sách (ô tìm, select trạng thái, nút Viết bài mới) dùng các lớp `*-sm` và
+  cùng chiều cao 31px để thẳng hàng.
+- Vùng soạn thảo hỗ trợ dán (Ctrl+V): văn bản/HTML được lọc, mã `<iframe>` YouTube/Vimeo được nhận,
+  ảnh chụp màn hình được tải lên `assets/news/` rồi chèn. Nút **Dán** dùng Clipboard API; nếu trình
+  duyệt chặn quyền thì hướng dẫn dùng Ctrl+V.
 
 ---
 

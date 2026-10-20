@@ -96,7 +96,7 @@ $adminInitials = strtoupper(substr(preg_replace('/\s+/', '', (string) $adminName
 							<option value="draft">Bản nháp</option>
 							<option value="archived">Lưu trữ</option>
 						</select>
-						<a class="btn btn-primary" href="news-edit.php">
+						<a class="btn btn-sm btn-primary" href="news-edit.php">
 							<i class="bi bi-plus-lg me-2"></i>Viết bài mới
 						</a>
 					</div>
@@ -122,6 +122,6 @@ $adminInitials = strtoupper(substr(preg_replace('/\s+/', '', (string) $adminName
 		</main>
 
 		<script src="../js/api.js"></script>
-		<script src="js/admin-news.js"></script>
+		<script src="js/admin-news.js?v=<?= (int) filemtime(__DIR__ . '/js/admin-news.js') ?>"></script>
 	</body>
 </html>

@@ -213,6 +213,11 @@
 	width: auto;
 	font-size: 0.75rem;
 }
+.admin-panel-head .form-control-sm,
+.admin-panel-head .form-select-sm,
+.admin-panel-head .btn-sm {
+	height: 31px;
+}
 .chart {
 	display: flex;
 	height: 260px;
@@ -379,6 +384,37 @@
 	margin: 0 0.3rem;
 	background: #e0e5eb;
 }
+.news-color-tool {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3rem;
+	height: 30px;
+	padding: 0 0.35rem;
+	border: 1px solid #e0e5eb;
+	border-radius: 0.25rem;
+	background: #fff;
+	color: #46536b;
+	cursor: pointer;
+}
+.news-color-tool:hover {
+	background: #eef2f8;
+	color: var(--header-accent);
+}
+.news-color-tool input[type="color"] {
+	width: 20px;
+	height: 20px;
+	padding: 0;
+	border: 1px solid #c8d0dc;
+	border-radius: 3px;
+	background: none;
+	cursor: pointer;
+}
+.news-color-tool input[type="color"]::-webkit-color-swatch-wrapper {
+	padding: 0;
+}
+.news-color-tool input[type="color"]::-webkit-color-swatch {
+	border: 0;
+}
 .news-toolbar .news-block {
 	width: auto;
 	min-width: 124px;
@@ -447,6 +483,10 @@
 }
 .news-editor a {
 	color: #3278f6;
+	text-decoration: none;
+}
+.news-editor a:hover {
+	text-decoration: underline;
 }
 .news-editor blockquote {
 	margin: 0 0 1rem;
@@ -463,8 +503,12 @@
 }
 .news-editor iframe {
 	display: block;
-	max-width: 100%;
+	width: 100%;
+	max-width: 640px;
+	aspect-ratio: 16 / 9;
+	height: auto;
 	margin: 1rem auto;
+	border: 0;
 }
 .news-editor hr {
 	margin: 1.5rem 0;
@@ -481,6 +525,54 @@
 	overflow-y: auto;
 	border: 1px solid #e0e5eb;
 	background: #f5f6f8;
+}
+.news-preview-tabs {
+	position: sticky;
+	top: 0;
+	z-index: 2;
+	display: flex;
+	gap: 0.4rem;
+	padding: 0.55rem 0.6rem;
+	border-bottom: 1px solid #e0e5eb;
+	background: #fff;
+}
+.news-preview-tab {
+	flex: 1;
+	padding: 0.4rem 0.5rem;
+	border: 1px solid #e0e5eb;
+	border-radius: 0.25rem;
+	background: #fff;
+	color: #46536b;
+	font-size: 0.76rem;
+	font-weight: 700;
+	line-height: 1.2;
+}
+.news-preview-tab:hover {
+	background: #eef2f8;
+	color: var(--header-accent);
+}
+.news-preview-tab.active {
+	border-color: #c6d4ee;
+	background: #e2e9f7;
+	color: var(--header-accent);
+}
+.news-preview-tab i {
+	margin-right: 0.3rem;
+}
+.news-preview-list {
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	min-height: 420px;
+	padding: 1.2rem;
+}
+.news-preview-card {
+	width: 100%;
+	max-width: 380px;
+	height: auto;
+}
+.news-preview-card .news-card-body {
+	padding: 1.1rem;
 }
 .news-preview .np-layout {
 	display: block;

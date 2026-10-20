@@ -35,7 +35,7 @@ $pageTitle = $post ? 'Sửa bài viết' : 'Viết bài mới';
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title><?= htmlspecialchars($pageTitle) ?> | TNC Store</title>
 		<?php require __DIR__ . '/../partial/link.php'; ?>
-		<link rel="stylesheet" href="../css/article-layout.css" />
+		<link rel="stylesheet" href="../css/article-layout.css?v=<?= (int) filemtime(__DIR__ . '/../css/article-layout.css') ?>" />
 	</head>
 	<body class="admin-body">
 		<aside id="adminSidebar" class="admin-sidebar">
@@ -216,7 +216,7 @@ $pageTitle = $post ? 'Sửa bài viết' : 'Viết bài mới';
 									<h2>Soạn thảo</h2>
 								</div>
 								<p class="news-editor-hint mb-0">
-									Bôi đen chữ rồi chọn định dạng, không cần viết HTML.
+									Bôi đen chữ để định dạng/màu; dán văn bản, iframe hoặc ảnh chụp màn hình bằng Ctrl+V.
 								</p>
 							</div>
 
@@ -226,6 +226,10 @@ $pageTitle = $post ? 'Sửa bài viết' : 'Viết bài mới';
 								</button>
 								<button class="btn btn-sm news-tool" type="button" data-cmd="redo" title="Làm lại (Ctrl+Y)">
 									<i class="bi bi-arrow-clockwise"></i>
+								</button>
+								<span class="news-toolbar-sep"></span>
+								<button class="btn btn-sm news-tool" type="button" data-action="paste" title="Dán nội dung (Ctrl+V)">
+									<i class="bi bi-clipboard"></i>
 								</button>
 								<span class="news-toolbar-sep"></span>
 								<select class="form-select form-select-sm news-block" id="news-block" title="Kiểu đoạn" aria-label="Kiểu đoạn">
@@ -248,6 +252,15 @@ $pageTitle = $post ? 'Sửa bài viết' : 'Viết bài mới';
 								<button class="btn btn-sm news-tool" type="button" data-cmd="strikeThrough" title="Gạch ngang">
 									<i class="bi bi-type-strikethrough"></i>
 								</button>
+								<span class="news-toolbar-sep"></span>
+								<label class="news-color-tool" title="Màu chữ">
+									<i class="bi bi-fonts"></i>
+									<input type="color" id="news-text-color" value="#111111" aria-label="Màu chữ" />
+								</label>
+								<label class="news-color-tool" title="Màu nền chữ">
+									<i class="bi bi-highlighter"></i>
+									<input type="color" id="news-highlight-color" value="#fff3cd" aria-label="Màu nền chữ" />
+								</label>
 								<span class="news-toolbar-sep"></span>
 								<button class="btn btn-sm news-tool" type="button" data-cmd="justifyLeft" title="Căn trái">
 									<i class="bi bi-text-left"></i>
@@ -316,20 +329,80 @@ $pageTitle = $post ? 'Sửa bài viết' : 'Viết bài mới';
 								</a>
 							</div>
 							<div class="news-preview" id="news-preview">
-								<div class="np-layout news-preview-layout">
-									<article class="article-shell">
-										<h1 class="article-title" id="preview-title">Tiêu đề bài viết</h1>
-										<div class="article-info">
-											<span><i class="bi bi-clock"></i><span id="preview-date"></span></span>
-											<span><i class="bi bi-eye"></i><span id="preview-views">0</span></span>
-										</div>
-										<p class="article-lead" id="preview-excerpt" hidden></p>
-										<figure class="article-hero" id="preview-hero" hidden>
-											<img id="preview-cover" alt="" />
-										</figure>
-										<div class="article-content" id="preview-content"></div>
-										<p class="news-preview-empty" id="news-preview-empty">Chưa có nội dung để xem trước.</p>
-									</article>
+								<div class="news-preview-tabs" role="tablist" aria-label="Kiểu xem trước">
+									<button
+										class="news-preview-tab"
+										type="button"
+										role="tab"
+										id="preview-tab-list"
+										aria-controls="preview-pane-list"
+										aria-selected="false"
+										data-preview-tab="list"
+									>
+										<i class="bi bi-grid"></i> Ngoài trang tin
+									</button>
+									<button
+										class="news-preview-tab active"
+										type="button"
+										role="tab"
+										id="preview-tab-article"
+										aria-controls="preview-pane-article"
+										aria-selected="true"
+										data-preview-tab="article"
+									>
+										<i class="bi bi-file-earmark-text"></i> Trong bài viết
+									</button>
+								</div>
+
+								<div
+									class="news-preview-pane"
+									id="preview-pane-list"
+									role="tabpanel"
+									aria-labelledby="preview-tab-list"
+									data-preview-pane="list"
+									hidden
+								>
+									<div class="news-preview-list">
+										<article class="news-grid-card news-preview-card">
+											<a href="#" tabindex="-1" aria-hidden="true">
+												<img id="preview-list-cover" alt="" />
+											</a>
+											<div class="news-card-body">
+												<div class="news-meta">
+													<span id="preview-list-category">Danh mục</span>
+													<time id="preview-list-date"></time>
+												</div>
+												<h3>
+													<a href="#" tabindex="-1" id="preview-list-title">Tiêu đề bài viết</a>
+												</h3>
+												<p id="preview-list-excerpt"></p>
+											</div>
+										</article>
+									</div>
+								</div>
+
+								<div
+									class="news-preview-pane"
+									id="preview-pane-article"
+									role="tabpanel"
+									aria-labelledby="preview-tab-article"
+									data-preview-pane="article"
+								>
+									<div class="np-layout news-preview-layout">
+										<article class="article-shell">
+											<h1 class="article-title" id="preview-title">Tiêu đề bài viết</h1>
+											<div class="article-info">
+												<span><i class="bi bi-clock"></i><span id="preview-date"></span></span>
+												<span><i class="bi bi-eye"></i><span id="preview-views">0</span></span>
+											</div>
+											<p class="article-lead" id="preview-excerpt" hidden></p>
+											<figure class="article-hero" id="preview-hero" hidden>
+												<img id="preview-cover" alt="" />
+											</figure>
+											<div class="article-content" id="preview-content"></div>
+											<p class="news-preview-empty" id="news-preview-empty">Chưa có nội dung để xem trước.</p>
+										</article>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -399,13 +472,16 @@ $pageTitle = $post ? 'Sửa bài viết' : 'Viết bài mới';
 					<div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title">Chèn video YouTube</h5>
+								<h5 class="modal-title">Chèn video YouTube/Vimeo</h5>
 								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
 							</div>
 							<div class="modal-body">
 								<label class="form-label" for="news-video-url">Đường dẫn video</label>
-								<input type="text" class="form-control" id="news-video-url" placeholder="https://www.youtube.com/watch?v=..." />
-								<div class="form-text">Hỗ trợ youtube.com/watch, youtu.be, /shorts và /embed.</div>
+								<input type="text" class="form-control" id="news-video-url" placeholder="https://www.youtube.com/watch?v=... hoặc https://vimeo.com/..." />
+								<div class="form-text">
+									Hỗ trợ YouTube (watch, youtu.be, /shorts, /embed) và Vimeo. Có thể dán thẳng mã
+									<code>&lt;iframe&gt;</code> vào vùng soạn thảo.
+								</div>
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Huỷ</button>
@@ -419,6 +495,6 @@ $pageTitle = $post ? 'Sửa bài viết' : 'Viết bài mới';
 
 		<script>window.NEWS_POST = <?= json_encode($initial, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;</script>
 		<script src="../js/api.js"></script>
-		<script src="js/admin-news-editor.js"></script>
+		<script src="js/admin-news-editor.js?v=<?= (int) filemtime(__DIR__ . '/js/admin-news-editor.js') ?>"></script>
 	</body>
 </html>

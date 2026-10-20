@@ -62,7 +62,7 @@ $isTncChannel = $post
 		<?php require 'partial/header.php' ?>
 		
 						<main class="article-page">
-			<link rel="stylesheet" href="css/article-layout.css">
+			<link rel="stylesheet" href="css/article-layout.css?v=<?= (int) filemtime(__DIR__ . '/css/article-layout.css') ?>">
 			<?php if (!$loadError): ?>
 				<nav class="np-crumb">
 					<a href="index.php">Trang chủ</a>

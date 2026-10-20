@@ -25,6 +25,8 @@ if (newsForm) {
 		source: document.querySelector("#news-source"),
 		toolbar: document.querySelector("#news-toolbar"),
 		blockSelect: document.querySelector("#news-block"),
+		textColor: document.querySelector("#news-text-color"),
+		highlightColor: document.querySelector("#news-highlight-color"),
 		saveBtn: document.querySelector("#news-save-btn"),
 		previewTitle: document.querySelector("#preview-title"),
 		previewDate: document.querySelector("#preview-date"),
@@ -34,6 +36,14 @@ if (newsForm) {
 		previewContent: document.querySelector("#preview-content"),
 		previewEmpty: document.querySelector("#news-preview-empty"),
 		previewViews: document.querySelector("#preview-views"),
+		preview: document.querySelector("#news-preview"),
+		previewTabs: Array.from(document.querySelectorAll("[data-preview-tab]")),
+		previewPanes: Array.from(document.querySelectorAll("[data-preview-pane]")),
+		previewListCover: document.querySelector("#preview-list-cover"),
+		previewListCategory: document.querySelector("#preview-list-category"),
+		previewListDate: document.querySelector("#preview-list-date"),
+		previewListTitle: document.querySelector("#preview-list-title"),
+		previewListExcerpt: document.querySelector("#preview-list-excerpt"),
 		viewLive: document.querySelector("#news-view-live"),
 	};
 
@@ -88,6 +98,66 @@ if (newsForm) {
 		DIV: ["align"],
 	};
 
+	/* Inline style: chỉ giữ các thuộc tính trình bày an toàn, chặn url()/JS. */
+	const SAFE_STYLE_PROPS = [
+		"color", "background-color", "font-family", "font-size", "font-weight",
+		"font-style", "font-variant", "text-decoration", "text-align", "line-height",
+		"letter-spacing", "margin-top", "margin-right", "margin-bottom", "margin-left",
+		"padding-top", "padding-right", "padding-bottom", "padding-left",
+		"padding-inline-start", "list-style-type", "vertical-align", "white-space",
+	];
+	const UNSAFE_STYLE_VALUE = /url\s*\(|expression\s*\(|javascript\s*:|@import|var\s*\(/i;
+
+	function sanitizeInlineStyle(value) {
+		const probe = document.createElement("span");
+		probe.setAttribute("style", String(value || ""));
+		const declarations = [];
+		SAFE_STYLE_PROPS.forEach((property) => {
+			const propertyValue = probe.style.getPropertyValue(property).trim();
+			if (!propertyValue || UNSAFE_STYLE_VALUE.test(propertyValue)) return;
+			if (typeof CSS !== "undefined" && !CSS.supports(property, propertyValue)) return;
+			declarations.push(`${property}: ${propertyValue}`);
+		});
+		return declarations.join("; ");
+	}
+
+	/** Chuẩn hoá link YouTube/Vimeo thành URL nhúng; null nếu không hợp lệ. */
+	function videoEmbedUrl(value) {
+		const raw = String(value || "").trim();
+		if (!raw) return null;
+
+		let url;
+		try {
+			url = new URL(raw, "https://www.youtube.com");
+		} catch {
+			return null;
+		}
+
+		const host = url.hostname.replace(/^www\./i, "").toLowerCase();
+		if (host === "youtu.be") {
+			const id = url.pathname.split("/").filter(Boolean)[0] || "";
+			return /^[\w-]{6,}$/.test(id) ? `https://www.youtube.com/embed/${id}` : null;
+		}
+		if (["youtube.com", "m.youtube.com", "music.youtube.com", "youtube-nocookie.com"].includes(host)) {
+			const id =
+				url.searchParams.get("v") ||
+				(url.pathname.match(/^\/(?:embed|shorts|live)\/([\w-]{6,})/) || [])[1] ||
+				"";
+			return /^[\w-]{6,}$/.test(id) ? `https://www.youtube.com/embed/${id}` : null;
+		}
+		if (host === "vimeo.com") {
+			const id = url.pathname.split("/").filter(Boolean).pop() || "";
+			if (!/^\d+$/.test(id)) return null;
+			const hash = url.searchParams.get("h");
+			return `https://player.vimeo.com/video/${id}${hash ? `?h=${encodeURIComponent(hash)}` : ""}`;
+		}
+		if (host === "player.vimeo.com") {
+			return /^\/video\/\d+/.test(url.pathname) ? url.href : null;
+		}
+
+		return null;
+	}
+
 	function sanitizeHtml(html) {
 		const template = document.createElement("template");
 		template.innerHTML = String(html || "");
@@ -122,21 +192,34 @@ if (newsForm) {
 
 			[...child.attributes].forEach((attribute) => {
 				const name = attribute.name.toLowerCase();
+				if (name === "style") {
+					const cleaned = sanitizeInlineStyle(attribute.value);
+					if (cleaned) {
+						child.setAttribute("style", cleaned);
+					} else {
+						child.removeAttribute("style");
+					}
+					return;
+				}
 				if (!(ALLOWED_ATTRS[tag] || []).includes(name)) {
 					child.removeAttribute(attribute.name);
 					return;
 				}
-				if ((name === "href" || name === "src") && /^\s*(javascript|vbscript):/i.test(attribute.value)) {
-					child.removeAttribute(attribute.name);
+				if (name === "href" && /^\s*(javascript|vbscript|data):/i.test(attribute.value)) {
+					child.removeAttribute("href");
+				}
+				if (name === "src" && /^\s*(javascript|vbscript):/i.test(attribute.value)) {
+					child.removeAttribute("src");
 				}
 			});
 
 			if (tag === "IFRAME") {
-				const src = child.getAttribute("src") || "";
-				if (!/youtube\.com|youtu\.be|player\.vimeo\.com/i.test(src)) {
+				const embed = videoEmbedUrl(child.getAttribute("src"));
+				if (!embed) {
 					child.remove();
 					return;
 				}
+				child.setAttribute("src", embed);
 			}
 			if (tag === "IMG" && !(child.getAttribute("src") || "").trim()) {
 				child.remove();
@@ -153,7 +236,10 @@ if (newsForm) {
 	document.execCommand("styleWithCSS", false, false);
 	document.execCommand("defaultParagraphSeparator", false, "p");
 
-	const escapeHtml = (value) => (window.TNC ? TNC.escapeHtml(value) : String(value ?? ""));
+	const escapeHtml = (value) =>
+		String(value ?? "").replace(/[&<>'"]/g, (character) =>
+			({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[character],
+		);
 
 	function updatePlaceholder() {
 		const empty =
@@ -175,6 +261,19 @@ if (newsForm) {
 		const selection = window.getSelection();
 		selection.removeAllRanges();
 		selection.addRange(savedRange);
+	}
+
+	/** Nếu chưa có vùng chọn (vd. bấm nút Dán khi editor chưa focus), đặt con trỏ cuối editor. */
+	function ensureEditorSelection() {
+		if (document.activeElement !== els.editor) els.editor.focus();
+		if (savedRange) return;
+		const range = document.createRange();
+		range.selectNodeContents(els.editor);
+		range.collapse(false);
+		const selection = window.getSelection();
+		selection.removeAllRanges();
+		selection.addRange(range);
+		savedRange = range.cloneRange();
 	}
 
 	function markDirty() {
@@ -204,13 +303,18 @@ if (newsForm) {
 		return `${day}/${month}/${year} ${timePart || "00:00"}`;
 	}
 
+	function formatDate(value) {
+		return formatDateTime(value).split(" ")[0];
+	}
+
 	/** Giờ địa phương của máy quản trị, dùng khi đăng ngay để không phụ thuộc timezone của PHP. */
 	function localDateTimeValue(date = new Date()) {
 		return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 	}
 
 	function updatePreview() {
-		els.previewTitle.textContent = els.title.value.trim() || "Tiêu đề bài viết";
+		const title = els.title.value.trim() || "Tiêu đề bài viết";
+		els.previewTitle.textContent = title;
 		els.previewDate.textContent = formatDateTime(els.publishedAt.value);
 
 		const excerpt = els.excerpt.value.trim();
@@ -226,6 +330,16 @@ if (newsForm) {
 			els.previewHero.hidden = true;
 		}
 
+		// Card ngoài trang tin (news.php) dùng ảnh bìa hoặc logo mặc định như newsCover().
+		const categoryOption = els.category.options[els.category.selectedIndex];
+		els.previewListTitle.textContent = title;
+		els.previewListCategory.textContent =
+			categoryOption && categoryOption.value ? categoryOption.textContent.trim() : "Danh mục";
+		els.previewListDate.textContent = formatDate(els.publishedAt.value);
+		els.previewListExcerpt.textContent = excerpt;
+		els.previewListCover.src = displaySrc(cover || "assets/img/branding/tnc.png");
+		els.previewListCover.alt = title;
+
 		const raw = sourceMode ? els.source.value : els.editor.innerHTML;
 		const holder = document.createElement("div");
 		holder.innerHTML = sanitizeHtml(raw);
@@ -236,6 +350,39 @@ if (newsForm) {
 			els.previewContent.textContent.trim() === "" &&
 			!els.previewContent.querySelector("img, iframe, hr");
 		els.previewEmpty.hidden = !empty;
+	}
+
+	function setPreviewTab(name) {
+		els.previewTabs.forEach((tab) => {
+			const active = tab.dataset.previewTab === name;
+			tab.classList.toggle("active", active);
+			tab.setAttribute("aria-selected", active ? "true" : "false");
+			tab.tabIndex = active ? 0 : -1;
+		});
+		els.previewPanes.forEach((pane) => {
+			pane.hidden = pane.dataset.previewPane !== name;
+		});
+		if (els.preview) els.preview.scrollTop = 0;
+	}
+
+	els.previewTabs.forEach((tab) => {
+		tab.addEventListener("click", () => setPreviewTab(tab.dataset.previewTab));
+		tab.addEventListener("keydown", (event) => {
+			if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+			event.preventDefault();
+			const index = els.previewTabs.indexOf(tab);
+			const step = event.key === "ArrowRight" ? 1 : -1;
+			const next = els.previewTabs[(index + step + els.previewTabs.length) % els.previewTabs.length];
+			next.focus();
+			setPreviewTab(next.dataset.previewTab);
+		});
+	});
+
+	if (els.preview) {
+		// Preview chỉ để xem, không cho link bên trong điều hướng khỏi trang soạn thảo.
+		els.preview.addEventListener("click", (event) => {
+			if (event.target.closest("a")) event.preventDefault();
+		});
 	}
 
 	function updateLiveLink() {
@@ -291,8 +438,9 @@ if (newsForm) {
 	});
 
 	els.toolbar.addEventListener("mousedown", (event) => {
+		saveSelection(); // cả input màu cũng cần giữ vùng chọn
 		if (event.target.closest("button")) {
-			event.preventDefault(); // giữ vùng chọn trong editor khi bấm nút
+			event.preventDefault();
 		}
 	});
 
@@ -319,6 +467,7 @@ if (newsForm) {
 		if (action === "link") openLinkModal();
 		if (action === "image") openImageModal();
 		if (action === "video") openVideoModal();
+		if (action === "paste") pasteFromClipboard();
 		if (action === "clear-format") {
 			els.editor.focus();
 			restoreSelection();
@@ -329,6 +478,32 @@ if (newsForm) {
 		}
 		if (action === "source") toggleSource();
 	});
+
+	/** Màu chữ/nền: buộc styleWithCSS để ra <span style="color:..."> thay vì <font>. */
+	function applyInlineColor(command, color) {
+		if (sourceMode || !color) return;
+		els.editor.focus();
+		restoreSelection();
+		try {
+			document.execCommand("styleWithCSS", false, true);
+			const applied = document.execCommand(command, false, color);
+			if (!applied && command === "hiliteColor") {
+				document.execCommand("backColor", false, color);
+			}
+		} finally {
+			document.execCommand("styleWithCSS", false, false);
+		}
+		markDirty();
+		updatePlaceholder();
+		schedulePreview();
+	}
+
+	if (els.textColor) {
+		els.textColor.addEventListener("change", () => applyInlineColor("foreColor", els.textColor.value));
+	}
+	if (els.highlightColor) {
+		els.highlightColor.addEventListener("change", () => applyInlineColor("hiliteColor", els.highlightColor.value));
+	}
 
 	els.blockSelect.addEventListener("change", () => {
 		if (sourceMode) return;
@@ -346,21 +521,121 @@ if (newsForm) {
 		}
 	});
 
-	els.editor.addEventListener("paste", (event) => {
+	function decodeHtmlEntities(value) {
+		const textarea = document.createElement("textarea");
+		textarea.innerHTML = String(value || "");
+		return textarea.value;
+	}
+
+	function insertPastedContent(html, text) {
+		let cleaned = html ? sanitizeHtml(html) : "";
+		const decodedText = text ? decodeHtmlEntities(text) : "";
+
+		// Mã nhúng iframe thường được clipboard trả về dạng text/plain đã escape.
+		if (!/<iframe\b/i.test(cleaned) && /<\s*iframe\b/i.test(decodedText)) {
+			cleaned = sanitizeHtml(decodedText);
+		}
+
+		if (cleaned.trim() !== "") {
+			document.execCommand("insertHTML", false, cleaned);
+			return;
+		}
+		if (text) {
+			document.execCommand("insertHTML", false, escapeHtml(text).replace(/\r?\n/g, "<br>"));
+		}
+	}
+
+	els.editor.addEventListener("paste", async (event) => {
 		event.preventDefault();
 		const clipboard = event.clipboardData;
 		if (!clipboard) return;
-		const html = clipboard.getData("text/html");
-		const text = clipboard.getData("text/plain");
-		if (html) {
-			document.execCommand("insertHTML", false, sanitizeHtml(html));
-		} else if (text) {
-			document.execCommand("insertHTML", false, escapeHtml(text).replace(/\r?\n/g, "<br>"));
+
+		let imageFiles = Array.from(clipboard.items || [])
+			.filter((item) => item.kind === "file" && item.type.startsWith("image/"))
+			.map((item) => item.getAsFile())
+			.filter(Boolean);
+		if (!imageFiles.length) {
+			imageFiles = Array.from(clipboard.files || []).filter((file) => file.type.startsWith("image/"));
 		}
+		if (imageFiles.length) {
+			await insertPastedFiles(imageFiles);
+			return;
+		}
+
+		insertPastedContent(clipboard.getData("text/html"), clipboard.getData("text/plain"));
 		markDirty();
 		updatePlaceholder();
 		schedulePreview();
 	});
+
+	/** Tải ảnh dán từ clipboard lên assets/news rồi chèn vào đúng vị trí con trỏ. */
+	async function insertPastedFiles(files) {
+		if (!files.length) return;
+		ensureEditorSelection();
+		saveSelection();
+		try {
+			const urls = [];
+			for (const file of files) {
+				urls.push(await uploadImage(file));
+			}
+			els.editor.focus();
+			restoreSelection();
+			const html = urls
+				.map((url) => `<img src="${escapeHtml(displaySrc(url))}" alt="">`)
+				.join("");
+			document.execCommand("insertHTML", false, html);
+			saveSelection();
+			markDirty();
+			updatePlaceholder();
+			schedulePreview();
+		} catch (error) {
+			alert(error.message || "Không tải được ảnh dán vào.");
+		}
+	}
+
+	/** Nút Dán: đọc clipboard hiện đại; nếu trình duyệt chặn thì hướng dẫn Ctrl+V. */
+	async function pasteFromClipboard() {
+		if (sourceMode) {
+			alert("Chuyển về chế độ soạn thảo để dán nội dung.");
+			return;
+		}
+		if (!navigator.clipboard || typeof navigator.clipboard.read !== "function") {
+			alert("Trình duyệt không hỗ trợ đọc clipboard. Hãy bấm vào vùng soạn thảo rồi nhấn Ctrl+V.");
+			return;
+		}
+
+		try {
+			const items = await navigator.clipboard.read();
+			if (!items.length) {
+				alert("Clipboard đang trống.");
+				return;
+			}
+			ensureEditorSelection();
+			for (const item of items) {
+				const imageType = item.types.find((type) => type.startsWith("image/"));
+				if (imageType) {
+					const blob = await item.getType(imageType);
+					const extension = imageType.split("/")[1] || "png";
+					await insertPastedFiles([new File([blob], `clipboard.${extension}`, { type: imageType })]);
+					continue;
+				}
+				const html = item.types.includes("text/html")
+					? await (await item.getType("text/html")).text()
+					: "";
+				const text = item.types.includes("text/plain")
+					? await (await item.getType("text/plain")).text()
+					: "";
+				els.editor.focus();
+				restoreSelection();
+				insertPastedContent(html, text);
+				markDirty();
+				updatePlaceholder();
+				schedulePreview();
+			}
+		} catch (error) {
+			alert("Không đọc được clipboard (trình duyệt có thể chặn quyền). Hãy nhấn Ctrl+V trong vùng soạn thảo.");
+		}
+	}
 
 	/* ------------------------------------------------------------------ */
 	/* Chèn liên kết */
@@ -371,6 +646,21 @@ if (newsForm) {
 	const linkConfirm = document.querySelector("#news-link-confirm");
 	const linkModalTitle = document.querySelector("#newsLinkModalTitle");
 	let linkAnchor = null;
+
+	/** Chuẩn hoá href: thêm https:// khi thiếu scheme, chặn scheme nguy hiểm. */
+	function normalizeLinkUrl(value) {
+		const raw = String(value || "").trim();
+		if (!raw) return "";
+		if (/^\s*(javascript|vbscript|data):/i.test(raw)) return null;
+		if (/^(https?:|mailto:|tel:)/i.test(raw)) return raw;
+		if (raw.startsWith("//")) return `https:${raw}`;
+		if (raw.startsWith("/") || raw.startsWith("#") || raw.startsWith("./") || raw.startsWith("../")) {
+			return raw;
+		}
+		if (/^[a-z][a-z0-9+.-]*:/i.test(raw)) return null;
+
+		return `https://${raw}`;
+	}
 
 	function anchorFromSelection() {
 		const selection = window.getSelection();
@@ -402,9 +692,9 @@ if (newsForm) {
 	}
 
 	linkConfirm.addEventListener("click", () => {
-		const url = linkUrl.value.trim();
+		const url = normalizeLinkUrl(linkUrl.value);
 		if (!url) {
-			alert("Nhập đường dẫn liên kết.");
+			alert("Nhập đường dẫn liên kết hợp lệ (http, https, mailto, tel hoặc đường dẫn nội bộ).");
 			linkUrl.focus();
 			return;
 		}
@@ -416,7 +706,7 @@ if (newsForm) {
 			if (text) linkAnchor.textContent = text;
 			if (blank) {
 				linkAnchor.setAttribute("target", "_blank");
-				linkAnchor.setAttribute("rel", "noopener");
+				linkAnchor.setAttribute("rel", "noopener noreferrer");
 			} else {
 				linkAnchor.removeAttribute("target");
 				linkAnchor.removeAttribute("rel");
@@ -424,7 +714,7 @@ if (newsForm) {
 		} else {
 			els.editor.focus();
 			restoreSelection();
-			const attributes = blank ? ' target="_blank" rel="noopener"' : "";
+			const attributes = blank ? ' target="_blank" rel="noopener noreferrer"' : "";
 			const label = escapeHtml(text || url);
 			document.execCommand("insertHTML", false, `<a href="${escapeHtml(url)}"${attributes}>${label}</a>&nbsp;`);
 		}
@@ -578,20 +868,6 @@ if (newsForm) {
 	const videoUrl = document.querySelector("#news-video-url");
 	const videoConfirm = document.querySelector("#news-video-confirm");
 
-	function youTubeEmbed(url) {
-		const patterns = [
-			/youtube\.com\/watch\?[^#]*v=([\w-]{6,})/,
-			/youtu\.be\/([\w-]{6,})/,
-			/youtube\.com\/shorts\/([\w-]{6,})/,
-			/youtube\.com\/embed\/([\w-]{6,})/,
-		];
-		for (const pattern of patterns) {
-			const match = String(url).match(pattern);
-			if (match) return `https://www.youtube.com/embed/${match[1]}`;
-		}
-		return null;
-	}
-
 	function openVideoModal() {
 		saveSelection();
 		videoUrl.value = "";
@@ -600,9 +876,9 @@ if (newsForm) {
 	}
 
 	videoConfirm.addEventListener("click", () => {
-		const embed = youTubeEmbed(videoUrl.value.trim());
+		const embed = videoEmbedUrl(videoUrl.value.trim());
 		if (!embed) {
-			alert("Đường dẫn video YouTube không hợp lệ.");
+			alert("Đường dẫn video YouTube/Vimeo không hợp lệ.");
 			videoUrl.focus();
 			return;
 		}
@@ -611,7 +887,7 @@ if (newsForm) {
 		document.execCommand(
 			"insertHTML",
 			false,
-			`<iframe width="496" height="417" src="${embed}" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`,
+			`<iframe width="560" height="315" src="${embed}" title="Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`,
 		);
 		videoModal.hide();
 		markDirty();
@@ -708,6 +984,7 @@ if (newsForm) {
 	});
 
 	els.excerpt.addEventListener("input", schedulePreview);
+	els.category.addEventListener("change", schedulePreview);
 	els.publishedAt.addEventListener("input", () => updatePreview());
 	els.status.addEventListener("change", () => {
 		updateLiveLink();
@@ -821,5 +1098,6 @@ if (newsForm) {
 
 	updateLiveLink();
 	updatePreview();
+	setPreviewTab("article");
 	refreshToolbar();
 }

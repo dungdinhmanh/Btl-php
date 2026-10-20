@@ -3,7 +3,7 @@ $scriptPath = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '');
 $isAdminPage = basename($scriptPath) === 'admin.php' || str_contains($scriptPath, '/admin/');
 $assetPrefix = str_contains($scriptPath, '/admin/') ? '../' : '';
 ?>
-<link rel="stylesheet" href="<?= $assetPrefix ?>css/style.css" />
+<link rel="stylesheet" href="<?= $assetPrefix ?>css/style.css?v=<?= (int) filemtime(__DIR__ . '/../css/style.css') ?>" />
 <link rel="icon" href="<?= $assetPrefix ?>assets/favicon.png" />
 <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
@@ -12,7 +12,7 @@ $assetPrefix = str_contains($scriptPath, '/admin/') ? '../' : '';
     crossorigin="anonymous"
 />
 <?php if ($isAdminPage): ?>
-	<link rel="stylesheet" href="<?= $assetPrefix ?>css/admin.css" />
+	<link rel="stylesheet" href="<?= $assetPrefix ?>css/admin.css?v=<?= (int) filemtime(__DIR__ . '/../css/admin.css') ?>" />
 <?php endif; ?>
 <link
     rel="stylesheet"

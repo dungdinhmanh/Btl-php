@@ -226,8 +226,19 @@
 }
 .np-layout .article-content iframe {
 	display: block;
-	max-width: 100%;
+	width: 100%;
+	max-width: 640px;
+	aspect-ratio: 16 / 9;
+	height: auto;
 	margin: 1rem auto;
+	border: 0;
+}
+.np-layout .article-content a {
+	color: #3278f6;
+	text-decoration: none;
+}
+.np-layout .article-content a:hover {
+	text-decoration: underline;
 }
 .np-layout .article-content ul,
 .np-layout .article-content ol {
