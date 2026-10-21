@@ -1,37 +1,38 @@
-# TNC Store
+# TNC Store — PHP Learning Project
 
-A cloned tncstore using PHP-based. The project uses plain PHP with a MySQL database, server-side API endpoints, and frontend JavaScript to render product and dashboard data dynamically.
+A PHP/MySQL e-commerce website developed as a learning and coursework project. The original TNC Store website was used as a visual and functional reference while building this project.
+
+**This is an independent, unofficial project. It is not affiliated with, endorsed by, or sponsored by TNC Store.** The name “TNC Store” is used here only to identify the website used as a reference.
 
 ## Project overview
 
-This application is a storefront for selling PC components, gaming hardware, accessories, and related tech items. It includes a public shopping experience, product browsing/filtering, cart and checkout flow, customer login/register, news pages, and an admin dashboard overview.
+The application demonstrates a storefront for PC components, gaming hardware, accessories, and related technology products. It includes product browsing, filtering, a cart and checkout flow, customer authentication, news pages, and an admin dashboard.
 
-The codebase follows a lightweight architecture:
+The project uses a lightweight architecture:
 
 - PHP pages in the project root render HTML pages and layouts.
-- Shared partials under `partial/` provide reusable sections such as the header, footer, and stylesheets.
+- Shared partials under `partial/` provide reusable sections such as the header and footer.
 - JavaScript files in `js/` fetch data from backend APIs and populate the UI.
-- The backend layer under `backend/` handles database access, repositories, auth endpoints, and API responses.
+- The backend under `backend/` handles database access, repositories, authentication endpoints, and API responses.
 
 ## Features
 
 - Product catalog with category and brand filtering
-- Search and sorting for products
-- Product detail pages with specs and inventory information
+- Product search and sorting
+- Product detail pages with specifications and inventory information
 - Shopping cart and checkout flow
 - User registration and login
-- News/blog listing and detail pages
-- Admin dashboard with sales and inventory summary
-- Responsive storefront styling powered by shared CSS and Bootstrap-based layout
+- News listing and detail pages
+- Admin dashboard with sales and inventory summaries
+- Responsive storefront layout
 
-## Tech stack
+## Technology stack
 
 - PHP 8+
 - MySQL / MariaDB
-- PDO for database access
-- Vanilla JavaScript for most UI logic and API-driven rendering
-- jQuery for specific interactive flows such as account login/register forms and the profile dashboard
-- HTML + CSS + Bootstrap styling assets
+- PDO
+- Vanilla JavaScript and jQuery
+- HTML, CSS, and Bootstrap
 
 ## Project structure
 
@@ -68,74 +69,77 @@ Btl-php/
 ├── README.MD
 └── LICENSE
 ```
+
 ## Backend architecture
 
-The backend is intentionally simple and does not use a framework.
-
-- `backend/bootstrap.php` initializes the environment and shared dependencies.
-- `backend/config/database.php` creates the PDO connection from environment variables.
-- `backend/src/Repositories/` contains repository classes for products, news, dashboard metrics, and users.
-- `backend/api/` exposes JSON endpoints consumed by frontend JavaScript.
+- `backend/bootstrap.php` initializes shared dependencies.
+- `backend/config/database.php` creates the PDO connection using environment variables.
+- `backend/src/Repositories/` contains repository classes for application data.
+- `backend/api/` exposes JSON endpoints used by the frontend.
 - `backend/auth/` contains authentication-related logic.
-- `backend/database/` includes schema and seed scripts for the MySQL database.
+- `backend/database/` contains database schema and seed scripts.
 
-## Environment setup
+## Local setup
 
 1. Copy the environment example file:
 
-```bash
-cp backend/config/.env.example backend/config/.env
-```
+   ```bash
+   cp backend/config/.env.example backend/config/.env
+   ```
 
-2. Update the database credentials in `backend/config/.env` with your local MySQL settings.
+2. Set the database credentials in `backend/config/.env` for your local MySQL/MariaDB instance.
 
-Example:
+   Example:
 
-```env
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=tnc-db
-DB_USERNAME=root
-DB_PASSWORD=
-```
+   ```env
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=tnc-db
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
 
-3. Create the database schema using the SQL scripts in `backend/database/`.
+3. Create the database using the SQL scripts in `backend/database/`.
 
-## Running the app
+## Run locally
 
-From the project root, serve the app with PHP's built-in server:
+From the project root:
 
 ```bash
 php -S localhost:8000
 ```
 
-Then open:
+Open `http://localhost:8000` in your browser. This built-in server is for local development only; do not use it as a production server.
 
-```text
-http://localhost:8000
-```
-
-## Database setup
-
-The project includes SQL scripts for schema creation and initial seed data:
+## Database scripts
 
 - `backend/database/schema.sql`
 - `backend/database/seed.sql`
 - `backend/database/apply.php`
 
-Use `schema.sql` to create the database structure, and `seed.sql` if you want demo content and sample records.
+Use `schema.sql` to create the database structure and `seed.sql` to load sample data.
 
-## Notes
+## Project notes
 
-- The site relies on a MySQL database; a configured `.env` file is required.
-- Frontend pages are thin shells; most data is loaded via JavaScript calls to backend API endpoints.
-- The frontend uses a mixed stack: vanilla JavaScript for the main storefront logic, and jQuery for specific flows like auth forms and profile/account UI in `js/account.js` and `js/profile.js`.
-- Authentication and session handling are managed through the shared PHP bootstrap and server-side request handling.
+- A configured `.env` file and a running MySQL/MariaDB server are required.
+- Most storefront data is loaded through JavaScript calls to backend API endpoints.
+- The frontend uses vanilla JavaScript for most storefront behavior and jQuery for selected account-related flows.
+- This repository is intended for learning and demonstration. It should not be treated as a production-ready commerce platform without further security and functional review.
+
+## Attribution and third-party materials
+
+TNC Store is the reference website for this educational project. Any third-party names, logos, product photographs, banners, text, fonts, or other assets that may appear in the repository remain the property of their respective owners and are not relicensed by this project. Their presence does not imply permission for reuse. The repository maintainer does not claim ownership of materials they did not create or have permission to license.
+
+Before redistributing or publicly deploying the project, replace reference-site branding and any assets or content for which you do not have permission with original or properly licensed alternatives.
 
 ## Contributor
+
 <a href="https://github.com/dungdinhmanh/Btl-php/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=dungdinhmanh/Btl-php" />
+  <img src="https://contrib.rocks/image?repo=dungdinhmanh/Btl-php" alt="Repository contributors" />
 </a>
 
 ## License
-This project is distributed under the license included in the repository: [LICENSE](LICENSE).
+
+No blanket open-source license is currently granted for the repository as a whole. Unless a separate license or written permission says otherwise, no permission is granted to copy, redistribute, or reuse the repository's contents. Third-party materials remain subject to their respective owners' rights.
+
+This notice is not a substitute for reviewing and replacing materials that you do not have the right to publish.
