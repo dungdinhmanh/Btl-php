@@ -423,16 +423,49 @@ $headerQuickLinks = [
 					</button>
 				</form>
 				<div class="header-actions">
-					<?php $currentUser = $_SESSION['user'] ?? null; ?>
+					<?php
+					$currentUser = $_SESSION['user'] ?? null;
+					if (function_exists('currentUser')) {
+						try {
+							$currentUser = currentUser();
+						} catch (Throwable) {
+							// Giữ thông tin phiên nếu DB tạm thời không truy cập được.
+						}
+					}
+					$canAccessAdmin = $currentUser
+						&& in_array(strtolower((string) ($currentUser['role'] ?? '')), ['staff', 'admin'], true);
+					?>
 					<?php if ($currentUser): ?>
-						<a
-							class="header-action header-button"
-							href="profile.php"
-							title="Xem tài khoản của <?= htmlspecialchars($currentUser['name'], ENT_QUOTES) ?>"
-						>
-							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/></svg>
-							<span class="hover header-user-name"><?= htmlspecialchars($currentUser['name'], ENT_QUOTES) ?></span>
-						</a>
+						<div class="header-account-dropdown">
+							<button
+								class="header-action header-button header-account-toggle"
+								type="button"
+								aria-haspopup="true"
+								title="Mở menu tài khoản của <?= htmlspecialchars($currentUser['name'], ENT_QUOTES) ?>"
+							>
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/></svg>
+								<span class="hover header-user-name"><?= htmlspecialchars($currentUser['name'], ENT_QUOTES) ?></span>
+								<span class="header-account-caret" aria-hidden="true"></span>
+							</button>
+							<div class="header-account-menu">
+								<a href="profile.php">
+									<i class="bi bi-person" aria-hidden="true"></i>
+									<span>Trang cá nhân</span>
+								</a>
+								<?php if ($canAccessAdmin): ?>
+									<a href="admin.php">
+										<i class="bi bi-speedometer2" aria-hidden="true"></i>
+										<span>Trang quản trị</span>
+									</a>
+								<?php endif; ?>
+								<form method="post" action="backend/auth/logout.php">
+									<button type="submit">
+										<i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+										<span>Đăng xuất</span>
+									</button>
+								</form>
+							</div>
+						</div>
 					<?php else: ?>
 						<a
 							class="header-action header-button"

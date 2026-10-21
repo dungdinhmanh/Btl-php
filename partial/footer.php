@@ -52,7 +52,6 @@ declare(strict_types=1);
 					<a href="buildpc.php">Build PC là TNC</a>
 					<a href="buildpc.php">Hướng dẫn Build PC</a>
 					<a href="cart.php">Giỏ hàng</a>
-					<a href="admin.php">Quản trị viên</a>
 				</div>
 			</div>
 			<div class="info-showroom d-flex">
@@ -91,7 +90,6 @@ declare(strict_types=1);
 		<div class="footer-bottom">
 			<div class="container d-flex space-between align-items">
 				<p>© 2026 - Bản quyền của TNC Store</p>
-				<a href="admin.php">Quản trị viên</a>
 			</div>
 		</div>
 	</div>
