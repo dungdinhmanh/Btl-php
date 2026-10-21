@@ -30,9 +30,6 @@ if (newsForm) {
 		saveBtn: document.querySelector("#news-save-btn"),
 		previewTitle: document.querySelector("#preview-title"),
 		previewDate: document.querySelector("#preview-date"),
-		previewExcerpt: document.querySelector("#preview-excerpt"),
-		previewHero: document.querySelector("#preview-hero"),
-		previewCover: document.querySelector("#preview-cover"),
 		previewContent: document.querySelector("#preview-content"),
 		previewEmpty: document.querySelector("#news-preview-empty"),
 		previewViews: document.querySelector("#preview-views"),
@@ -318,19 +315,11 @@ if (newsForm) {
 		els.previewDate.textContent = formatDateTime(els.publishedAt.value);
 
 		const excerpt = els.excerpt.value.trim();
-		els.previewExcerpt.textContent = excerpt;
-		els.previewExcerpt.hidden = excerpt === "";
-
 		const cover = els.cover.value.trim();
-		if (cover) {
-			els.previewCover.src = displaySrc(cover);
-			els.previewHero.hidden = false;
-		} else {
-			els.previewCover.removeAttribute("src");
-			els.previewHero.hidden = true;
-		}
 
 		// Card ngoài trang tin (news.php) dùng ảnh bìa hoặc logo mặc định như newsCover().
+		// Tab "Trong bài viết" chỉ có tiêu đề, ngày giờ, lượt xem và nội dung; ảnh bìa/mô tả
+		// ngắn thuộc card ngoài, đúng cấu trúc trang chi tiết của TNC Store.
 		const categoryOption = els.category.options[els.category.selectedIndex];
 		els.previewListTitle.textContent = title;
 		els.previewListCategory.textContent =

@@ -211,13 +211,7 @@ $pageTitle = $post ? 'Sửa bài viết' : 'Viết bài mới';
 					<section class="news-workspace">
 						<div class="admin-panel">
 							<div class="admin-panel-head">
-								<div>
-									<p class="eyebrow">Nội dung bài viết</p>
-									<h2>Soạn thảo</h2>
-								</div>
-								<p class="news-editor-hint mb-0">
-									Bôi đen chữ để định dạng/màu; dán văn bản, iframe hoặc ảnh chụp màn hình bằng Ctrl+V.
-								</p>
+								<h2>Soạn thảo</h2>
 							</div>
 
 							<div class="news-toolbar" id="news-toolbar" role="toolbar" aria-label="Định dạng nội dung">
@@ -320,10 +314,7 @@ $pageTitle = $post ? 'Sửa bài viết' : 'Viết bài mới';
 
 						<div class="admin-panel news-preview-panel">
 							<div class="admin-panel-head">
-								<div>
-									<p class="eyebrow">Hiển thị trên trang tin</p>
-									<h2>Xem trước</h2>
-								</div>
+								<h2>Xem trước</h2>
 								<a class="text-link" id="news-view-live" href="#" target="_blank" rel="noopener" hidden>
 									Mở bài viết <i class="bi bi-arrow-up-right"></i>
 								</a>
@@ -395,10 +386,6 @@ $pageTitle = $post ? 'Sửa bài viết' : 'Viết bài mới';
 												<span><i class="bi bi-clock"></i><span id="preview-date"></span></span>
 												<span><i class="bi bi-eye"></i><span id="preview-views">0</span></span>
 											</div>
-											<p class="article-lead" id="preview-excerpt" hidden></p>
-											<figure class="article-hero" id="preview-hero" hidden>
-												<img id="preview-cover" alt="" />
-											</figure>
 											<div class="article-content" id="preview-content"></div>
 											<p class="news-preview-empty" id="news-preview-empty">Chưa có nội dung để xem trước.</p>
 										</article>

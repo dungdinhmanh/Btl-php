@@ -178,8 +178,9 @@ Quy ước đã kiểm chứng:
 - Video: modal YouTube/Vimeo + dán mã `<iframe>` trực tiếp; iframe được kiểm tra host, hiển thị
   cả trong editor, preview và storefront với khung 16:9 responsive. Bài chỉ có video vẫn đăng được.
 - Khung xem trước có 2 chế độ: **Ngoài trang tin** (card giống `news-grid-card` của `news.php`,
-  có ảnh bìa/logo, danh mục, ngày, tiêu đề, mô tả) và **Trong bài viết** (`article-shell` chi tiết).
-  Cả hai cập nhật trực tiếp từ dữ liệu đang nhập.
+  có ảnh bìa/logo, danh mục, ngày, tiêu đề, mô tả) và **Trong bài viết** (`article-shell` chi tiết:
+  tiêu đề, ngày giờ, lượt xem, nội dung). Ảnh bìa/mô tả ngắn chỉ thuộc card ngoài, không lặp lại
+  trong bài viết — đúng cấu trúc trang chi tiết của TNC Store. Cả hai cập nhật trực tiếp khi nhập.
 - Control ở header danh sách (ô tìm, select trạng thái, nút Viết bài mới) dùng các lớp `*-sm` và
   cùng chiều cao 31px để thẳng hàng.
 - Vùng soạn thảo hỗ trợ dán (Ctrl+V): văn bản/HTML được lọc, mã `<iframe>` YouTube/Vimeo được nhận,

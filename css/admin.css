@@ -347,10 +347,6 @@
 	margin-top: 1.2rem;
 	align-items: start;
 }
-.news-editor-hint {
-	color: #9aa3af;
-	font-size: 0.72rem;
-}
 .news-toolbar {
 	display: flex;
 	flex-wrap: wrap;

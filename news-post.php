@@ -36,9 +36,6 @@ if ($post === null && !$loadError) {
 // 4) Everything the <head> needs comes from the same row.
 $canonical = $post ? absoluteUrl(newsPostUrl($post)) : '';
 $cover = $post && $post['coverImage'] ? absoluteUrl($post['coverImage']) : '';
-
-$isTncChannel = $post
-    && strtolower(trim($post['category'])) === 'tnc channel';
 ?>
 <!doctype html>
 <html lang="vi">
@@ -84,17 +81,6 @@ $isTncChannel = $post
 							<span><i class="bi bi-clock"></i><?= e($post['dateTime']) ?></span>
 							<span><i class="bi bi-eye"></i><?= number_format($post['views'], 0, ',', '.') ?></span>
 						</div>
-						<?php if ($post['excerpt']): ?>
-							<p class="article-lead"><?= e($post['excerpt']) ?></p>
-						<?php endif; ?>
-						<?php if ($post['coverImage'] && !$isTncChannel): ?>
-                    <figure class="article-hero">
-                     <img
-           				 src="<?= e($post['coverImage']) ?>"
-           				 alt="<?= e($post['title']) ?>"
-       					 />
-						</figure>
-					<?php endif; ?>
 						<div class="article-content"><?= $post['content'] /* trusted HTML authored by admins */ ?></div>
 					<?php endif; ?>
 				</article>
