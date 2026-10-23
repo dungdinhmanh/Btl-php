@@ -11,14 +11,39 @@ sort($brandingImages, SORT_NATURAL | SORT_FLAG_CASE);
 $brandScrollDuration = max(30, count($brandingImages) * 3);
 
 $homeColumns = [
-	['heading' => 'TNC Channel', 'more' => 'news.php?category=tin-tuc-video', 'play' => true, 'category' => 'tin-tuc-video', 'posts' => []],
-	['heading' => 'Tin tức', 'more' => 'news.php', 'play' => false, 'category' => null, 'posts' => []],
+	[
+		'heading' => 'TNC Channel',
+		'more' => 'news.php?category=tin-tuc-video',
+		'video' => true,
+		'category' => 'tin-tuc-video',
+		'exclude' => [],
+		'posts' => [],
+	],
+	[
+		'heading' => 'Tin tức',
+		'more' => 'news.php',
+		'video' => false,
+		'category' => null,
+		'exclude' => ['tin-tuc-video', 'chuyen-trang-khuyen-mai'],
+		'posts' => [],
+	],
 ];
 
+// Bốn banner khuyến mãi đang được ghim trên trang chủ gốc, giữ đúng thứ tự.
+$promoPostSlugs = [
+	'chon-amd-so-huu-onimusha-way-of-the-sword',
+	'san-qua-asus-rog-edition-20',
+	'build-pc-asus-rinh-qua-het-nac-tnc-store',
+	'build-pc-gigabyte-intel-nhan-voucher',
+];
+
+$newsRepository = null;
 try {
 	$newsRepository = new NewsRepository(database());
 	foreach ($homeColumns as &$column) {
-		$column['posts'] = $newsRepository->all(4, 0, $column['category']);
+		$column['posts'] = $column['exclude'] === []
+			? $newsRepository->all(4, 0, $column['category'])
+			: $newsRepository->latestExcludingCategories($column['exclude'], 4);
 	}
 	unset($column);
 } catch (Throwable $exception) {
@@ -33,25 +58,25 @@ $homeNewsAvailable = array_reduce(
 
 $promoPosts = [];
 try {
-	$promoPosts = (new NewsRepository(database()))->all(4, 0, 'chuyen-trang-khuyen-mai');
+	$newsRepository ??= new NewsRepository(database());
+	$promoPosts = $newsRepository->bySlugs($promoPostSlugs);
+
+	// Nếu thiếu bài ghim, bổ sung bằng các bài khuyến mãi mới nhất để block vẫn đủ 4 banner.
+	if (count($promoPosts) < 4) {
+		$seenIds = array_column($promoPosts, 'id');
+		foreach ($newsRepository->all(4, 0, 'chuyen-trang-khuyen-mai') as $post) {
+			if (in_array($post['id'], $seenIds, true)) {
+				continue;
+			}
+			$promoPosts[] = $post;
+			$seenIds[] = $post['id'];
+			if (count($promoPosts) >= 4) {
+				break;
+			}
+		}
+	}
 } catch (Throwable $exception) {
 	error_log($exception->getMessage());
-}
-
-if ($promoPosts === []) {
-	$promoPosts = [
-		[
-			'slug' => 'promo-placeholder',
-			'title' => 'Chuyên trang khuyến mãi',
-			'excerpt' => 'Nội dung khuyến mãi sắp được cập nhật.',
-			'coverImage' => 'assets/img/branding/tnc.png',
-			'publishedAt' => null,
-			'publishedAtIso' => '',
-			'views' => 0,
-			'date' => '',
-			'dateTime' => '',
-		],
-	];
 }
 ?>
 <!doctype html>
@@ -63,63 +88,7 @@ if ($promoPosts === []) {
 		<meta name="description" content="" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<?php require 'partial/link.php'?>
-		<style>
-			.promo-post-grid {
-				display: grid;
-				grid-template-columns: repeat(2, minmax(0, 1fr));
-				gap: 1.5rem;
-			}
-			.promo-post-card {
-				overflow: hidden;
-				border-radius: 1rem;
-				background: #fff;
-				box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.06);
-				transition: transform 0.25s ease, box-shadow 0.25s ease;
-			}
-			.promo-post-card:hover {
-				transform: translateY(-2px);
-				box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.12);
-			}
-			.promo-post-card a {
-				display: block;
-				text-decoration: none;
-			}
-			.promo-post-card img {
-				display: block;
-				width: 100%;
-				height: 260px;
-				object-fit: cover;
-				transition: transform 0.35s ease;
-			}
-			.promo-post-card:hover img {
-				transform: scale(1.05);
-			}
-			.promo-post-body {
-				padding: 1rem 1rem 1.25rem;
-			}
-			.promo-post-body h3 {
-				margin: 0 0 0.5rem;
-				font-size: 1.1rem;
-				line-height: 1.4;
-			}
-			.promo-post-body h3 a {
-				color: #111827;
-			}
-			.promo-post-body p {
-				margin: 0;
-				color: #4b5563;
-				font-size: 0.95rem;
-				line-height: 1.55;
-			}
-			@media (max-width: 767.98px) {
-				.promo-post-grid {
-					grid-template-columns: 1fr;
-				}
-				.promo-post-card img {
-					height: 220px;
-				}
-			}
-		</style>
+		<link rel="stylesheet" href="css/home-news.css?v=<?= (int) filemtime(__DIR__ . '/css/home-news.css') ?>" />
 	</head>
 	<body>
 		<?php require 'partial/header.php'?>
@@ -293,13 +262,12 @@ if ($promoPosts === []) {
 					<div class="row g-4" id="featured-products-list"></div>
 				</div>
 			</section>
-			<div class="container my-5">
-				<div class="d-flex align-items-center mb-4">
-					<h2>Chuyên trang khuyến mãi</h2>
-				</div>
-				<div class="promo-post-grid mb-4">
+			<?php if ($promoPosts !== []): ?>
+			<div class="home-promo-section">
+				<h2 class="home-promo-title">Chuyên trang khuyến mãi</h2>
+				<div class="home-promo-list">
 					<?php foreach (array_slice($promoPosts, 0, 4) as $promo): ?>
-						<article class="promo-post-card">
+						<article class="home-promo-item">
 							<a href="<?= e(newsPostUrl($promo)) ?>" aria-label="<?= e($promo['title']) ?>">
 								<img
 									src="<?= e(newsCover($promo)) ?>"
@@ -308,58 +276,47 @@ if ($promoPosts === []) {
 									onerror="this.onerror=null;this.src='assets/img/branding/tnc.png'"
 								/>
 							</a>
-							<div class="promo-post-body">
-								<h3><a href="<?= e(newsPostUrl($promo)) ?>"><?= e($promo['title']) ?></a></h3>
-								<?php if (!empty($promo['excerpt'])): ?>
-									<p><?= e($promo['excerpt']) ?></p>
-								<?php endif; ?>
-							</div>
 						</article>
 					<?php endforeach; ?>
 				</div>
 			</div>
+			<?php endif; ?>
 			<?php if ($homeNewsAvailable): ?>
 			<section
 				class="section-space section-muted home-news-section"
-				aria-labelledby="home-news-title"
+				aria-label="Tin tức và TNC Channel"
 			>
-				<div class="container my-4">
-			    
-			<link rel="stylesheet" href="css/home-news.css">
-			<div class="row g-5">
-			    <?php foreach ($homeColumns as $column): ?>
-			        <div class="col-lg-6">
-			            <div class="home-news-col">
-			                <div class="home-news-head">
-			                    <h2><span><?= e($column['heading']) ?></span></h2>
-			                    <a href="<?= e($column['more']) ?>" class="home-news-more">Xem tất cả <i class="bi bi-arrow-right"></i></a>
-			                </div>
-			                <div class="home-news-list">
-			                    <?php foreach ($column['posts'] as $post): ?>
-			                        <article class="home-news-item">
-			                            <a href="<?= e(newsPostUrl($post)) ?>" class="home-news-thumb">
-			                                <img src="<?= e(newsCover($post)) ?>" alt="<?= e($post['title']) ?>" loading="lazy" onerror="this.onerror=null;this.src='assets/img/branding/tnc.png'">
-			                                <?php if ($column['play']): ?>
-			                                    <span class="home-news-play"><i class="bi bi-play-fill"></i></span>
-			                                <?php endif; ?>
-			                            </a>
-			                            <div class="home-news-body">
-			                                <h3><a href="<?= e(newsPostUrl($post)) ?>"><?= e($post['title']) ?></a></h3>
-			                                <?php if (!empty($post['excerpt'])): ?>
-			                                    <p><?= e($post['excerpt']) ?></p>
-			                                <?php endif; ?>
-			                                <div class="home-news-meta">
-			                                    <span><i class="bi bi-clock"></i><?= e($post['dateTime']) ?></span>
-			                                    <span><i class="bi bi-eye"></i><?= number_format($post['views'], 0, ',', '.') ?></span>
-			                                </div>
-			                            </div>
-			                        </article>
-			                    <?php endforeach; ?>
-			                </div>
-			            </div>
-			        </div>
-			    <?php endforeach; ?>
-			</div>
+				<div class="container home-news-container">
+					<div class="home-news-grid">
+						<?php foreach ($homeColumns as $column): ?>
+							<div class="home-news-col">
+								<div class="home-news-head">
+									<h2><?= e($column['heading']) ?></h2>
+									<a href="<?= e($column['more']) ?>" class="home-news-more">Xem tất cả <i class="bi bi-arrow-right"></i></a>
+								</div>
+								<div class="home-news-list">
+									<?php foreach ($column['posts'] as $post): ?>
+										<article class="home-news-item<?= $column['video'] ? ' home-news-item--video' : '' ?>">
+											<a href="<?= e(newsPostUrl($post)) ?>" class="home-news-thumb">
+												<img src="<?= e(newsCover($post)) ?>" alt="<?= e($post['title']) ?>" loading="lazy" onerror="this.onerror=null;this.src='assets/img/branding/tnc.png'">
+											</a>
+											<div class="home-news-body">
+												<h3><a href="<?= e(newsPostUrl($post)) ?>"><?= e($post['title']) ?></a></h3>
+												<?php if (!empty($post['excerpt'])): ?>
+													<p><?= e($post['excerpt']) ?></p>
+												<?php endif; ?>
+												<div class="home-news-meta">
+													<span><i class="bi bi-clock"></i><?= e($post['dateTime']) ?></span>
+													<span><i class="bi bi-eye"></i><?= number_format($post['views'], 0, ',', '.') ?></span>
+												</div>
+											</div>
+										</article>
+									<?php endforeach; ?>
+								</div>
+							</div>
+						<?php endforeach; ?>
+					</div>
+				</div>
 			</section>
 			<?php endif; ?>
 			<div class="feedback-customer">

@@ -53,6 +53,92 @@ final class NewsRepository
         return $this->presentMany($statement->fetchAll());
     }
 
+    /**
+     * Published posts selected by slug, returned in the same order as $slugs.
+     * Used for the manually curated promotion banners on the homepage.
+     *
+     * @param string[] $slugs
+     */
+    public function bySlugs(array $slugs): array
+    {
+        $slugs = array_values(array_unique(array_filter(
+            array_map(static fn (mixed $slug): string => trim((string) $slug), $slugs),
+            static fn (string $slug): bool => $slug !== '',
+        )));
+
+        if ($slugs === []) {
+            return [];
+        }
+
+        $placeholders = [];
+        $params = [':status' => 'published'];
+        foreach ($slugs as $index => $slug) {
+            $key = ':slug_' . $index;
+            $placeholders[] = $key;
+            $params[$key] = $slug;
+        }
+
+        $statement = $this->db->prepare(
+            self::SELECT . ' ' . self::FROM . '
+             WHERE n.post_status = :status AND n.post_slug IN (' . implode(', ', $placeholders) . ')',
+        );
+        foreach ($params as $key => $value) {
+            $statement->bindValue($key, $value);
+        }
+        $statement->execute();
+
+        $posts = $this->presentMany($statement->fetchAll());
+        $positions = array_flip($slugs);
+        usort(
+            $posts,
+            static fn (array $a, array $b): int => ($positions[$a['slug']] ?? PHP_INT_MAX)
+                <=> ($positions[$b['slug']] ?? PHP_INT_MAX),
+        );
+
+        return $posts;
+    }
+
+    /**
+     * Latest published posts that do not belong to the excluded categories.
+     * The homepage uses this for "Tin tức" so promotion/video posts stay in their own blocks.
+     *
+     * @param string[] $excludedCategories Category slugs to skip.
+     */
+    public function latestExcludingCategories(array $excludedCategories, int $limit = 8): array
+    {
+        $excluded = array_values(array_unique(array_filter(
+            array_map(static fn (mixed $slug): string => trim((string) $slug), $excludedCategories),
+            static fn (string $slug): bool => $slug !== '',
+        )));
+
+        $where = ['n.post_status = :status'];
+        $params = [':status' => 'published'];
+
+        if ($excluded !== []) {
+            $placeholders = [];
+            foreach ($excluded as $index => $slug) {
+                $key = ':excluded_' . $index;
+                $placeholders[] = $key;
+                $params[$key] = $slug;
+            }
+            $where[] = 'c.category_slug NOT IN (' . implode(', ', $placeholders) . ')';
+        }
+
+        $statement = $this->db->prepare(
+            self::SELECT . ' ' . self::FROM . '
+             WHERE ' . implode(' AND ', $where) . '
+             ORDER BY n.published_at DESC, n.news_post_id DESC
+             LIMIT :limit',
+        );
+        foreach ($params as $key => $value) {
+            $statement->bindValue($key, $value);
+        }
+        $statement->bindValue(':limit', max(1, min($limit, 24)), PDO::PARAM_INT);
+        $statement->execute();
+
+        return $this->presentMany($statement->fetchAll());
+    }
+
     public function categories(): array
     {
         $statement = $this->db->query(
