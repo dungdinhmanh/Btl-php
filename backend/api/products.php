@@ -34,11 +34,17 @@ try {
     $query = trim((string) ($_GET['q'] ?? ''));
     $categoryList = array_values(array_filter(array_map('trim', explode(',', (string) ($_GET['category'] ?? '')))));
     $brand = trim((string) ($_GET['brand'] ?? ''));
-    $price = trim((string) ($_GET['price'] ?? ''));
     $socket = trim((string) ($_GET['socket'] ?? ''));
     $offset = (int) ($_GET['offset'] ?? 0);
-    $price = trim((string) ($_GET['price'] ?? ''));
-    $socket = trim((string) ($_GET['socket'] ?? ''));
+
+    $minParam = $_GET['min'] ?? null;
+    $maxParam = $_GET['max'] ?? null;
+    $minPrice = is_string($minParam) && ctype_digit($minParam) ? (int) $minParam : null;
+    $maxPrice = is_string($maxParam) && ctype_digit($maxParam) ? (int) $maxParam : null;
+
+    if ($minPrice !== null && $maxPrice !== null && $minPrice > $maxPrice) {
+        [$minPrice, $maxPrice] = [$maxPrice, $minPrice];
+    }
 
     $products = $repository->search(
         $query,
@@ -48,9 +54,29 @@ try {
         $brand !== '' ? $brand : null,
         trim((string) ($_GET['sort'] ?? 'newest')),
         count($categoryList) > 1 ? $categoryList : [],
-        $price !== '' ? $price : null,
+        $minPrice,
+        $maxPrice,
         $socket !== '' ? $socket : null,
     );
+
+    $priceFacets = [];
+    if (count($categoryList) === 1) {
+        $catalog = require __DIR__ . '/../config/category_catalog.php';
+        $categorySlug = strtolower($categoryList[0]);
+        $bands = $catalog[$categorySlug]['price']['bands'] ?? [];
+
+        if ($bands !== []) {
+            $counts = $repository->priceBandCounts($categorySlug, $bands);
+            foreach (array_values($bands) as $index => $band) {
+                $priceFacets[] = [
+                    'label' => (string) ($band['label'] ?? ''),
+                    'min' => $band['min'] ?? null,
+                    'max' => $band['max'] ?? null,
+                    'count' => $counts[$index] ?? 0,
+                ];
+            }
+        }
+    }
 
     jsonResponse([
         'ok' => true,
@@ -60,9 +86,11 @@ try {
             null,
             $brand !== '' ? $brand : null,
             $categoryList,
-            $price !== '' ? $price : null,
+            $minPrice,
+            $maxPrice,
             $socket !== '' ? $socket : null,
         ),
+        'priceFacets' => $priceFacets,
         'limit' => max(1, min($limit, 100)),
         'offset' => max(0, $offset),
     ]);

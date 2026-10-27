@@ -73,7 +73,7 @@ const TNC = (() => {
 	}
 
 	const api = {
-		meta: () => request("meta.php").then((payload) => payload.data),
+		meta: (params = {}) => request("meta.php", params).then((payload) => payload.data),
 		featured: (limit = 4) =>
 			request("products.php", { featured: 1, limit }).then((payload) => payload.data),
 		product: (slug) =>

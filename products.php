@@ -79,32 +79,20 @@ require_once __DIR__ . '/backend/bootstrap.php';
         <div id="brand-filters" class="brand-filter-list"></div>
     </div>
     <hr />
-    <div class="cpu-filter-section">
-        <div class="cpu-filter-title">
-            <span>GIÁ SẢN PHẨM</span>
-            <span class="cpu-filter-toggle">⌄</span>
-        </div>
-        <div class="cpu-filter-list">
-            <label class="cpu-filter-item">
-                <input type="radio" name="cpu-price" value="under-2m">
-                <span>Dưới 2 triệu</span>
-            </label>
-            <label class="cpu-filter-item">
-                <input type="radio" name="cpu-price" value="2m-5m">
-                <span>2 - 5 triệu</span>
-            </label>
-            <label class="cpu-filter-item">
-                <input type="radio" name="cpu-price" value="5m-10m">
-                <span>5 - 10 triệu</span>
-            </label>
-            <label class="cpu-filter-item">
-                <input type="radio" name="cpu-price" value="over-10m">
-                <span>Trên 10 triệu</span>
-            </label>
-        </div>
+    <div class="price-filter-section" id="price-filter-section" hidden>
+        <button
+            type="button"
+            class="price-filter-title"
+            id="price-filter-toggle"
+            aria-expanded="true"
+            aria-controls="price-filter-body"
+        >
+            <span>Khoảng giá (VNĐ)</span>
+            <span class="price-filter-toggle-icon" aria-hidden="true">⌄</span>
+        </button>
+        <div class="price-filter-body" id="price-filter-body"></div>
+        <hr />
     </div>
-
-    <hr />
 
     <div class="cpu-filter-section">
         <div class="cpu-filter-title">

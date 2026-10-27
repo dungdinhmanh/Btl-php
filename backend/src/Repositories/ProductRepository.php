@@ -3,6 +3,13 @@ declare(strict_types=1);
 
 final class ProductRepository
 {
+    /**
+     * Danh mục cha của các danh mục linh kiện hiển thị trên products.php.
+     * Dùng slug thay vì danh sách 7 slug lá để thêm danh mục mới không phải
+     * sửa lại truy vấn.
+     */
+    private const CATALOG_PARENT_SLUG = 'linh-kien-may-tinh';
+
     private const SORTS = [
         'newest' => 'p.created_at DESC, p.product_id ASC',
         'price-asc' => 'p.unit_price ASC, p.product_id ASC',
@@ -57,7 +64,8 @@ final class ProductRepository
         ?string $brand = null,
         string $sort = 'newest',
         array $categories = [],
-        ?string $price = null,
+        ?int $minPrice = null,
+        ?int $maxPrice = null,
         ?string $socket = null,
     ): array {
         [$where, $params] = $this->buildFilters(
@@ -65,7 +73,8 @@ final class ProductRepository
             $category,
             $brand,
             $categories,
-            $price,
+            $minPrice,
+            $maxPrice,
             $socket,
         );
 
@@ -90,7 +99,8 @@ final class ProductRepository
     ?string $category = null,
     ?string $brand = null,
     array $categories = [],
-    ?string $price = null,
+    ?int $minPrice = null,
+    ?int $maxPrice = null,
     ?string $socket = null,
 ): int {
 [$where, $params] = $this->buildFilters(
@@ -98,7 +108,8 @@ final class ProductRepository
     $category,
     $brand,
     $categories,
-    $price,
+    $minPrice,
+    $maxPrice,
     $socket,
 );
         $statement = $this->db->prepare(
@@ -110,6 +121,77 @@ final class ProductRepository
         $statement->execute($params);
 
         return (int) $statement->fetchColumn();
+    }
+
+    /**
+     * Đếm sản phẩm đang bán theo từng khoảng giá của một danh mục.
+     *
+     * Số đếm chỉ phụ thuộc danh mục (không phụ thuộc brand/socket/giá đang
+     * chọn) để các con số đứng yên khi người dùng đổi bộ lọc khác, giống
+     * trang gốc tncstore.vn.
+     *
+     * @param array<int, array{min?: int|null, max?: int|null}> $bands
+     * @return int[] số lượng theo đúng thứ tự $bands
+     */
+    public function priceBandCounts(?string $category, array $bands): array
+    {
+        $bands = array_values($bands);
+
+        if ($category === null || $category === '' || $bands === []) {
+            return [];
+        }
+
+        $selects = [];
+        $params = [
+            ':status' => 'active',
+            ':category' => $category,
+            ':categoryParent' => $category,
+        ];
+
+        foreach ($bands as $index => $band) {
+            $conditions = [];
+            $min = $band['min'] ?? null;
+            $max = $band['max'] ?? null;
+
+            if ($min !== null) {
+                $key = ':bandMin' . $index;
+                $conditions[] = 'p.unit_price >= ' . $key;
+                $params[$key] = (int) $min;
+            }
+
+            if ($max !== null) {
+                $key = ':bandMax' . $index;
+                // Cận trên mở để các khoảng không đếm trùng sản phẩm nằm
+                // đúng mốc (ví dụ RAM đúng 5.000.000).
+                $conditions[] = 'p.unit_price < ' . $key;
+                $params[$key] = (int) $max;
+            }
+
+            $condition = $conditions === [] ? '1 = 1' : implode(' AND ', $conditions);
+            $selects[] = 'COALESCE(SUM(CASE WHEN ' . $condition . ' THEN 1 ELSE 0 END), 0) AS band_' . $index;
+        }
+
+        $statement = $this->db->prepare(
+            'SELECT ' . implode(', ', $selects) . '
+             FROM products p
+             INNER JOIN categories c ON c.category_id = p.category_id
+             WHERE p.product_status = :status
+               AND (c.category_slug = :category
+                    OR c.parent_category_id IN (
+                        SELECT parent_lookup.category_id
+                        FROM categories parent_lookup
+                        WHERE parent_lookup.category_slug = :categoryParent
+                    ))',
+        );
+        $statement->execute($params);
+        $row = $statement->fetch() ?: [];
+
+        $counts = [];
+        foreach (array_keys($bands) as $index) {
+            $counts[$index] = (int) ($row['band_' . $index] ?? 0);
+        }
+
+        return $counts;
     }
 
     /**
@@ -197,47 +279,78 @@ final class ProductRepository
         return is_string($slug) ? $this->findBySlug($slug) : null;
     }
 
-    
-        public function categories(): array
+    public function categories(): array
     {
-        $statement = $this->db->query(
-        "SELECT c.category_id AS id, c.category_slug AS slug, c.category_name AS name,
-                COUNT(p.product_id) AS productCount
-         FROM categories c
-         LEFT JOIN products p ON p.category_id = c.category_id AND p.product_status = 'active'
-         WHERE c.category_slug IN ('cpu', 'mainboard', 'ram', 'hdd', 'case', 'psu', 'ssd')
-         GROUP BY c.category_id, c.category_slug, c.category_name
-         ORDER BY c.category_name ASC",
-    );
-
-        $categories = array_map(static fn (array $row): array => [
-        'id' => (int) $row['id'],
-        'slug' => (string) $row['slug'],
-        'name' => (string) $row['name'],
-        'productCount' => (int) $row['productCount'],
-    ], $statement->fetchAll());
-
-        $order = ['cpu', 'mainboard', 'ram', 'hdd', 'case', 'psu', 'ssd'];
-
-        usort($categories, static function (array $a, array $b) use ($order): int {
-        return array_search($a['slug'], $order, true)
-            <=> array_search($b['slug'], $order, true);
-    });
-
-    return $categories;
-}
-
-
-    public function brands(): array
-    {
-        $statement = $this->db->query(
-            "SELECT b.brand_id AS id, b.brand_name AS name, b.brand_slug AS slug,
+        $statement = $this->db->prepare(
+            "SELECT c.category_id AS id, c.category_slug AS slug, c.category_name AS name,
                     COUNT(p.product_id) AS productCount
-             FROM brands b
-             LEFT JOIN products p ON p.brand_id = b.brand_id AND p.product_status = 'active'
-             GROUP BY b.brand_id, b.brand_name, b.brand_slug
-             ORDER BY b.brand_name ASC",
+             FROM categories c
+             LEFT JOIN products p ON p.category_id = c.category_id AND p.product_status = 'active'
+             WHERE c.parent_category_id = (
+                 SELECT parent.category_id
+                 FROM categories parent
+                 WHERE parent.category_slug = :parentSlug
+                 LIMIT 1
+             )
+             GROUP BY c.category_id, c.category_slug, c.category_name
+             ORDER BY c.category_name ASC",
         );
+        $statement->execute([':parentSlug' => self::CATALOG_PARENT_SLUG]);
+
+        return array_map(static fn (array $row): array => [
+            'id' => (int) $row['id'],
+            'slug' => (string) $row['slug'],
+            'name' => (string) $row['name'],
+            'productCount' => (int) $row['productCount'],
+        ], $statement->fetchAll());
+    }
+
+
+    /**
+     * Danh sách hãng kèm số sản phẩm. Truyền danh mục để bộ lọc chỉ hiện
+     * những hãng thực sự có sản phẩm trong danh mục đang xem.
+     *
+     * @param string[] $categories
+     */
+    public function brands(array $categories = []): array
+    {
+        $categories = array_values(array_filter(array_map('trim', $categories)));
+
+        if ($categories === []) {
+            $statement = $this->db->query(
+                "SELECT b.brand_id AS id, b.brand_name AS name, b.brand_slug AS slug,
+                        COUNT(p.product_id) AS productCount
+                 FROM brands b
+                 LEFT JOIN products p ON p.brand_id = b.brand_id AND p.product_status = 'active'
+                 GROUP BY b.brand_id, b.brand_name, b.brand_slug
+                 ORDER BY b.brand_name ASC",
+            );
+        } else {
+            $conditions = [];
+            $params = [];
+            foreach ($categories as $index => $slug) {
+                $conditions[] = "(c.category_slug = :category{$index}
+                    OR c.parent_category_id IN (
+                        SELECT parent_lookup.category_id
+                        FROM categories parent_lookup
+                        WHERE parent_lookup.category_slug = :parent{$index}
+                    ))";
+                $params[":category{$index}"] = $slug;
+                $params[":parent{$index}"] = $slug;
+            }
+
+            $statement = $this->db->prepare(
+                "SELECT b.brand_id AS id, b.brand_name AS name, b.brand_slug AS slug,
+                        COUNT(p.product_id) AS productCount
+                 FROM brands b
+                 JOIN products p ON p.brand_id = b.brand_id AND p.product_status = 'active'
+                 JOIN categories c ON c.category_id = p.category_id
+                 WHERE " . implode(' OR ', $conditions) . "
+                 GROUP BY b.brand_id, b.brand_name, b.brand_slug
+                 ORDER BY b.brand_name ASC",
+            );
+            $statement->execute($params);
+        }
 
         return array_values(array_filter(
             array_map(static fn (array $row): array => [
@@ -255,7 +368,8 @@ final class ProductRepository
         ?string $category,
         ?string $brand,
         array $categories,
-        ?string $price = null,
+        ?int $minPrice = null,
+        ?int $maxPrice = null,
         ?string $socket = null,
     ): array {
         $where = ['p.product_status = :status'];
@@ -288,20 +402,16 @@ final class ProductRepository
             $params[':brand'] = $brand;
         }
 
-        if ($price === 'under-2m') {
+        if ($minPrice !== null) {
+            $where[] = 'p.unit_price >= :priceMin';
+            $params[':priceMin'] = $minPrice;
+        }
+
+        if ($maxPrice !== null) {
+            // Cận trên mở để mỗi sản phẩm chỉ thuộc một khoảng giá, khớp với
+            // số lượng đếm được trong priceBandCounts().
             $where[] = 'p.unit_price < :priceMax';
-            $params[':priceMax'] = 2000000;
-        } elseif ($price === '2m-5m') {
-            $where[] = 'p.unit_price >= :priceMin AND p.unit_price < :priceMax';
-            $params[':priceMin'] = 2000000;
-            $params[':priceMax'] = 5000000;
-        } elseif ($price === '5m-10m') {
-            $where[] = 'p.unit_price >= :priceMin AND p.unit_price <= :priceMax';
-            $params[':priceMin'] = 5000000;
-            $params[':priceMax'] = 10000000;
-        } elseif ($price === 'over-10m') {
-            $where[] = 'p.unit_price > :priceMin';
-            $params[':priceMin'] = 10000000;
+            $params[':priceMax'] = $maxPrice;
         }
 
         if ($socket !== null && $socket !== '') {

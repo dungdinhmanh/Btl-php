@@ -14,35 +14,46 @@ document.addEventListener("DOMContentLoaded", async () => {
 	const breadcrumbHolder = document.querySelector("#products-breadcrumb");
 	const productTitle = document.querySelector("#product-page-title");
 	const categoryFeatured = document.querySelector("#category-featured");
-	const activeFilterHolder = document.querySelector("#active-filters");
     const searchParams = new URLSearchParams(window.location.search);
-    const currentCategory = (
-    new URLSearchParams(window.location.search).get("category") || ""
-).split(",")[0].trim().toLowerCase();
+    const currentCategory = (searchParams.get("category") || "")
+        .split(",")[0]
+        .trim()
+        .toLowerCase();
 
-    const categoryBannerImages = {
-    cpu: "assets/img/Products.php-category/CPU-Bộ vi xử lí.jpg",
-    mainboard: "assets/img/Products.php-category/Mainboard Bo mạch chủ.jpg",
-    ram: "assets/img/Products.php-category/Ram bộ nhớ trong.jpg",
-    hdd: "assets/img/Products.php-category/Ổ cứng HDD.jpg",
-};
+    function parsePriceParam(value) {
+        if (value === null || value === undefined || value === "") return null;
 
-function updateProductBanner() {
+        const digits = String(value).replace(/[^\d]/g, "");
+
+        return digits === "" ? null : Number(digits);
+    }
+
+function updateProductBanner(categories) {
     const carousel = document.querySelector("#productBanner");
     if (!carousel) return;
 
-    const imagePath = categoryBannerImages[currentCategory];
+    // Trang không chọn danh mục giữ carousel 3 ảnh giống trang gốc.
+    if (!currentCategory) return;
 
-    // Danh mục chưa có banner riêng thì giữ carousel 3 ảnh cũ.
-    if (!imagePath) return;
+    const category = categories.find((item) => item.slug === currentCategory);
+    const imagePath = category?.banner;
+    const bannerSection = document.querySelector("#products-page-banner");
+
+    // Danh mục chưa khai báo banner thì ẩn hẳn, không lùi về ảnh chung.
+    if (!imagePath) {
+        if (bannerSection) bannerSection.hidden = true;
+        return;
+    }
+
+    if (bannerSection) bannerSection.hidden = false;
 
     carousel.innerHTML = `
         <div class="carousel-inner">
             <div class="carousel-item active">
                 <img
-                    src="${imagePath}"
+                    src="${TNC.escapeHtml(imagePath)}"
                     class="d-block w-100"
-                    alt="Banner danh mục"
+                    alt="${TNC.escapeHtml(category.bannerAlt || category.name)}"
                 />
             </div>
         </div>
@@ -60,10 +71,17 @@ function updateProductBanner() {
         .filter(Boolean),
     brand: searchParams.get("brand") || "",
     sort: searchParams.get("sort") || "newest",
-    price: searchParams.get("price") || "",
+    priceMin: parsePriceParam(searchParams.get("min")),
+    priceMax: parsePriceParam(searchParams.get("max")),
     socket: searchParams.get("socket") || "",
 };
 let brands = [];
+let categoriesMeta = [];
+let priceFilterConfig = null;
+
+if (state.priceMin !== null && state.priceMax !== null && state.priceMin > state.priceMax) {
+    [state.priceMin, state.priceMax] = [state.priceMax, state.priceMin];
+}
 
 	if (sortSelect && state.sort) sortSelect.value = state.sort;
 
@@ -72,7 +90,8 @@ let brands = [];
 		if (state.q) params.set("q", state.q);
 		if (state.categories.length) params.set("category", state.categories.join(","));
 		if (state.brand) params.set("brand", state.brand);
-		if (state.price) params.set("price", state.price);
+		if (state.priceMin !== null) params.set("min", String(state.priceMin));
+		if (state.priceMax !== null) params.set("max", String(state.priceMax));
 		if (state.socket) params.set("socket", state.socket);
 		if (state.sort !== "newest") params.set("sort", state.sort);
 		const query = params.toString();
@@ -122,31 +141,11 @@ function renderFilters(categories) {
 
     if (!filterHolder) return;
 
-    const order = [
-        "cpu",
-        "mainboard",
-        "ram",
-        "hdd",
-        "case",
-        "psu",
-        "ssd"
-    ];
-
-    const allowedCategories = categories.filter((category) =>
-        order.includes(category.slug.toLowerCase())
-    );
-
-    const sortedCategories = [...allowedCategories].sort((a, b) => {
-        return (
-            order.indexOf(a.slug.toLowerCase()) -
-            order.indexOf(b.slug.toLowerCase())
-        );
-    });
-
+    // Thứ tự danh mục đã được meta API sắp theo config.
     filterHolder.innerHTML = `
         <div class="category-filter-title">Danh mục</div>
         <div class="category-filter-list">
-            ${sortedCategories
+            ${categories
                 .map(
                     (category) => `
                         <a href="#"
@@ -221,39 +220,334 @@ function renderFilters(categories) {
 	}
 
 
-function initCpuFilters() {
-    const priceInputs = document.querySelectorAll(
-        'input[name="cpu-price"]'
-    );
+function formatPriceInput(value) {
+    if (value === null || value === undefined || Number.isNaN(Number(value))) return "";
 
-    const socketHolder = document.querySelector("#cpu-socket-filters");
+    return new Intl.NumberFormat("vi-VN").format(Number(value));
+}
 
-    priceInputs.forEach((input) => {
-        input.checked = state.price === input.value;
+function parsePriceInput(value) {
+    const digits = String(value ?? "").replace(/[^\d]/g, "");
 
+    return digits === "" ? null : Number(digits);
+}
+
+function getSelectedPriceBand() {
+    if (!priceFilterConfig) return null;
+
+    return priceFilterConfig.bands.find(
+        (band) => band.min === state.priceMin && band.max === state.priceMax
+    ) || null;
+}
+
+function getPriceFilterLabel() {
+    const band = getSelectedPriceBand();
+    if (band) return band.label;
+
+    const hasMin = state.priceMin !== null;
+    const hasMax = state.priceMax !== null;
+
+    if (hasMin && hasMax) {
+        return `${formatPriceInput(state.priceMin)} đ - ${formatPriceInput(state.priceMax)} đ`;
+    }
+    if (hasMin) return `Trên ${formatPriceInput(state.priceMin)} đ`;
+    if (hasMax) return `Dưới ${formatPriceInput(state.priceMax)} đ`;
+
+    return "";
+}
+
+function updatePriceSliderFill() {
+    const fill = document.querySelector("#price-slider-fill");
+    const minSlider = document.querySelector("#price-slider-min");
+    const maxSlider = document.querySelector("#price-slider-max");
+    if (!fill || !minSlider || !maxSlider) return;
+
+    const min = Number(minSlider.min);
+    const max = Number(maxSlider.max);
+    const span = max - min;
+
+    if (span <= 0) {
+        fill.style.left = "0%";
+        fill.style.width = "100%";
+        return;
+    }
+
+    const from = ((Number(minSlider.value) - min) / span) * 100;
+    const to = ((Number(maxSlider.value) - min) / span) * 100;
+
+    fill.style.left = `${Math.max(0, Math.min(100, from))}%`;
+    fill.style.width = `${Math.max(0, Math.min(100, to - from))}%`;
+}
+
+function syncPriceControls() {
+    if (!priceFilterConfig) return;
+
+    const minValue = state.priceMin ?? priceFilterConfig.min;
+    const maxValue = state.priceMax ?? priceFilterConfig.max;
+    const minInput = document.querySelector("#price-min-input");
+    const maxInput = document.querySelector("#price-max-input");
+    const minSlider = document.querySelector("#price-slider-min");
+    const maxSlider = document.querySelector("#price-slider-max");
+
+    if (minInput) minInput.value = formatPriceInput(minValue);
+    if (maxInput) maxInput.value = formatPriceInput(maxValue);
+    if (minSlider) minSlider.value = String(minValue);
+    if (maxSlider) maxSlider.value = String(maxValue);
+
+    updatePriceSliderFill();
+
+    document.querySelectorAll("[data-price-band]").forEach((input) => {
+        const band = priceFilterConfig.bands[Number(input.dataset.priceBand)];
+        input.checked = Boolean(
+            band && band.min === state.priceMin && band.max === state.priceMax
+        );
+    });
+}
+
+function renderPriceFacetCounts(facets) {
+    facets.forEach((facet, index) => {
+        const node = document.querySelector(`[data-price-count="${index}"]`);
+        if (node) node.textContent = `(${facet.count})`;
+    });
+}
+
+function applyPriceRange(min, max, { reload = true } = {}) {
+    if (!priceFilterConfig) return;
+
+    min = min === null
+        ? null
+        : Math.max(priceFilterConfig.min, Math.min(priceFilterConfig.max, min));
+    max = max === null
+        ? null
+        : Math.max(priceFilterConfig.min, Math.min(priceFilterConfig.max, max));
+
+    if (min !== null && max !== null && min > max) {
+        [min, max] = [max, min];
+    }
+
+    state.priceMin = min;
+    state.priceMax = max;
+    syncPriceControls();
+
+    if (reload) loadProducts();
+}
+
+function renderPriceFilter(config) {
+    const section = document.querySelector("#price-filter-section");
+    const body = document.querySelector("#price-filter-body");
+    if (!section || !body) return;
+
+    if (!config || !Array.isArray(config.bands) || config.bands.length === 0) {
+        section.hidden = true;
+        priceFilterConfig = null;
+        state.priceMin = null;
+        state.priceMax = null;
+        return;
+    }
+
+    priceFilterConfig = {
+        min: Number(config.min ?? 0),
+        max: Number(config.max ?? 0),
+        bands: config.bands.map((band) => ({
+            label: String(band.label ?? ""),
+            min: band.min === null || band.min === undefined ? null : Number(band.min),
+            max: band.max === null || band.max === undefined ? null : Number(band.max),
+        })),
+    };
+
+    if (priceFilterConfig.max < priceFilterConfig.min) {
+        [priceFilterConfig.min, priceFilterConfig.max] = [
+            priceFilterConfig.max,
+            priceFilterConfig.min,
+        ];
+    }
+
+    if (state.priceMin !== null) {
+        state.priceMin = Math.max(
+            priceFilterConfig.min,
+            Math.min(priceFilterConfig.max, state.priceMin)
+        );
+    }
+    if (state.priceMax !== null) {
+        state.priceMax = Math.max(
+            priceFilterConfig.min,
+            Math.min(priceFilterConfig.max, state.priceMax)
+        );
+    }
+    if (state.priceMin !== null && state.priceMax !== null && state.priceMin > state.priceMax) {
+        [state.priceMin, state.priceMax] = [state.priceMax, state.priceMin];
+    }
+
+    const hasSlider = priceFilterConfig.max > priceFilterConfig.min;
+    const step = 50000;
+
+    body.innerHTML = `
+        <div class="price-filter-options">
+            ${priceFilterConfig.bands
+                .map(
+                    (band, index) => `
+                        <label class="price-filter-item">
+                            <input type="checkbox" data-price-band="${index}">
+                            <span class="price-filter-name">${TNC.escapeHtml(band.label)}</span>
+                            <span class="price-filter-count" data-price-count="${index}"></span>
+                        </label>
+                    `
+                )
+                .join("")}
+        </div>
+        <div class="price-filter-form">
+            <div class="price-filter-inputs">
+                <label class="price-filter-input">
+                    <input type="text" inputmode="numeric" id="price-min-input" aria-label="Giá thấp nhất">
+                    <span>đ</span>
+                </label>
+                <span class="price-separator">-</span>
+                <label class="price-filter-input">
+                    <input type="text" inputmode="numeric" id="price-max-input" aria-label="Giá cao nhất">
+                    <span>đ</span>
+                </label>
+            </div>
+            ${hasSlider
+                ? `
+                    <div class="price-slider" id="price-slider">
+                        <div class="price-slider-track"></div>
+                        <div class="price-slider-fill" id="price-slider-fill"></div>
+                        <input
+                            type="range"
+                            id="price-slider-min"
+                            min="${priceFilterConfig.min}"
+                            max="${priceFilterConfig.max}"
+                            step="${step}"
+                            aria-label="Giá thấp nhất"
+                        >
+                        <input
+                            type="range"
+                            id="price-slider-max"
+                            min="${priceFilterConfig.min}"
+                            max="${priceFilterConfig.max}"
+                            step="${step}"
+                            aria-label="Giá cao nhất"
+                        >
+                    </div>
+                `
+                : ""}
+        </div>
+    `;
+
+    section.hidden = false;
+    syncPriceControls();
+
+    body.querySelectorAll("[data-price-band]").forEach((input) => {
         input.addEventListener("change", () => {
-            state.price = input.value;
-            loadProducts();
+            const band = priceFilterConfig.bands[Number(input.dataset.priceBand)];
+            if (!band) return;
+
+            if (input.checked) {
+                applyPriceRange(band.min, band.max);
+            } else {
+                applyPriceRange(null, null);
+            }
         });
     });
 
-    if (socketHolder) {
-        const socketInputs = socketHolder.querySelectorAll(
-            'input[type="checkbox"]'
+    const minInput = body.querySelector("#price-min-input");
+    const maxInput = body.querySelector("#price-max-input");
+    const minSlider = body.querySelector("#price-slider-min");
+    const maxSlider = body.querySelector("#price-slider-max");
+
+    const commitInputs = () => {
+        applyPriceRange(
+            parsePriceInput(minInput?.value),
+            parsePriceInput(maxInput?.value)
         );
+    };
 
-        socketInputs.forEach((input) => {
-            input.checked = state.socket === input.value;
+    [minInput, maxInput].forEach((input) => {
+        if (!input) return;
 
-            input.addEventListener("change", () => {
-                state.socket = input.checked ? input.value : "";
-                socketInputs.forEach((item) => {
-                    item.checked = item.value === state.socket;
-                });
-                loadProducts();
-            });
+        input.addEventListener("focus", () => {
+            input.dataset.previousValue = input.value;
+            input.value = String(parsePriceInput(input.value) ?? "");
         });
+
+        input.addEventListener("blur", () => {
+            if (input.value.trim() === "") {
+                const fallback = input.id === "price-min-input"
+                    ? (state.priceMin ?? priceFilterConfig.min)
+                    : (state.priceMax ?? priceFilterConfig.max);
+                input.value = formatPriceInput(fallback);
+                delete input.dataset.previousValue;
+                return;
+            }
+
+            // Không gửi lại filter khi người dùng chỉ bấm vào rồi rời ô,
+            // tránh biến khoảng mở ("Trên 11 triệu") thành khoảng rỗng.
+            const next = parsePriceInput(input.value);
+            const previous = parsePriceInput(input.dataset.previousValue ?? "");
+            delete input.dataset.previousValue;
+
+            if (next === previous) {
+                input.value = formatPriceInput(next);
+                return;
+            }
+
+            commitInputs();
+        });
+
+        input.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                input.blur();
+            }
+        });
+    });
+
+    if (minSlider && maxSlider) {
+        minSlider.addEventListener("input", () => {
+            if (Number(minSlider.value) > Number(maxSlider.value)) {
+                minSlider.value = maxSlider.value;
+            }
+
+            if (minInput) minInput.value = formatPriceInput(Number(minSlider.value));
+            if (maxInput) maxInput.value = formatPriceInput(Number(maxSlider.value));
+            updatePriceSliderFill();
+        });
+
+        maxSlider.addEventListener("input", () => {
+            if (Number(maxSlider.value) < Number(minSlider.value)) {
+                maxSlider.value = minSlider.value;
+            }
+
+            if (minInput) minInput.value = formatPriceInput(Number(minSlider.value));
+            if (maxInput) maxInput.value = formatPriceInput(Number(maxSlider.value));
+            updatePriceSliderFill();
+        });
+
+        const commitSlider = () => {
+            applyPriceRange(Number(minSlider.value), Number(maxSlider.value));
+        };
+
+        minSlider.addEventListener("change", commitSlider);
+        maxSlider.addEventListener("change", commitSlider);
     }
+
+    const title = section.querySelector("#price-filter-toggle");
+    title?.addEventListener("click", () => {
+        const collapsed = section.classList.toggle("is-collapsed");
+        title.setAttribute("aria-expanded", String(!collapsed));
+    });
+}
+
+function initPriceFilter() {
+    // Bộ lọc giá chỉ có nghĩa khi xem đúng một danh mục.
+    if (state.categories.length !== 1) {
+        renderPriceFilter(null);
+        return;
+    }
+
+    const category = categoriesMeta.find((item) => item.slug === currentCategory);
+
+    renderPriceFilter(category?.priceFilter || null);
 }
 async function loadCategoryFeatured() {
     const holder = document.querySelector("#category-featured");
@@ -283,24 +577,28 @@ async function loadCategoryFeatured() {
         }
 
         holder.innerHTML = `
-    			<section class="category-featured-section">
-        			<h2>CPU BÁN CHẠY</h2>
+            <section class="category-featured-section" aria-labelledby="category-featured-title">
+                <div class="category-featured-tabs">
+                    <span class="category-featured-tab" id="category-featured-title">CPU Bán Chạy</span>
+                </div>
 
-        <button type="button" class="category-carousel-btn prev"
-                id="cpu-carousel-prev" aria-label="Sản phẩm trước">
-            &#10094;
-        </button>
+                <div class="category-featured-content">
+                    <button type="button" class="category-carousel-btn prev"
+                            id="cpu-carousel-prev" aria-label="Sản phẩm trước">
+                        &#10094;
+                    </button>
 
-        <div class="category-featured-grid" id="cpu-carousel-track">
-            ${items.map((product) => TNC.productCard(product)).join("")}
-        </div>
+                    <div class="category-featured-grid" id="cpu-carousel-track">
+                        ${items.map((product) => TNC.productCard(product)).join("")}
+                    </div>
 
-        <button type="button" class="category-carousel-btn next"
-                id="cpu-carousel-next" aria-label="Sản phẩm tiếp theo">
-            &#10095;
-        </button>
-    </section>
-`;
+                    <button type="button" class="category-carousel-btn next"
+                            id="cpu-carousel-next" aria-label="Sản phẩm tiếp theo">
+                        &#10095;
+                    </button>
+                </div>
+            </section>
+        `;
 
         holder.style.display = "block";
         const track = holder.querySelector("#cpu-carousel-track");
@@ -327,16 +625,101 @@ nextBtn?.addEventListener("click", () => {
         holder.style.display = "none";
     }
 }
+function renderActiveFilters() {
+    const holder = document.querySelector("#active-filters");
+    if (!holder) return;
+
+    const chips = [];
+
+    if (state.brand) {
+        const selectedBrand = brands.find((brand) => brand.slug === state.brand);
+        chips.push({ type: "brand", label: selectedBrand?.name || state.brand });
+    }
+
+    if (state.priceMin !== null || state.priceMax !== null) {
+        chips.push({ type: "price", label: getPriceFilterLabel() });
+    }
+
+    if (state.socket) {
+        chips.push({ type: "socket", label: state.socket });
+    }
+
+    if (!chips.length) {
+        holder.innerHTML = "";
+        return;
+    }
+
+    holder.innerHTML = `
+        <span class="active-filter-label">Lọc theo:</span>
+        ${chips
+            .map(
+                (chip) => `
+                    <button type="button" class="active-filter-item" data-remove-filter="${chip.type}">
+                        ${TNC.escapeHtml(chip.label)}
+                        <span class="active-filter-x">×</span>
+                    </button>
+                `
+            )
+            .join("")}
+        <button type="button" class="clear-all-filters" id="clear-all-filters">
+            Xóa tất cả
+        </button>
+    `;
+
+    holder.querySelectorAll("[data-remove-filter]").forEach((button) => {
+        button.addEventListener("click", () => {
+            const type = button.dataset.removeFilter;
+
+            if (type === "brand") {
+                state.brand = "";
+                renderBrandFilters(brands);
+            } else if (type === "price") {
+                state.priceMin = null;
+                state.priceMax = null;
+                syncPriceControls();
+            } else if (type === "socket") {
+                state.socket = "";
+                document
+                    .querySelectorAll("#cpu-socket-filters input[type='checkbox']")
+                    .forEach((input) => {
+                        input.checked = false;
+                    });
+            }
+
+            loadProducts();
+        });
+    });
+
+    holder.querySelector("#clear-all-filters")?.addEventListener("click", () => {
+        state.brand = "";
+        state.q = "";
+        state.socket = "";
+        state.priceMin = null;
+        state.priceMax = null;
+        renderBrandFilters(brands);
+        syncPriceControls();
+        document
+            .querySelectorAll("#cpu-socket-filters input[type='checkbox']")
+            .forEach((input) => {
+                input.checked = false;
+            });
+
+        loadProducts();
+    });
+}
+
 	async function loadProducts() {
 		syncUrl();
+		renderActiveFilters();
 		TNC.showLoading(grid, "Đang tải sản phẩm...");
 
 		try {
 			const payload = await TNC.api.products({
 				q: state.q,
 				category: state.categories.join(","),
-				price: state.price,
-    			socket: state.socket,
+				min: state.priceMin,
+				max: state.priceMax,
+				socket: state.socket,
 				brand: state.brand,
 				sort: state.sort,
 				limit: 60,
@@ -344,50 +727,10 @@ nextBtn?.addEventListener("click", () => {
 
 			const items = payload.data || [];
 			if (countEl) countEl.textContent = `${payload.total ?? items.length} sản phẩm`;
-			const activeFilterHolder = document.querySelector("#active-filters");
+			if (Array.isArray(payload.priceFacets)) {
+				renderPriceFacetCounts(payload.priceFacets);
+			}
 
-			if (activeFilterHolder) {
-			if (state.brand) {
-			const selectedBrand = brands.find(
-			(brand) => brand.slug === state.brand
-		);
-
-		activeFilterHolder.innerHTML = `
-			<span class="active-filter-label">Lọc theo:</span>
-
-			<button type="button" class="active-filter-item" id="remove-brand-filter">
-    			${TNC.escapeHtml(selectedBrand?.name || state.brand)}
-    			<span class="active-filter-x">×</span>
-			</button>
-
-			<button type="button" class="clear-all-filters" id="clear-all-filters">
-				Xóa tất cả
-			</button>
-		`;
-	} else {
-		activeFilterHolder.innerHTML = "";
-	}
-}
-
-if (activeFilterHolder) {
-	document
-		.querySelector("#remove-brand-filter")
-		?.addEventListener("click", () => {
-			state.brand = "";
-			renderBrandFilters(brands);
-			loadProducts();
-		});
-
-	document
-		.querySelector("#clear-all-filters")
-		?.addEventListener("click", () => {
-			state.brand = "";
-			state.categories = [];
-			state.q = "";
-			renderBrandFilters(brands);
-			loadProducts();
-		});
-}
 			grid.innerHTML = items.length
 				? items.map((product) => TNC.productCard(product)).join("")
 				: TNC.emptyState({
@@ -409,19 +752,22 @@ if (activeFilterHolder) {
 	TNC.showLoading(filterHolder, "Đang tải bộ lọc...", "text-muted small py-3");
 
 	try {
-		const meta = await TNC.api.meta();
+		const meta = await TNC.api.meta({
+			category: state.categories.join(","),
+		});
 		brands = meta.brands || [];
-		const categories = meta.categories || [];
-		renderFilters(categories);
+		categoriesMeta = meta.categories || [];
+		renderFilters(categoriesMeta);
 		renderBrandFilters(brands);
-		renderBreadcrumb(categories);
+		renderBreadcrumb(categoriesMeta);
+		initPriceFilter();
 	} catch {
 		if (filterHolder) {
 			filterHolder.innerHTML =
 				'<p class="text-muted small mb-0">Không tải được bộ lọc.</p>';
 		}
 	}
-	updateProductBanner();
+	updateProductBanner(categoriesMeta);
 	await loadProducts();
 	await loadCategoryFeatured();
 });
