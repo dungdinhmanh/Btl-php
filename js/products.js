@@ -1,7 +1,6 @@
-/**
- * Product catalog: server-side filtering, search and sorting against the
- * MySQL-backed products endpoint.
- */
+const PRODUCT_PAGE_LIMIT = 60;
+const FEATURED_PRODUCT_LIMIT = 10;
+const PRICE_SLIDER_STEP = 50000;
 
 document.addEventListener("DOMContentLoaded", async () => {
 	const grid = document.querySelector("#product-grid");
@@ -15,7 +14,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 	const socketSection = document.querySelector("#cpu-socket-section");
 	const breadcrumbHolder = document.querySelector("#products-breadcrumb");
 	const productTitle = document.querySelector("#product-page-title");
-	const categoryFeatured = document.querySelector("#category-featured");
     const searchParams = new URLSearchParams(window.location.search);
     const currentCategory = (searchParams.get("category") || "")
         .split(",")[0]
@@ -34,14 +32,12 @@ function updateProductBanner(categories) {
     const carousel = document.querySelector("#productBanner");
     if (!carousel) return;
 
-    // Trang không chọn danh mục giữ carousel 3 ảnh giống trang gốc.
     if (!currentCategory) return;
 
     const category = categories.find((item) => item.slug === currentCategory);
     const imagePath = category?.banner;
     const bannerSection = document.querySelector("#products-page-banner");
 
-    // Danh mục chưa khai báo banner thì ẩn hẳn, không lùi về ảnh chung.
     if (!imagePath) {
         if (bannerSection) bannerSection.hidden = true;
         return;
@@ -61,7 +57,6 @@ function updateProductBanner(categories) {
         </div>
     `;
 
-    // Tắt tự động chuyển slide vì danh mục này chỉ có một ảnh.
     carousel.removeAttribute("data-bs-ride");
 }
 
@@ -147,7 +142,6 @@ function renderFilters(categories) {
 
     if (!filterHolder) return;
 
-    // Thứ tự danh mục đã được meta API sắp theo config.
     filterHolder.innerHTML = `
         <div class="category-filter-title">Danh mục</div>
         <div class="category-filter-list">
@@ -179,57 +173,52 @@ function renderFilters(categories) {
         });
 }
 
-	function renderBrandFilters(brands) {
-	if (!brandHolder) return;
+function renderBrandFilters(brands) {
+    if (!brandHolder) return;
 
-	const visibleBrands = state.brand
-    ? brands.filter((brand) => brand.slug === state.brand)
-    : brands;
+    const visibleBrands = state.brand
+        ? brands.filter((brand) => brand.slug === state.brand)
+        : brands;
 
-	brandHolder.innerHTML = visibleBrands
-		.map(
-			(brand) => `
-				<label class="brand-filter-item">
-					<span class="brand-filter-left">
-						<input
-							type="checkbox"
-							value="${TNC.escapeHtml(brand.slug)}"
-							data-brand-filter
-							${state.brand === brand.slug ? "checked" : ""}
-						/>
-						<span>${TNC.escapeHtml(brand.name)}</span>
-					</span>
+    brandHolder.innerHTML = visibleBrands
+        .map(
+            (brand) => `
+                <label class="filter-option brand-filter-item">
+                    <span class="brand-filter-left">
+                        <input
+                            type="checkbox"
+                            value="${TNC.escapeHtml(brand.slug)}"
+                            data-brand-filter
+                            ${state.brand === brand.slug ? "checked" : ""}
+                        />
+                        <span>${TNC.escapeHtml(brand.name)}</span>
+                    </span>
+                    <span class="filter-option-count brand-product-count">
+                        ${brand.productCount}
+                    </span>
+                </label>
+            `,
+        )
+        .join("");
 
-					<span class="brand-product-count">
-						${brand.productCount}
-					</span>
-				</label>
-			`,
-		)
-		.join("");
-
-	brandHolder
-    .querySelectorAll("[data-brand-filter]")
-    .forEach((input) => {
-        input.addEventListener("click", () => {
-            if (state.brand === input.value) {
-                state.brand = "";
-                input.checked = false;
-            } else {
-                state.brand = input.value;
-                input.checked = true;
-            }
-            renderBrandFilters(brands);
-            loadProducts();
+    brandHolder
+        .querySelectorAll("[data-brand-filter]")
+        .forEach((input) => {
+            input.addEventListener("click", () => {
+                if (state.brand === input.value) {
+                    state.brand = "";
+                    input.checked = false;
+                } else {
+                    state.brand = input.value;
+                    input.checked = true;
+                }
+                renderBrandFilters(brands);
+                loadProducts();
+            });
         });
-      });
-	}
+}
 
-/**
- * Socket chỉ chọn một giá trị tại một thời điểm, giống trang gốc TNC.
- * Danh mục không có sản phẩm dùng socket (RAM, SSD, PSU...) thì ẩn hẳn
- * khối lọc để tránh chọn xong lại ra 0 sản phẩm.
- */
+// Socket chỉ chọn một giá trị như trang gốc TNC.
 function renderSocketFilters(items) {
     if (!socketHolder || !socketSection) return;
 
@@ -243,15 +232,15 @@ function renderSocketFilters(items) {
     socketHolder.innerHTML = items
         .map(
             (item) => `
-                <label class="cpu-filter-item">
+                <label class="filter-option cpu-filter-item">
                     <input
                         type="checkbox"
                         value="${TNC.escapeHtml(item.socket)}"
                         data-socket-filter
                         ${state.socket && state.socket === item.socket ? "checked" : ""}
                     />
-                    <span>${TNC.escapeHtml(item.socket)}</span>
-                    <span class="socket-product-count">${item.productCount}</span>
+                    <span class="filter-option-name">${TNC.escapeHtml(item.socket)}</span>
+                    <span class="filter-option-count socket-product-count">${item.productCount}</span>
                 </label>
             `,
         )
@@ -365,7 +354,7 @@ function syncPriceControls() {
 function renderPriceFacetCounts(facets) {
     facets.forEach((facet, index) => {
         const node = document.querySelector(`[data-price-count="${index}"]`);
-        if (node) node.textContent = `(${facet.count})`;
+        if (node) node.textContent = String(facet.count);
     });
 }
 
@@ -437,17 +426,17 @@ function renderPriceFilter(config) {
     }
 
     const hasSlider = priceFilterConfig.max > priceFilterConfig.min;
-    const step = 50000;
+    const step = PRICE_SLIDER_STEP;
 
     body.innerHTML = `
-        <div class="price-filter-options">
+        <div class="filter-group-body">
             ${priceFilterConfig.bands
                 .map(
                     (band, index) => `
-                        <label class="price-filter-item">
+                        <label class="filter-option price-filter-item">
                             <input type="checkbox" data-price-band="${index}">
-                            <span class="price-filter-name">${TNC.escapeHtml(band.label)}</span>
-                            <span class="price-filter-count" data-price-count="${index}"></span>
+                            <span class="filter-option-name price-filter-name">${TNC.escapeHtml(band.label)}</span>
+                            <span class="filter-option-count price-filter-count" data-price-count="${index}"></span>
                         </label>
                     `
                 )
@@ -538,8 +527,7 @@ function renderPriceFilter(config) {
                 return;
             }
 
-            // Không gửi lại filter khi người dùng chỉ bấm vào rồi rời ô,
-            // tránh biến khoảng mở ("Trên 11 triệu") thành khoảng rỗng.
+            // Giữ nguyên khoảng mở nếu người dùng chỉ focus rồi rời ô.
             const next = parsePriceInput(input.value);
             const previous = parsePriceInput(input.dataset.previousValue ?? "");
             delete input.dataset.previousValue;
@@ -588,16 +576,9 @@ function renderPriceFilter(config) {
         minSlider.addEventListener("change", commitSlider);
         maxSlider.addEventListener("change", commitSlider);
     }
-
-    const title = section.querySelector("#price-filter-toggle");
-    title?.addEventListener("click", () => {
-        const collapsed = section.classList.toggle("is-collapsed");
-        title.setAttribute("aria-expanded", String(!collapsed));
-    });
 }
 
 function initPriceFilter() {
-    // Bộ lọc giá chỉ có nghĩa khi xem đúng một danh mục.
     if (state.categories.length !== 1) {
         renderPriceFilter(null);
         return;
@@ -615,7 +596,7 @@ async function loadCategoryFeatured() {
     const category = state.categories[0];
 
     if (category !== "cpu") {
-        holder.style.display = "none";
+        holder.hidden = true;
         holder.innerHTML = "";
         return;
     }
@@ -624,13 +605,13 @@ async function loadCategoryFeatured() {
         const payload = await TNC.api.products({
             category: "cpu",
             sort: "newest",
-            limit: 10,
+            limit: FEATURED_PRODUCT_LIMIT,
         });
 
         const items = payload.data || [];
 
         if (!items.length) {
-            holder.style.display = "none";
+            holder.hidden = true;
             return;
         }
 
@@ -658,29 +639,27 @@ async function loadCategoryFeatured() {
             </section>
         `;
 
-        holder.style.display = "block";
+        holder.hidden = false;
         const track = holder.querySelector("#cpu-carousel-track");
-const prevBtn = holder.querySelector("#cpu-carousel-prev");
-const nextBtn = holder.querySelector("#cpu-carousel-next");
+        const prevBtn = holder.querySelector("#cpu-carousel-prev");
+        const nextBtn = holder.querySelector("#cpu-carousel-next");
 
-prevBtn?.addEventListener("click", () => {
-    track?.scrollBy({
-        left: -track.clientWidth,
-        behavior: "smooth"
-    });
-});
+        prevBtn?.addEventListener("click", () => {
+            track?.scrollBy({
+                left: -track.clientWidth,
+                behavior: "smooth"
+            });
+        });
 
-nextBtn?.addEventListener("click", () => {
-    track?.scrollBy({
-        left: track.clientWidth,
-        behavior: "smooth"
-    });
-});
-// Chỉ cho phép di chuyển bằng hai nút mũi tên
-
+        nextBtn?.addEventListener("click", () => {
+            track?.scrollBy({
+                left: track.clientWidth,
+                behavior: "smooth"
+            });
+        });
     } catch (error) {
         console.error("Không tải được CPU nổi bật:", error);
-        holder.style.display = "none";
+        holder.hidden = true;
     }
 }
 function renderActiveFilters() {
@@ -770,8 +749,7 @@ function renderActiveFilters() {
 		syncUrl();
 		renderActiveFilters();
 
-		// Hủy request cũ khi người dùng bấm lọc liên tiếp để tránh kết quả
-		// của lần trước ghi đè lên lần sau.
+		// Hủy request cũ để kết quả lần trước không ghi đè lần sau.
 		productsController?.abort();
 		const controller = new AbortController();
 		productsController = controller;
@@ -792,8 +770,7 @@ function renderActiveFilters() {
 					socket: state.socket,
 					brand: state.brand,
 					sort: state.sort,
-					limit: 60,
-					// Facet giá chỉ phụ thuộc danh mục; đã có thì khỏi tính lại.
+					limit: PRODUCT_PAGE_LIMIT,
 					facets: cachedFacets ? 0 : 1,
 				},
 				{ signal: controller.signal },
@@ -841,6 +818,7 @@ function renderActiveFilters() {
 	}
 
 	bindCollapsibleFilter("brand-filter-section", "brand-filter-toggle");
+	bindCollapsibleFilter("price-filter-section", "price-filter-toggle");
 	bindCollapsibleFilter("cpu-socket-section", "cpu-socket-toggle");
 
 	TNC.showLoading(filterHolder, "Đang tải bộ lọc...", "text-muted small py-3");
@@ -853,8 +831,7 @@ function renderActiveFilters() {
 		sockets = meta.sockets || [];
 		categoriesMeta = meta.categories || [];
 
-		// URL có thể mang socket không còn thuộc danh mục hiện tại; bỏ đi
-		// để bộ lọc và địa chỉ luôn khớp nhau.
+		// Socket trên URL có thể không thuộc danh mục hiện tại.
 		if (state.socket && !sockets.some((item) => item.socket === state.socket)) {
 			state.socket = "";
 		}

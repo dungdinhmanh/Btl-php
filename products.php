@@ -18,7 +18,7 @@ require_once __DIR__ . '/backend/bootstrap.php';
               <a href="products.php" class="current">Linh kiện máy tính</a>
                   </div>
                   <!-- Khu vực sản phẩm nổi bật theo danh mục -->
-                  <div id="category-featured" style="display: none;"></div>
+                  <div id="category-featured" hidden></div>
 			<section class="products-page-banner" id="products-page-banner"> 
 				<div class="container">
 					<div id="productBanner" class="carousel slide product-banner" data-bs-ride="carousel">
@@ -71,47 +71,47 @@ require_once __DIR__ . '/backend/bootstrap.php';
                   <h2>Bộ lọc sản phẩm</h2>
               <div id="category-filters"></div>
              <hr />
-         <div class="brand-filter-section" id="brand-filter-section">
+         <div class="filter-group brand-filter-section" id="brand-filter-section">
             <button
                 type="button"
-                class="brand-filter-title"
+                class="filter-group-title brand-filter-title"
                 id="brand-filter-toggle"
                 aria-expanded="true"
                 aria-controls="brand-filters"
             >
               <span>HÃNG SẢN XUẤT</span>
-              <span class="brand-filter-toggle" aria-hidden="true">⌄</span>
+              <span class="filter-group-toggle brand-filter-toggle" aria-hidden="true">⌄</span>
             </button>
-        <div id="brand-filters" class="brand-filter-list"></div>
+        <div id="brand-filters" class="filter-group-body brand-filter-list"></div>
     </div>
     <hr />
-    <div class="price-filter-section" id="price-filter-section" hidden>
+    <div class="filter-group price-filter-section" id="price-filter-section" hidden>
         <button
             type="button"
-            class="price-filter-title"
+            class="filter-group-title price-filter-title"
             id="price-filter-toggle"
             aria-expanded="true"
             aria-controls="price-filter-body"
         >
             <span>Khoảng giá (VNĐ)</span>
-            <span class="price-filter-toggle-icon" aria-hidden="true">⌄</span>
+            <span class="filter-group-toggle price-filter-toggle-icon" aria-hidden="true">⌄</span>
         </button>
-        <div class="price-filter-body" id="price-filter-body"></div>
+        <div class="filter-group-body price-filter-body" id="price-filter-body"></div>
         <hr />
     </div>
 
-    <div class="cpu-filter-section" id="cpu-socket-section" hidden>
+    <div class="filter-group cpu-filter-section" id="cpu-socket-section" hidden>
         <button
             type="button"
-            class="cpu-filter-title"
+            class="filter-group-title cpu-filter-title"
             id="cpu-socket-toggle"
             aria-expanded="true"
             aria-controls="cpu-socket-filters"
         >
             <span>SOCKET CPU</span>
-            <span class="cpu-filter-toggle" aria-hidden="true">⌄</span>
+            <span class="filter-group-toggle cpu-filter-toggle" aria-hidden="true">⌄</span>
         </button>
-        <div id="cpu-socket-filters" class="cpu-filter-list"></div>
+        <div id="cpu-socket-filters" class="filter-group-body cpu-filter-list"></div>
     </div>
 </div>
 </aside>
