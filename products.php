@@ -71,11 +71,17 @@ require_once __DIR__ . '/backend/bootstrap.php';
                   <h2>Bộ lọc sản phẩm</h2>
               <div id="category-filters"></div>
              <hr />
-         <div class="brand-filter-section">
-            <div class="brand-filter-title">
+         <div class="brand-filter-section" id="brand-filter-section">
+            <button
+                type="button"
+                class="brand-filter-title"
+                id="brand-filter-toggle"
+                aria-expanded="true"
+                aria-controls="brand-filters"
+            >
               <span>HÃNG SẢN XUẤT</span>
-                  <span class="brand-filter-toggle">⌄</span>
-           </div>
+              <span class="brand-filter-toggle" aria-hidden="true">⌄</span>
+            </button>
         <div id="brand-filters" class="brand-filter-list"></div>
     </div>
     <hr />
@@ -94,29 +100,18 @@ require_once __DIR__ . '/backend/bootstrap.php';
         <hr />
     </div>
 
-    <div class="cpu-filter-section">
-        <div class="cpu-filter-title">
+    <div class="cpu-filter-section" id="cpu-socket-section" hidden>
+        <button
+            type="button"
+            class="cpu-filter-title"
+            id="cpu-socket-toggle"
+            aria-expanded="true"
+            aria-controls="cpu-socket-filters"
+        >
             <span>SOCKET CPU</span>
-            <span class="cpu-filter-toggle">⌄</span>
-        </div>
-        <div id="cpu-socket-filters" class="cpu-filter-list">
-            <label class="cpu-filter-item">
-                <input type="checkbox" value="AM4">
-                <span>AM4</span>
-            </label>
-            <label class="cpu-filter-item">
-                <input type="checkbox" value="AM5">
-                <span>AM5</span>
-            </label>
-            <label class="cpu-filter-item">
-                <input type="checkbox" value="LGA1700">
-                <span>LGA1700</span>
-            </label>
-            <label class="cpu-filter-item">
-                <input type="checkbox" value="LGA1851">
-                <span>LGA1851</span>
-            </label>
-        </div>
+            <span class="cpu-filter-toggle" aria-hidden="true">⌄</span>
+        </button>
+        <div id="cpu-socket-filters" class="cpu-filter-list"></div>
     </div>
 </div>
 </aside>

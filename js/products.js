@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 	const sortSelect = document.querySelector("#sort-price");
 	const filterHolder = document.querySelector("#category-filters");
 	const brandHolder = document.querySelector("#brand-filters");
+	const socketHolder = document.querySelector("#cpu-socket-filters");
+	const socketSection = document.querySelector("#cpu-socket-section");
 	const breadcrumbHolder = document.querySelector("#products-breadcrumb");
 	const productTitle = document.querySelector("#product-page-title");
 	const categoryFeatured = document.querySelector("#category-featured");
@@ -76,8 +78,12 @@ function updateProductBanner(categories) {
     socket: searchParams.get("socket") || "",
 };
 let brands = [];
+let sockets = [];
 let categoriesMeta = [];
 let priceFilterConfig = null;
+const priceFacetsCache = new Map();
+let productsController = null;
+let productsRequestId = 0;
 
 if (state.priceMin !== null && state.priceMax !== null && state.priceMin > state.priceMax) {
     [state.priceMin, state.priceMax] = [state.priceMax, state.priceMin];
@@ -195,7 +201,7 @@ function renderFilters(categories) {
 					</span>
 
 					<span class="brand-product-count">
-						[${brand.productCount}]
+						${brand.productCount}
 					</span>
 				</label>
 			`,
@@ -218,6 +224,58 @@ function renderFilters(categories) {
         });
       });
 	}
+
+/**
+ * Socket chỉ chọn một giá trị tại một thời điểm, giống trang gốc TNC.
+ * Danh mục không có sản phẩm dùng socket (RAM, SSD, PSU...) thì ẩn hẳn
+ * khối lọc để tránh chọn xong lại ra 0 sản phẩm.
+ */
+function renderSocketFilters(items) {
+    if (!socketHolder || !socketSection) return;
+
+    if (!items.length) {
+        socketSection.hidden = true;
+        socketHolder.innerHTML = "";
+        return;
+    }
+
+    socketSection.hidden = false;
+    socketHolder.innerHTML = items
+        .map(
+            (item) => `
+                <label class="cpu-filter-item">
+                    <input
+                        type="checkbox"
+                        value="${TNC.escapeHtml(item.socket)}"
+                        data-socket-filter
+                        ${state.socket && state.socket === item.socket ? "checked" : ""}
+                    />
+                    <span>${TNC.escapeHtml(item.socket)}</span>
+                    <span class="socket-product-count">${item.productCount}</span>
+                </label>
+            `,
+        )
+        .join("");
+
+    socketHolder
+        .querySelectorAll("[data-socket-filter]")
+        .forEach((input) => {
+            input.addEventListener("change", () => {
+                if (input.checked) {
+                    state.socket = input.value;
+                    socketHolder
+                        .querySelectorAll("[data-socket-filter]")
+                        .forEach((other) => {
+                            if (other !== input) other.checked = false;
+                        });
+                } else {
+                    state.socket = "";
+                }
+
+                loadProducts();
+            });
+        });
+}
 
 
 function formatPriceInput(value) {
@@ -711,24 +769,45 @@ function renderActiveFilters() {
 	async function loadProducts() {
 		syncUrl();
 		renderActiveFilters();
+
+		// Hủy request cũ khi người dùng bấm lọc liên tiếp để tránh kết quả
+		// của lần trước ghi đè lên lần sau.
+		productsController?.abort();
+		const controller = new AbortController();
+		productsController = controller;
+		const requestId = ++productsRequestId;
+
+		const categoryKey = state.categories.join(",");
+		const cachedFacets = priceFacetsCache.get(categoryKey);
+
 		TNC.showLoading(grid, "Đang tải sản phẩm...");
 
 		try {
-			const payload = await TNC.api.products({
-				q: state.q,
-				category: state.categories.join(","),
-				min: state.priceMin,
-				max: state.priceMax,
-				socket: state.socket,
-				brand: state.brand,
-				sort: state.sort,
-				limit: 60,
-			});
+			const payload = await TNC.api.products(
+				{
+					q: state.q,
+					category: categoryKey,
+					min: state.priceMin,
+					max: state.priceMax,
+					socket: state.socket,
+					brand: state.brand,
+					sort: state.sort,
+					limit: 60,
+					// Facet giá chỉ phụ thuộc danh mục; đã có thì khỏi tính lại.
+					facets: cachedFacets ? 0 : 1,
+				},
+				{ signal: controller.signal },
+			);
+
+			if (requestId !== productsRequestId) return;
 
 			const items = payload.data || [];
 			if (countEl) countEl.textContent = `${payload.total ?? items.length} sản phẩm`;
-			if (Array.isArray(payload.priceFacets)) {
-				renderPriceFacetCounts(payload.priceFacets);
+
+			const facets = cachedFacets || payload.priceFacets;
+			if (Array.isArray(facets) && facets.length) {
+				priceFacetsCache.set(categoryKey, facets);
+				renderPriceFacetCounts(facets);
 			}
 
 			grid.innerHTML = items.length
@@ -739,6 +818,7 @@ function renderActiveFilters() {
 						text: "Thử tìm kiếm với từ khóa khác hoặc bỏ các bộ lọc.",
 					});
 		} catch (error) {
+			if (controller.signal.aborted) return;
 			if (countEl) countEl.textContent = "0 sản phẩm";
 			TNC.renderError(grid, error);
 		}
@@ -749,6 +829,20 @@ function renderActiveFilters() {
 		loadProducts();
 	});
 
+	function bindCollapsibleFilter(sectionId, toggleId) {
+		const section = document.querySelector(`#${sectionId}`);
+		const toggle = document.querySelector(`#${toggleId}`);
+		if (!section || !toggle) return;
+
+		toggle.addEventListener("click", () => {
+			const collapsed = section.classList.toggle("is-collapsed");
+			toggle.setAttribute("aria-expanded", String(!collapsed));
+		});
+	}
+
+	bindCollapsibleFilter("brand-filter-section", "brand-filter-toggle");
+	bindCollapsibleFilter("cpu-socket-section", "cpu-socket-toggle");
+
 	TNC.showLoading(filterHolder, "Đang tải bộ lọc...", "text-muted small py-3");
 
 	try {
@@ -756,9 +850,18 @@ function renderActiveFilters() {
 			category: state.categories.join(","),
 		});
 		brands = meta.brands || [];
+		sockets = meta.sockets || [];
 		categoriesMeta = meta.categories || [];
+
+		// URL có thể mang socket không còn thuộc danh mục hiện tại; bỏ đi
+		// để bộ lọc và địa chỉ luôn khớp nhau.
+		if (state.socket && !sockets.some((item) => item.socket === state.socket)) {
+			state.socket = "";
+		}
+
 		renderFilters(categoriesMeta);
 		renderBrandFilters(brands);
+		renderSocketFilters(sockets);
 		renderBreadcrumb(categoriesMeta);
 		initPriceFilter();
 	} catch {

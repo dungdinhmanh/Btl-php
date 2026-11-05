@@ -2056,6 +2056,13 @@ padding-top: 1rem;
     line-height: 1.5;
 }
 
+.socket-product-count {
+    margin-left: auto;
+    color: #9ca3af;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
 /* Bộ lọc khoảng giá theo danh mục, dựng theo giao diện tncstore.vn */
 .price-filter-section {
     margin-bottom: 0.25rem;
@@ -3368,6 +3375,112 @@ padding-top: 1rem;
 
 .brand-filter-list::-webkit-scrollbar-track {
     background: transparent;
+}
+
+/* Đồng bộ tiêu đề, lựa chọn và checkbox của Hãng/Socket với bộ lọc giá. */
+.brand-filter-section,
+.cpu-filter-section {
+    margin: 0 0 0.25rem;
+    padding: 0;
+}
+
+.brand-filter-title,
+.cpu-filter-title {
+    width: 100%;
+    margin: 0 0 16px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #8d94ac;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.brand-filter-toggle,
+.cpu-filter-toggle {
+    color: #8d94ac;
+    font-size: 12px;
+    line-height: 1;
+    transition: transform 0.2s ease;
+}
+
+.brand-filter-section.is-collapsed .brand-filter-toggle,
+.cpu-filter-section.is-collapsed .cpu-filter-toggle {
+    transform: rotate(-90deg);
+}
+
+.brand-filter-section.is-collapsed .brand-filter-list,
+.cpu-filter-section.is-collapsed .cpu-filter-list {
+    display: none;
+}
+
+.brand-filter-list,
+.cpu-filter-list {
+    gap: 8px;
+}
+
+.brand-filter-item,
+.cpu-filter-item {
+    gap: 6px;
+    min-height: 20px;
+    padding: 0;
+    color: #333;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.brand-filter-left {
+    gap: 6px;
+}
+
+.brand-filter-item span,
+.cpu-filter-item span {
+    line-height: 1.4;
+}
+
+.brand-filter-item input[type="checkbox"],
+.cpu-filter-item input[type="checkbox"] {
+    position: relative;
+    flex: 0 0 14px;
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    border: 1px solid #29324e;
+    background: #fff;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.brand-filter-item input[type="checkbox"]:checked,
+.cpu-filter-item input[type="checkbox"]:checked {
+    border-color: var(--color-global);
+    background: var(--color-global);
+}
+
+.brand-filter-item input[type="checkbox"]:checked::after,
+.cpu-filter-item input[type="checkbox"]:checked::after {
+    content: "✓";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: #fff;
+    font-size: 10px;
+    line-height: 1;
+    transform: translate(-50%, -50%);
+}
+
+.brand-product-count,
+.socket-product-count {
+    margin-left: auto;
+    padding-left: 0;
+    color: #8d94ac;
+    font-size: 12px;
+    line-height: 1.4;
+    white-space: nowrap;
 }
 
 main {

@@ -27,6 +27,10 @@ function database(): PDO
         PDO::ATTR_EMULATE_PREPARES => false,
         PDO::ATTR_STRINGIFY_FETCHES => false,
         PDO::ATTR_TIMEOUT => 15,
+        // DB nằm trên Aiven nên mỗi kết nối TLS mới tốn ~0,5s. Dùng lại
+        // connection giữa các request để thao tác lọc không phải trả giá
+        // bắt tay TLS lại từ đầu.
+        PDO::ATTR_PERSISTENT => true,
     ];
 
     if ($sslCa !== '') {

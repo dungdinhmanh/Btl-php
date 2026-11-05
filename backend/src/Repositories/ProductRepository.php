@@ -68,6 +68,39 @@ final class ProductRepository
         ?int $maxPrice = null,
         ?string $socket = null,
     ): array {
+        return $this->searchPage(
+            $query,
+            $category,
+            $limit,
+            $offset,
+            $brand,
+            $sort,
+            $categories,
+            $minPrice,
+            $maxPrice,
+            $socket,
+        )['items'];
+    }
+
+    /**
+     * Như search() nhưng trả kèm tổng số sản phẩm trong cùng một truy vấn
+     * (MySQL 8 window function), tránh thêm một round-trip COUNT(*) khi lọc.
+     *
+     * @param string[] $categories
+     * @return array{items: array<int, array<string, mixed>>, total: int}
+     */
+    public function searchPage(
+        string $query = '',
+        ?string $category = null,
+        int $limit = 24,
+        int $offset = 0,
+        ?string $brand = null,
+        string $sort = 'newest',
+        array $categories = [],
+        ?int $minPrice = null,
+        ?int $maxPrice = null,
+        ?string $socket = null,
+    ): array {
         [$where, $params] = $this->buildFilters(
             $query,
             $category,
@@ -79,7 +112,7 @@ final class ProductRepository
         );
 
         $statement = $this->db->prepare(
-            self::LIST_SELECT . ' ' . self::LIST_FROM . '
+            self::LIST_SELECT . ', COUNT(*) OVER() AS totalRows ' . self::LIST_FROM . '
              WHERE ' . implode(' AND ', $where) . '
              ORDER BY ' . (self::SORTS[$sort] ?? self::SORTS['newest']) . '
              LIMIT :limit OFFSET :offset',
@@ -91,7 +124,19 @@ final class ProductRepository
         $statement->bindValue(':offset', max(0, $offset), PDO::PARAM_INT);
         $statement->execute();
 
-        return $this->presentMany($statement->fetchAll());
+        $rows = $statement->fetchAll();
+
+        if ($rows !== []) {
+            $total = (int) $rows[0]['totalRows'];
+        } else {
+            // Không có dòng nào nên không đọc được window count; chỉ tốn
+            // thêm truy vấn khi người dùng đã vượt quá trang cuối.
+            $total = $offset > 0
+                ? $this->count($query, $category, $brand, $categories, $minPrice, $maxPrice, $socket)
+                : 0;
+        }
+
+        return ['items' => $this->presentMany($rows), 'total' => $total];
     }
 
     public function count(
@@ -307,6 +352,32 @@ final class ProductRepository
 
 
     /**
+     * Điều kiện SQL dùng chung cho lọc theo một hoặc nhiều danh mục:
+     * khớp slug lá hoặc slug danh mục cha.
+     *
+     * @param string[] $categories
+     * @return array{0: string, 1: array<string, string>}
+     */
+    private function categoryScope(array $categories): array
+    {
+        $conditions = [];
+        $params = [];
+
+        foreach (array_values($categories) as $index => $slug) {
+            $conditions[] = "(c.category_slug = :category{$index}
+                OR c.parent_category_id IN (
+                    SELECT parent_lookup.category_id
+                    FROM categories parent_lookup
+                    WHERE parent_lookup.category_slug = :parent{$index}
+                ))";
+            $params[":category{$index}"] = $slug;
+            $params[":parent{$index}"] = $slug;
+        }
+
+        return ['(' . implode(' OR ', $conditions) . ')', $params];
+    }
+
+    /**
      * Danh sách hãng kèm số sản phẩm. Truyền danh mục để bộ lọc chỉ hiện
      * những hãng thực sự có sản phẩm trong danh mục đang xem.
      *
@@ -326,18 +397,7 @@ final class ProductRepository
                  ORDER BY b.brand_name ASC",
             );
         } else {
-            $conditions = [];
-            $params = [];
-            foreach ($categories as $index => $slug) {
-                $conditions[] = "(c.category_slug = :category{$index}
-                    OR c.parent_category_id IN (
-                        SELECT parent_lookup.category_id
-                        FROM categories parent_lookup
-                        WHERE parent_lookup.category_slug = :parent{$index}
-                    ))";
-                $params[":category{$index}"] = $slug;
-                $params[":parent{$index}"] = $slug;
-            }
+            [$scope, $params] = $this->categoryScope($categories);
 
             $statement = $this->db->prepare(
                 "SELECT b.brand_id AS id, b.brand_name AS name, b.brand_slug AS slug,
@@ -345,7 +405,7 @@ final class ProductRepository
                  FROM brands b
                  JOIN products p ON p.brand_id = b.brand_id AND p.product_status = 'active'
                  JOIN categories c ON c.category_id = p.category_id
-                 WHERE " . implode(' OR ', $conditions) . "
+                 WHERE " . $scope . "
                  GROUP BY b.brand_id, b.brand_name, b.brand_slug
                  ORDER BY b.brand_name ASC",
             );
@@ -361,6 +421,46 @@ final class ProductRepository
             ], $statement->fetchAll()),
             static fn (array $brand): bool => $brand['productCount'] > 0,
         ));
+    }
+
+    /**
+     * Danh sách socket kèm số sản phẩm trong phạm vi danh mục đang xem.
+     * Danh mục không có dữ liệu socket sẽ trả về mảng rỗng để giao diện ẩn
+     * hẳn bộ lọc socket thay vì hiện các lựa chọn cho ra 0 sản phẩm.
+     *
+     * @param string[] $categories
+     * @return array<int, array{socket: string, productCount: int}>
+     */
+    public function sockets(array $categories = []): array
+    {
+        $categories = array_values(array_filter(array_map('trim', $categories)));
+
+        $where = [
+            "p.product_status = 'active'",
+            "p.socket IS NOT NULL",
+            "p.socket <> ''",
+        ];
+        $params = [];
+
+        if ($categories !== []) {
+            [$scope, $params] = $this->categoryScope($categories);
+            $where[] = $scope;
+        }
+
+        $statement = $this->db->prepare(
+            "SELECT p.socket AS socket, COUNT(*) AS productCount
+             FROM products p
+             INNER JOIN categories c ON c.category_id = p.category_id
+             WHERE " . implode(' AND ', $where) . "
+             GROUP BY p.socket
+             ORDER BY p.socket ASC",
+        );
+        $statement->execute($params);
+
+        return array_map(static fn (array $row): array => [
+            'socket' => (string) $row['socket'],
+            'productCount' => (int) $row['productCount'],
+        ], $statement->fetchAll());
     }
 
     private function buildFilters(

@@ -25,9 +25,9 @@ try {
         return $order !== 0 ? $order : strcmp($a['name'], $b['name']);
     });
 
-    // Bộ lọc hãng chỉ cần các hãng có sản phẩm trong danh mục đang xem.
-    // Không truyền category thì giữ danh sách hãng toàn cửa hàng.
-    $brandCategories = array_values(array_filter(array_map(
+    // Bộ lọc hãng/socket chỉ cần dữ liệu trong danh mục đang xem.
+    // Không truyền category thì giữ phạm vi toàn cửa hàng.
+    $filterCategories = array_values(array_filter(array_map(
         'trim',
         explode(',', (string) ($_GET['category'] ?? '')),
     )));
@@ -36,7 +36,8 @@ try {
         'ok' => true,
         'data' => [
             'categories' => $categories,
-            'brands' => $repository->brands($brandCategories),
+            'brands' => $repository->brands($filterCategories),
+            'sockets' => $repository->sockets($filterCategories),
         ],
     ]);
 } catch (Throwable $exception) {

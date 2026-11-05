@@ -263,9 +263,9 @@ try {
 | --- | --- |
 | `GET api/products.php?featured=1&limit=4` | 4 sản phẩm nổi bật cho trang chủ |
 | `GET api/products.php?slug=...` | Chi tiết 1 sản phẩm: ảnh, thông số, tồn kho. Sai slug → `404` (`model`, `id` cũng được chấp nhận) |
-| `GET api/products.php?q=...&category=cpu,ram&brand=asus&min=3000000&max=8000000&sort=price-asc&limit=24&offset=0` | Danh sách có tìm kiếm, lọc, sắp xếp. `min`/`max` là khoảng giá, `max` không tính mốc trên. `sort` nhận `newest`, `price-asc`, `price-desc`, `name-asc`. Trả kèm `total` và `priceFacets` (số sản phẩm theo từng khoảng giá của danh mục) |
+| `GET api/products.php?q=...&category=cpu,ram&brand=asus&socket=AM5&min=3000000&max=8000000&sort=price-asc&limit=24&offset=0` | Danh sách có tìm kiếm, lọc, sắp xếp. `min`/`max` là khoảng giá, `max` không tính mốc trên. `socket` lọc theo socket CPU. `sort` nhận `newest`, `price-asc`, `price-desc`, `name-asc`. Trả kèm `total` và `priceFacets` (số sản phẩm theo từng khoảng giá của danh mục). Truyền `facets=0` để bỏ qua phần đếm khoảng giá |
 | `GET api/products.php?categories=cpu,ram&perCategory=4` | Nhiều nhóm, mỗi nhóm vài sản phẩm — dùng cho các dải sản phẩm ở trang chủ |
-| `GET api/meta.php?category=cpu,ram` | Danh mục + thương hiệu kèm số lượng sản phẩm (dùng cho bộ lọc và Build PC). Truyền `category` để chỉ trả về các hãng có sản phẩm trong danh mục đó. Mỗi danh mục có thêm `banner`, `bannerAlt`, `priceFilter` lấy từ `backend/config/category_catalog.php` |
+| `GET api/meta.php?category=cpu,ram` | Danh mục + thương hiệu + socket kèm số lượng sản phẩm (dùng cho bộ lọc và Build PC). Truyền `category` để chỉ trả về hãng/socket có sản phẩm trong danh mục đó. Mỗi danh mục có thêm `banner`, `bannerAlt`, `priceFilter` lấy từ `backend/config/category_catalog.php` |
 | `GET api/news.php?limit=12&offset=0&category=...` | Danh sách bài viết đã publish |
 | `GET api/news.php?slug=...` | Một bài viết kèm nội dung |
 | `GET api/news.php?categories=1` | Danh mục tin tức + số bài |

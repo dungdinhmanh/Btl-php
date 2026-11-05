@@ -14,7 +14,7 @@ const TNC = (() => {
 				],
 		);
 
-	async function request(path, params = {}) {
+	async function request(path, params = {}, options = {}) {
 		const url = new URL(`${base}/${path}`, window.location.href);
 		Object.entries(params).forEach(([key, value]) => {
 			if (value !== undefined && value !== null && value !== "") {
@@ -22,7 +22,10 @@ const TNC = (() => {
 			}
 		});
 
-		const response = await fetch(url, { headers: { Accept: "application/json" } });
+		const response = await fetch(url, {
+			headers: { Accept: "application/json" },
+			signal: options.signal,
+		});
 		let payload = null;
 		try {
 			payload = await response.json();
@@ -78,7 +81,7 @@ const TNC = (() => {
 			request("products.php", { featured: 1, limit }).then((payload) => payload.data),
 		product: (slug) =>
 			request("products.php", { slug }).then((payload) => payload.data),
-		products: (params = {}) => request("products.php", params),
+		products: (params = {}, options = {}) => request("products.php", params, options),
 		productGroups: (slugs, perCategory = 8) =>
 			request("products.php", { categories: slugs.join(","), perCategory }).then(
 				(payload) => payload.data,

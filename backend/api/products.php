@@ -46,7 +46,7 @@ try {
         [$minPrice, $maxPrice] = [$maxPrice, $minPrice];
     }
 
-    $products = $repository->search(
+    $productsPage = $repository->searchPage(
         $query,
         count($categoryList) === 1 ? $categoryList[0] : null,
         $limit,
@@ -58,9 +58,13 @@ try {
         $maxPrice,
         $socket !== '' ? $socket : null,
     );
+    $products = $productsPage['items'];
 
+    // Facet giá chỉ phụ thuộc danh mục nên client có thể lưu lại và bỏ qua
+    // tham số này ở các lần lọc sau, tiết kiệm một truy vấn mỗi lần bấm.
+    $includeFacets = filter_var($_GET['facets'] ?? true, FILTER_VALIDATE_BOOL);
     $priceFacets = [];
-    if (count($categoryList) === 1) {
+    if ($includeFacets && count($categoryList) === 1) {
         $catalog = require __DIR__ . '/../config/category_catalog.php';
         $categorySlug = strtolower($categoryList[0]);
         $bands = $catalog[$categorySlug]['price']['bands'] ?? [];
@@ -81,15 +85,7 @@ try {
     jsonResponse([
         'ok' => true,
         'data' => $products,
-        'total' => $repository->count(
-            $query,
-            null,
-            $brand !== '' ? $brand : null,
-            $categoryList,
-            $minPrice,
-            $maxPrice,
-            $socket !== '' ? $socket : null,
-        ),
+        'total' => $productsPage['total'],
         'priceFacets' => $priceFacets,
         'limit' => max(1, min($limit, 100)),
         'offset' => max(0, $offset),
