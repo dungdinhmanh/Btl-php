@@ -1,21 +1,3 @@
-document.addEventListener("DOMContentLoaded", async () => {
-	const container = document.querySelector("#featured-products-list");
-	if (!container) return;
-
-	TNC.showLoading(container, "Đang tải sản phẩm ...");
-
-	try {
-		const products = await TNC.api.featured(4);
-		container.innerHTML = products.length
-			? products
-					.map((product) => TNC.productCard(product, { tag: "Bán chạy" }))
-					.join("")
-			: TNC.emptyState({ icon: "bi-box-seam", title: "Chưa có sản phẩm nổi bật" });
-	} catch (error) {
-		TNC.renderError(container, error);
-	}
-});
-
 document.addEventListener("DOMContentLoaded", () => {
 	if (typeof bootstrap === "undefined") return;
 

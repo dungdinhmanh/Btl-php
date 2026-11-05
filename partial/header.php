@@ -662,3 +662,4 @@ $headerQuickLinks = [
 	</div>
 </div>
 <script src="js/search-form.js" defer></script>
+<script src="js/header.js" defer></script>

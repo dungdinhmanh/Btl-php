@@ -248,20 +248,6 @@ try {
 					<?php endforeach; ?>
 				</div>
 			</div>
-			<section class="section-space section-muted">
-				<div class="container">
-					<div class="section-heading">
-						<div>
-							<h2>Sản phẩm nổi bật</h2>
-						</div>
-						<a href="products.php" class="text-link">
-							Xem cửa hàng
-							<i class="bi bi-arrow-up-right"></i>
-						</a>
-					</div>
-					<div class="row g-4" id="featured-products-list"></div>
-				</div>
-			</section>
 			<?php if ($promoPosts !== []): ?>
 			<div class="home-promo-section">
 				<h2 class="home-promo-title">Chuyên trang khuyến mãi</h2>
@@ -397,6 +383,5 @@ try {
 		</div>
 		<?php require 'partial/footer.php'?>
 		<script src="js/home.js"></script>
-		<script src="js/header.js"></script>
 	</body>
 </html>

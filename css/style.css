@@ -737,12 +737,13 @@ body .btn-link:hover {
 	position: relative;
 }
 .promo-carousel-section > .container {
-	padding: 0 12px;
+	max-width: 1200px;
+	padding: 0;
 }
 .promo-carousel-section .carousel-indicators {
 	z-index: 2;
 	justify-content: center;
-	width: min(100% - 2rem, 1140px);
+	width: min(100% - 2rem, 1200px);
 	margin-right: auto;
 	margin-bottom: 0;
 	margin-left: auto;
@@ -1542,6 +1543,9 @@ padding-top: 1rem;
 .padding-24 {
 	padding: 24px;
 }
+.background-white {
+	background: #fff;
+}
 .align-items {
 	align-items: center !important;
 }
@@ -1552,16 +1556,13 @@ padding-top: 1rem;
 	justify-content: space-between !important;
 }
 
-@media (min-width: 1400px) {
-	.box-group-category > .container {
-		max-width: 1224px;
-	}
+.box-group-category > .container {
+	max-width: 1200px;
+	padding: 0;
 }
 
-.box-group-category {
-	margin-top: 32px;
-}
 .group-category-home {
+	margin-top: 32px;
 	padding: 24px;
 }
 .group-category-home .group-title {
@@ -1608,7 +1609,7 @@ padding-top: 1rem;
 .content-product-category .product-list {
 	display: flex;
 	width: 100%;
-	height: 361px;
+	height: 360px;
 	gap: 0;
 	margin: 0;
 	min-width: 0;
@@ -1628,7 +1629,7 @@ padding-top: 1rem;
 	scroll-snap-align: start;
 }
 .group-category-home .product-item {
-	height: 361px;
+	height: 360px;
 }
 .group-category-home .product-item .product-image {
 	height: 205px;
@@ -3018,22 +3019,22 @@ padding-top: 1rem;
 .news-category-nav {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0.6rem;
-	margin-bottom: 2rem;
+	margin-bottom: 24px;
 }
 .news-category-nav a {
-	padding: 0.5rem 0.85rem;
-	border: 1px solid #dce1e7;
-	border-radius: 99px;
-	color: #52606d;
-	font-size: 0.84rem;
-	font-weight: 700;
+	display: block;
+	margin: 0 8px 8px 0;
+	padding: 8px 10px;
+	background: #fff;
+	color: var(--header-accent);
+	font-size: 14px;
+	font-weight: 600;
+	line-height: normal;
 	text-decoration: none;
 }
 .news-category-nav a:hover,
 .news-category-nav a.active {
-	border-color: var(--header-accent);
-	background: var(--header-accent);
+	background: var(--color-global);
 	color: #fff;
 }
 .news-grid-card {
@@ -3136,6 +3137,10 @@ padding-top: 1rem;
 
 .banner-sale {
 	padding: 1rem 0 0;
+}
+.banner-sale > .container {
+	max-width: 1200px;
+	padding: 0;
 }
 
 .snap-carousel {
@@ -3267,13 +3272,11 @@ padding-top: 1rem;
     }
 }
 
-#featured-products-list .product-item,
 #similar-products .product-item {
     width: 25%;
 }
 
 @media (max-width: 991.98px) {
-    #featured-products-list .product-item,
     #similar-products .product-item {
         width: 50%;
     }

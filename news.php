@@ -43,7 +43,7 @@ $gridPosts = $filtered ? $posts : array_slice($posts, 4);
 					<p class="text-center text-muted py-5">Không tải được bài viết. Vui lòng thử lại sau.</p>
 				<?php else: ?>
 					<nav class="news-category-nav" aria-label="Chuyên mục">
-						<a class="<?= $filtered ? '' : 'active' ?>" href="news.php">Mới nhất</a>
+						<a class="<?= $filtered ? '' : 'active' ?>" href="news.php">Bài viết mới nhất</a>
 						<?php foreach ($categories as $category): ?>
 							<a
 								class="<?= $activeCategory === $category['slug'] ? 'active' : '' ?>"

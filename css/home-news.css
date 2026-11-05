@@ -1,7 +1,7 @@
 /* Trang chủ: khuyến mãi + hai cột TNC Channel / Tin tức */
 
 .home-promo-section {
-	width: min(1200px, calc(100% - 24px));
+	width: min(1200px, 100%);
 	margin: 48px auto;
 	padding: 24px;
 	box-sizing: border-box;
@@ -194,7 +194,7 @@
 
 @media (max-width: 767.98px) {
 	.home-promo-section {
-		width: calc(100% - 24px);
+		width: 100%;
 		margin: 32px auto;
 		padding: 16px;
 	}
@@ -241,7 +241,6 @@
 }
 
 @media (min-width: 1400px) {
-	.home-promo-section,
 	.home-news-container {
 		width: min(1600px, calc(100% - 24px));
 	}
